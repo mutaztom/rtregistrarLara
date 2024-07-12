@@ -46,7 +46,39 @@
                 </div>
             @endif
         </div>
-
+<div>
+    <h1>التعليم</h1>
+    <div class="flex flex-wrap">
+        <x-label for="education">
+        Education</x-label><br/>
+        <table class="table-auto border-separate border border-slate-400">
+            <thead>
+                <tr>
+                    <th>Entity</th>
+                    <th>Degree</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>University of Khartoum</td>
+                    <td>Bachelour Degree</td>
+                    <td>1956</td>
+                </tr>
+                <tr>
+                    <td>University of Khartoum</td>
+                    <td>Bachelour Degree</td>
+                    <td>1956</td>
+                </tr>
+                <tr>
+                    <td>University of Khartoum</td>
+                    <td>Bachelour Degree</td>
+                    <td>1956</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 

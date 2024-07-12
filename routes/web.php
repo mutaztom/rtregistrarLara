@@ -9,7 +9,10 @@ Route::get('/', function () {
 });
 
 Route::get('/regorder',[RegRequestController::class,"registerrequest"]
-)->middleware(['auth', 'verified'])->name('regorder');;
+)->middleware(['auth', 'verified'])->name('regorder');
+
+Route::get('/uploadphoto',[RegRequestController::class,"uploadphoto"]
+)->middleware(['auth', 'verified'])->name('uploadphoto');;
 
 Route::get('/dashboard', function () {
     return view('dashboard');

@@ -10,10 +10,12 @@ use App\Models\Tblengclass;
 use App\Models\Tblidcardtype;
 use App\Models\Tblengdegree;
 use App\Models\Tblmembership;
+use App\Models\Tblqualification;
+use App\Models\Tblqualtype;
 
 class RegRequestController extends Controller
 {
- 
+   
    public function registerrequest(){
       $cities=Tblcity::select('item')->pluck('item')->toArray();
       $nationalities=Tblnationality::select('item')->pluck('item')->toArray();
@@ -23,6 +25,9 @@ class RegRequestController extends Controller
       $idtypes=Tblidcardtype::select('item')->pluck('item')->toArray();
       $engdegree=Tblengdegree::select('item')->pluck('item')->toArray();
       $membership=Tblmembership::select('item')->pluck('item')->toArray();
+      $qualification=Tblqualification::where('empid',866)->get();
+      $qualtype=Tblqualtype::select('item')->pluck('item')->toArray();
+      $qualdegree=Tblengdegree::select('item')->pluck('item')->toArray();
 
       return view('regorder',["cities"=>$cities,
     "nationalities"=>$nationalities,
@@ -31,7 +36,13 @@ class RegRequestController extends Controller
       "engclass"=>$engclass,
       "engdegree"=>$engdegree,
       "idtypes"=>$idtypes,
-   "title"=>"regform"]);
+      "title"=>"regform",
+      "qualification"=>$qualification,
+    "qualtype"=>$qualtype,
+    "qualdegree"=>$qualdegree,
+    "membership"=>$membership]);
    }
-        
+        public function uploadphoto(){
+         //upload photo of registrant
+        }
 }
