@@ -8,7 +8,8 @@
 
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <x-form>
+                <x-form metod="GET" action="reqorder">
+                    @csrf
                     <div class="grid grid-cols-2">
                         <div class="grid grid-cols-4 w-6 text-gray-900 dark:text-gray-100">
                             <div class="box-border h-32 w-32 p-4 border-4">
@@ -85,7 +86,7 @@
                     @include('qualification')
                     <section class="space-y-6">
                         <div class="flex flex-wrap w-full space-x-4 h-10">
-                            <x-primary-button class="pl-4">{{ __('Save') }}</x-primary-button>
+                            <x-primary-button class="pl-4" type="submit" name="command" value="saveorder">{{ __('Save') }}</x-primary-button>
                             <x-danger-button class="pl-4" :action="route('regorder')" method="GET"
                                 class="p-2">{{ __('Reset') }}</x-danger-button>
                             <x-primary-button class="pl-4" :action="route('dashboard')" method="GET"

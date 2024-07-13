@@ -23,9 +23,9 @@
         <x-pikaday placeholder="Enter start date" type="text" id="startdate" name="startdate" required="true"></x-pikaday>
         <x-input-label for="enddate" :value="_('End Date')"/>
         <x-pikaday placeholder="Enter end date" type="text" id="enddate" name="enddate" required="true"></x-pikaday>
-<div class="w-full space-y-8">
-<x-primary-button> {{__('Save')}}</x-primary-button>
-<x-primary-button click="hideQualification()" type="button"> {{__('Cancel')}}</x-primary-button>
+<div class="flex w-full space-x-12 space-y-12">
+<div><x-primary-button  type="submit" name="command" value="savequal"> {{__('Save')}}</x-primary-button></div>
+<div><x-primary-button click="hideQualification()" type="button"> {{__('Cancel')}}</x-primary-button></div>
 
 </div>
     </div>
@@ -74,6 +74,7 @@
 </section>
 <script type="text/javascript">
 function hideQualification() {
+console.log("hideQualification is called");
 document.getElementById("panqual").style.display = "none";
 }
 function showQualification() {

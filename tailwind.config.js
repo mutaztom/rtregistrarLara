@@ -52,11 +52,7 @@ module.exports = {
     },
     plugins: [
       require('@tailwindcss/forms'),
-      require('flowbite/plugin')({
-        charts: true,
-        forms: true,
-        tooltips: true
-    }),
+      require('flowbite/plugin'),
       require('@tailwindcss/typography'),
     ],
     }
