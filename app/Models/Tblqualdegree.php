@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Tblqualdegree extends Model
 {
-	protected $table = 'Tblqaldegree';
+	protected $table = 'tblqualdegree';
 	public $timestamps = false;
 
 	protected $casts = [
@@ -35,4 +35,5 @@ class Tblqualdegree extends Model
 		'forfield',
 		'mainid'
 	];
+	
 }

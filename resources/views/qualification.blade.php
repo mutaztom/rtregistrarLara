@@ -18,18 +18,19 @@
             @endforeach
         </select>
         <x-input-label for="entity" :value="__('Entity')"></x-input-label>
-        <x-input placeholder="Enter entity name" type="text" id="entity" name="entity" required="true"></x-input>
+        <x-input placeholder="Enter entity name" type="text" id="entity" name="entity" required="true" value={{$entity}}></x-input>
         <x-input-label for="startdate" :value="_('Start Date')"/>
-        <x-pikaday placeholder="Enter start date" type="text" id="startdate" name="startdate" required="true"></x-pikaday>
+        <x-pikaday placeholder="Enter start date" type="text" id="startdate" name="startdate" value={{$startdate}} required="true"></x-pikaday>
         <x-input-label for="enddate" :value="_('End Date')"/>
-        <x-pikaday placeholder="Enter end date" type="text" id="enddate" name="enddate" required="true"></x-pikaday>
+        <x-pikaday placeholder="Enter end date" type="text" id="enddate" name="enddate" value={{$enddate}} required="true"></x-pikaday>
 <div class="flex w-full space-x-12 space-y-12">
 <div><x-primary-button  type="submit" name="command" value="savequal"> {{__('Save')}}</x-primary-button></div>
-<div><x-primary-button click="hideQualification()" type="button"> {{__('Cancel')}}</x-primary-button></div>
+<div><x-primary-button click="hideQualification()" type="button"> {{__('Close')}}</x-primary-button></div>
 
 </div>
-    </div>
+    </div> 
 
+    
     <div class="flex flex-wrap w-full">
         <table class="w-full border-collapse border border-slate-400">
             <thead>
@@ -50,6 +51,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
                             </svg>
+                            <input  name="qualid" value={{$qual->id}}></input>
                         </td>
                         <td>{{ $qual->item }}</td>
                         <td>{{ $qual->entity }}</td>
@@ -57,10 +59,11 @@
                         <td>{{ $qual->startdate }} {{ $qual->enddate }}</td>
                         <td>
                             <div class="flex flex-wrap w-1">
-                                <x-secondary-button class="fa fa-view">{{ __('View') }}</x-secondary-button>
-                                <x-secondary-button>{{ __('Modify') }}</x-secondary-button>
-                                <x-secondary-button>{{ __('Delete') }}</x-secondary-button>
+                                <x-secondary-button type="submit" name="command" value="viewqual" class="fa fa-view">{{ __('View') }}</x-secondary-button>
+                                <x-secondary-button type="submit" name="command" value="modifyqual">{{ __('Modify') }}</x-secondary-button>
+                                <x-danger-button type="submit" name="command" value="deletequal" form="regform">{{ __('Delete') }}</x-danger-button>
                             </div>
+                        
                         </td>
                     </tr>
                 @empty

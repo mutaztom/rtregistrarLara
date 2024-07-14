@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Models\Tblcity;
 use App\Models\Tblnationality;
@@ -12,6 +12,8 @@ use App\Models\Tblengdegree;
 use App\Models\Tblmembership;
 use App\Models\Tblqualification;
 use App\Models\Tblqualtype;
+use App\Models\Tblqualdegree;
+use Carbon\Carbon;
 
 class RegRequestController extends Controller
 {
@@ -40,7 +42,7 @@ class RegRequestController extends Controller
    $membership=Tblmembership::select('item')->pluck('item')->toArray();
    $qualification=Tblqualification::where('empid',866)->get();
    $qualtype=Tblqualtype::select('item')->pluck('item')->toArray();
-   $qualdegree=Tblengdegree::select('item')->pluck('item')->toArray();
+   $qualdegree=Tblqualdegree::select('item')->pluck('item')->toArray();
      //process form data
       return view('regorder',["cities"=>$cities,
     "nationalities"=>$nationalities,
@@ -53,7 +55,10 @@ class RegRequestController extends Controller
       "qualification"=>$qualification,
     "qualtype"=>$qualtype,
     "qualdegree"=>$qualdegree,
-    "membership"=>$membership]);
+    "membership"=>$membership,
+  "startdate"=>Carbon::now(),
+"enddate"=>Carbon::now(),
+"entity"=>"University",]);
 
    }
         public function uploadphoto(){
@@ -61,22 +66,44 @@ class RegRequestController extends Controller
         }
         public function saveQualification(Request $request){
          //save data to database
-         $q=Tblqualification::class;
-         $q->item=request->get('entity');
-         $q->empid=866;
-         $q->degree=request->get('degree');
-         $q->entity=request->get('entity');
-         $q->startdate=request->get('startdate');
-         $q->enddate=request->get('enddate');
+         $empid=866;
+         $q=new Tblqualification();
+         $q->item=$request->get('entity');
+         $q->degree=$request->get('degree');
+        $q->entity=$request->get('entity');
+        $q->startdate=$request->get(date('startdate'));
+        $q->enddate=$request->get(date('enddate'));
+        ///$q->insert($request->only(['entity','degree',date('startdate'),date('enddate')]));
+         $q->appid= $empid;
+         $q->empid= $empid;
+        // $q->empid=$empid;
          $q->save();
+         //redirect()->route('regorder')->with('success', 'Qualification saved successfully!');
+         
         }
+       
         public function saveorder(Request $request){
          if($request->get('command')=='saveorder'){
             //save data to database
-
+            return redirect()->route('regorder')->with('success', 'Qualification saved successfully!');
          }else if($request->get('command')=='savequal'){
-         saveQualification($request);
-          return Route::back()->with('success', 'Qualification saved successfully!');
-        }
+          $this->saveQualification($request);
+          //return redirect()->back()->with('success', 'Qualification saved successfully!');
+          return $this->registerrequest($request);
+        }else if($request->get('command')=='viewqual'){
+        }else if($request->get('command')=='modifyqual'){
+        }else if($request->get('command')=='deletequal'){
+            $this->deletequalification($request->get('qualid'));
+            //return redirect()->back()->with('success', 'Qualification deleted successfully!');
+            return redirect()->back();
+          }
+      }
+      public function deletequalification($id){
+        //delete data from database
+        $q=Tblqualification::find($id);
+        error_log("delete qualification: $id");
+        //if($q){
+          $q->delete();
+        //}
       }
 }
