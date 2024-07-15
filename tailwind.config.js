@@ -10,9 +10,6 @@ module.exports = {
     './public/index.php',
       "./node_modules/flowbite/**/*.js"
     ],
-    presets: [
-        require('@acmecorp/tailwind-base')
-      ],
     theme: {
           fontFamily: {
             sans: ['Graphik', 'sans-serif'],

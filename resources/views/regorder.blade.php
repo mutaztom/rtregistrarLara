@@ -5,20 +5,17 @@
         </h2>
     </x-slot>
     <div class="main">
-
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="container mx-auto  bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg" >
                 <x-form metod="POST" action="/saveorder" id="regform">
                     @csrf
-                    <div class="grid grid-cols-2">
-                        <div class="grid grid-cols-4 w-6 text-gray-900 dark:text-gray-100">
-                            <div class="box-border h-32 w-32 p-4 border-4">
-                                <x-label for="regname" class="form-control">Name</x-label>
-                                <x-input id="regname" name="regname" class="form-control" />
-                                <x-label for="email" class="form-control">Email</x-label>
+                    <section>
+                    <div class="grid grid-cols-4 gap-4">
+                            <x-label for="regname" >Name</x-label>
+                                <x-input id="regname" name="regname"  />
+                                <x-label for="email" >Email</x-label>
                                 <x-email id="email" name="email" readonly="true"
-                                    class="form-control">{{ Auth::user()->email }}</x-email>
-                                <x-label for="higheducid" class="form-control">High Eucation ID</x-label>
+                                    >{{ Auth::user()->email }}</x-email>
+                                <x-label for="higheducid" >High Eucation ID</x-label>
                                 <x-input id="higheducid" name="higheducid" />
                                 <x-label for="nationality">Nationalaity</x-label>
                                 <select name="nationality" id="nationality" class="w-full">
@@ -74,8 +71,9 @@
                                         <option value={{ $job }}>{{ $job }}</option>
                                     @endforeach
                                 </select>
-                            </div>
-                        </div>
+                        
+                        
+
                         <div class="box-border h-32 w-32 p-4 border-4">
                             <img src={{ asset('img/nophoto.png') }} alt="nophoto" />
                             <x-primary-button :action="route('uploadphoto')" class="round cobutton bg-primary">
@@ -83,7 +81,8 @@
                             </x-primary-button>
                         </div>
                     </div>
-                    @include('qualification')
+                </section>
+                    {{-- @include('qualification') --}}
                     <section class="space-y-6">
                         <div class="flex flex-wrap w-full space-x-4 h-10">
                             <x-primary-button class="pl-4" type="submit" name="command" value="saveorder">{{ __('Save') }}</x-primary-button>
@@ -95,7 +94,5 @@
                     </section>
                 </x-form>
             </div>
-        </div>
-
     </div>
 </x-app-layout>

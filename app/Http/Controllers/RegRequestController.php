@@ -83,7 +83,8 @@ class RegRequestController extends Controller
         }
        
         public function saveorder(Request $request){
-         if($request->get('command')=='saveorder'){
+          $command=$request->get('command');
+         if($command=='saveorder'){
             //save data to database
             return redirect()->route('regorder')->with('success', 'Qualification saved successfully!');
          }else if($request->get('command')=='savequal'){
@@ -91,8 +92,14 @@ class RegRequestController extends Controller
           //return redirect()->back()->with('success', 'Qualification saved successfully!');
           return $this->registerrequest($request);
         }else if($request->get('command')=='viewqual'){
-        }else if($request->get('command')=='modifyqual'){
-        }else if($request->get('command')=='deletequal'){
+        }else if(str_starts_with($command,'modifyqual')){
+          $qualid=explode('_',$command)[1];
+          $qual=Tblqualification::find($qualid);
+          //return view('qualform',["qual"=>$qual]);
+          //return redirect()->route('regorder')->with('success', 'Qualification saved successfully!');
+          return $this->registerrequest($request);
+        }else if(str_starts_with($command,'deletequal')){
+          $qualid=explode('_',$command)[1];
             $this->deletequalification($request->get('qualid'));
             //return redirect()->back()->with('success', 'Qualification deleted successfully!');
             return redirect()->back();
