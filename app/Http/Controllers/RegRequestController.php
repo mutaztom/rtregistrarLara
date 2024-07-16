@@ -87,22 +87,36 @@ class RegRequestController extends Controller
          if($command=='saveorder'){
             //save data to database
             return redirect()->route('regorder')->with('success', 'Qualification saved successfully!');
-         }else if($request->get('command')=='savequal'){
+         }else if(str_starts_with($command,'savequal')){
           $this->saveQualification($request);
           //return redirect()->back()->with('success', 'Qualification saved successfully!');
           return $this->registerrequest($request);
-        }else if($request->get('command')=='viewqual'){
-        }else if(str_starts_with($command,'modifyqual')){
+        }else if(str_starts_with($command,'viewqual')){
+          $qualid=explode('_',$command)[1];
+          $qual=Tblqualification::find($qualid);
+          return $this->registerrequest($request);
+        }else if(str_starts_with($command,'modifyqual'))
+        {
           $qualid=explode('_',$command)[1];
           $qual=Tblqualification::find($qualid);
           //return view('qualform',["qual"=>$qual]);
           //return redirect()->route('regorder')->with('success', 'Qualification saved successfully!');
           return $this->registerrequest($request);
-        }else if(str_starts_with($command,'deletequal')){
+        }
+        else if(str_starts_with($command,'deletequal'))
+        {
           $qualid=explode('_',$command)[1];
             $this->deletequalification($request->get('qualid'));
             //return redirect()->back()->with('success', 'Qualification deleted successfully!');
             return redirect()->back();
+          }
+          else if(str_starts_with($command,'uploadcert')){
+            //upload certificate of registrant
+            $path = $request->files[0]->store('public/avatars');
+            $qual=Tblqualification::find($qualid);
+            $qual->pdf =$path;
+            //upload photo of registrant
+            return redirect()->route('regorder')->with('success', 'Photo uploaded successfully!');
           }
       }
       public function deletequalification($id){
@@ -113,4 +127,5 @@ class RegRequestController extends Controller
           $q->delete();
         //}
       }
+      
 }
