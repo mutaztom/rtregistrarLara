@@ -14,7 +14,7 @@ use App\Models\Tblqualification;
 use App\Models\Tblqualtype;
 use App\Models\Tblqualdegree;
 use Carbon\Carbon;
-
+use Illuminate\Http\Request\filesystem;
 class RegRequestController extends Controller
 {
     // var $cities=Tblcity::class;
@@ -61,9 +61,18 @@ class RegRequestController extends Controller
 "entity"=>"University",]);
 
    }
-        public function uploadphoto(){
+        public function uploadphoto($request){
          //upload photo of registrant
+         $regid=Auth()->user()->id;
+        if($request->hasfile('regphoto')){
+          $path=$request->file('regphoto')->storeAs('public','photo_'.$regid.'.jpg');
+          Auth()->user()->update(['photo'=>'photo_'.$regid.'.jpg']);
+          return $this->registerrequest($request);
+        }else{
+          return redirect()->back()->with('error', 'Please select a photo!');
         }
+        }
+        
         public function saveQualification(Request $request){
          //save data to database
          $empid=866;
@@ -111,13 +120,23 @@ class RegRequestController extends Controller
             return redirect()->back();
           }
           else if(str_starts_with($command,'uploadcert')){
+            $qualid=explode('_',$command)[1];
             //upload certificate of registrant
-            $path = $request->files[0]->store('public/avatars');
-            $qual=Tblqualification::find($qualid);
-            $qual->pdf =$path;
+            if($request->hasfile('certificate')){
+              $path = $request->file('certificate')->storeAs('public/avatars',"certificate_". str($qualid) . ".jpg");
+              $qual=Tblqualification::find($qualid);
+              $qual->pdf =$path;
+              $qual->save();
+              return redirect()->back()->with('success', 'Photo uploaded successfully!');
+            }else{
+              return redirect()->back()->with('error', 'No file selected!');
+            }
             //upload photo of registrant
-            return redirect()->route('regorder')->with('success', 'Photo uploaded successfully!');
           }
+          else if($command=='uploadphoto')
+            {
+              $this->uploadphoto($request);
+            }
       }
       public function deletequalification($id){
         //delete data from database

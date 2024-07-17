@@ -5,21 +5,34 @@
         </h2>
     </x-slot>
     <div class="main h-dvh ">
+        @isset ($error)
+            <div class="alert alert-success" role="danger">
+                {{ $error }}
+            </div>
+        @endisset
+        @isset ($success)
+            <div class="alert alert-success" role="alert">
+                {{ $success }}
+            </div>
+        @endisset
+
         <div class="container mx-auto overflow-auto py-8 bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg">
-            <x-form metod="POST" action="/saveorder" id="regform">
+            <x-form metod="POST" action="/saveorder" id="regform" enctype="multipart/form-data">
                 @csrf
                 <section>
                     <div class="col-span-4">
-                        <img src={{ asset('img/nophoto.png') }} alt="nophoto" />
-                        <x-primary-button :action="route('uploadphoto')" class="round cobutton bg-primary">
+                        <img src={{ route('show.avatar', ['imageName' => 'photo_1.jpg'])}} alt="nophoto" width="100" />
+                        <input type="file" id="regphoto" name="regphoto" accept="image/*" />
+                        <x-primary-button name="command" value="uploadphoto" class="round cobutton bg-primary">
                             Upload your photo
                         </x-primary-button>
                     </div>
                     <div class="grid grid-cols-4 gap-4 p-2">
                         <x-label for="regname" />
-                        <x-input id="regname" name="regname" readonly value="{{Auth::user()->name}}"  />
+                        <x-input id="regname" name="regname" readonly value="{{ Auth::user()->name }}" />
                         <x-label for="email">Email</x-label>
-                        <x-email id="email" name="email" readonly="true" value="{{ Auth::user()->email }}"></x-email>
+                        <x-email id="email" name="email" readonly="true"
+                            value="{{ Auth::user()->email }}"></x-email>
                         <x-label for="higheducid" :value="__('highEducationId')"></x-label>
                         <x-input id="higheducid" name="highEducationid" />
                         <x-label for="nationality">Nationalaity</x-label>
@@ -80,7 +93,7 @@
                 </section>
                 <div class="flex flex-shrink">
                     @include('qualification')
-                      <div class="flex flex-grow">
+                    <div class="flex flex-grow">
                         <x-primary-button class="pl-4" type="submit" name="command"
                             value="saveorder">{{ __('Save') }}</x-primary-button>
                         <x-danger-button class="pl-4" :action="route('regorder')" method="GET"

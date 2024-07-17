@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegRequestController;
+use App\Http\Controllers\QualcertController;
+use App\Http\Controllers\UserAvatarController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,14 +26,18 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/avatar', function () {
-    return view('livewire.avatar');
-})->middleware(['auth', 'verified'])->name('avatar');
+// Route::get('/avatar', function () {
+//     return view('livewire.avatar');
+// })->middleware(['auth', 'verified'])->name('avatar');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+// Add a route that can load an image from storage based on a parameter
+Route::get('/photos/{imageName}', [UserAvatarController::class,'show'])->name('show.avatar');
+Route::get('/cert/{qualid}', 'QualcertController@showcert')->name('show.cert');
+Route::get('/certfile/{qualid}', [QualcertController::class,'certfile'])->name('cert.file');
 
 require __DIR__.'/auth.php';

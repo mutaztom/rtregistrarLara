@@ -16,6 +16,7 @@
         document.getElementById("entity").value = document.getElementById("entity_" + qualid).innerText;
         document.getElementById("startdate").value = document.getElementById("startdate_" + qualid).innerText;
         document.getElementById("enddate").value = document.getElementById("enddate_" + qualid).innerText;
+        document.getElementById("certificate").value = "uploadcert_" + qualid;
     }
 </script>
 
@@ -53,6 +54,12 @@
         <x-input-label for="enddate" :value="_('End Date')" />
         <x-pikaday placeholder="Enter end date" type="text" id="enddate" name="enddate" value={{ $enddate }}
             required="true"></x-pikaday>
+            <x-label for="certificate" :value="__('Certificate')" />
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none"  viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round"  stroke-linejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
+              </svg>
+              <label value={{route('cert.file',['qualid'=>839])}}>{{route('cert.file',['qualid'=>839])}}</label>
+            <div class="flex flex-grow gap-2">
             <x-label for="certificate" :value="__('Attach Certificate')" />
         <x-primary-button id="certificate" type="submit" :value="__('Attach Certificate')" name="command" value="uploadcert">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -61,7 +68,8 @@
               {{__('upload')}}
               
         </x-primary-button>    
-        <input type="file" name="certificate">          
+        <input type="file" name="certificate">
+            </div>          
     </div>
     <div class="columns-2">
         <x-primary-button type="submit" name="command" value="savequal"> {{ __('Save') }}
@@ -102,7 +110,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
                             </svg>
-                            <input hidden name="qualid" value={{ $qual->id }}></input>
+                            <input  name="qualid" value={{ $qual->id }}></input>
                         </td>
                         <td><label id="item_{{ $qual->id }}">{{ $qual->item }} </label></td>
                         <td>
