@@ -21,11 +21,17 @@
                 @csrf
                 <section>
                     <div class="col-span-4">
-                        <img src={{ route('show.avatar', ['imageName' => 'photo_1.jpg'])}} alt="nophoto" width="100" />
+                        @if(Auth::user()->avatar_path)
+                            <img src={{ asset('storage/.$Auth()::user->()->avatar_path')}} alt="$Auth()::user->()->avatar_path" width="100" />
+                            
+                        @else   
                         <input type="file" id="regphoto" name="regphoto" accept="image/*" />
                         <x-primary-button name="command" value="uploadphoto" class="round cobutton bg-primary">
                             Upload your photo
                         </x-primary-button>
+                        @endif
+                        
+                        
                     </div>
                     <div class="grid grid-cols-4 gap-4 p-2">
                         <x-label for="regname" />

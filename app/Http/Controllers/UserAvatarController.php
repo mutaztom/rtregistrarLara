@@ -25,10 +25,10 @@ class UserAvatarController extends Controller
 
         // Check if the image exists; if not, return a 404 response
         if (!!Storage::exists("public/{$imageName}")) {
-            abort(404);
+            return "File not found at path: {$path}<br>";
         }
 
         // Return the image as a response
-        return response()->file($path); 
+        return ($path); 
     }
 }

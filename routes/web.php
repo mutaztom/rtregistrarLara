@@ -13,11 +13,12 @@ Route::get('/', function () {
 Route::get('/regorder',[RegRequestController::class,"registerrequest"]
 )->middleware(['auth', 'verified'])->name('regorder');
 
+
 Route::post('/savequalification',[RegRequestController::class,"savequalification"]
-)->middleware(['auth', 'verified'])->name('regorder');
+)->middleware(['auth', 'verified'])->name('savequalification');
 
 Route::post('/saveorder',[RegRequestController::class,"saveorder"]
-)->middleware(['auth', 'verified'])->name('regorder');
+)->middleware(['auth', 'verified'])->name('saveorder');
 
 Route::get('/uploadphoto',[RegRequestController::class,"uploadphoto"]
 )->middleware(['auth', 'verified'])->name('uploadphoto');;

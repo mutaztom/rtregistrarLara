@@ -29,23 +29,21 @@ class RegRequestController extends Controller
     // var $qualtype=null;
     // var $qualdegree=null;
     // var $title="regform";
-
-
-  public function registerrequest(Request $request){
-   $cities=Tblcity::select('item')->pluck('item')->toArray();
-   $nationalities=Tblnationality::select('item')->pluck('item')->toArray();
-   $countries=Tblnationality::select('item')->pluck('item')->toArray();
-   $engclass=Tblengclass::select('item')->pluck('item')->toArray();
-   $jobs=Tbljob::select('item')->pluck('item')->toArray();
-   $idtypes=Tblidcardtype::select('item')->pluck('item')->toArray();
-   $engdegree=Tblengdegree::select('item')->pluck('item')->toArray();
-   $membership=Tblmembership::select('item')->pluck('item')->toArray();
-   $qualification=Tblqualification::where('empid',866)->get();
-   $qualtype=Tblqualtype::select('item')->pluck('item')->toArray();
-   $qualdegree=Tblqualdegree::select('item')->pluck('item')->toArray();
-     //process form data
-      return view('regorder',["cities"=>$cities,
-    "nationalities"=>$nationalities,
+public static function lockups():Array{
+    $cities=Tblcity::select('item')->pluck('item')->toArray();
+    $nationalities=Tblnationality::select('item')->pluck('item')->toArray();
+    $countries=Tblnationality::select('item')->pluck('item')->toArray();
+    $engclass=Tblengclass::select('item')->pluck('item')->toArray();
+    $jobs=Tbljob::select('item')->pluck('item')->toArray();
+    $idtypes=Tblidcardtype::select('item')->pluck('item')->toArray();
+    $engdegree=Tblengdegree::select('item')->pluck('item')->toArray();
+    $membership=Tblmembership::select('item')->pluck('item')->toArray();
+    $qualification=Tblqualification::where('empid',866)->get();
+    $qualtype=Tblqualtype::select('item')->pluck('item')->toArray();
+    $qualdegree=Tblqualdegree::select('item')->pluck('item')->toArray();
+    
+    $loarray=["cities"=>$cities,
+      "nationalities"=>$nationalities,
       "countries"=>$countries,
       "jobs"=>$jobs,
       "engclass"=>$engclass,
@@ -53,12 +51,20 @@ class RegRequestController extends Controller
       "idtypes"=>$idtypes,
       "title"=>"regform",
       "qualification"=>$qualification,
-    "qualtype"=>$qualtype,
-    "qualdegree"=>$qualdegree,
-    "membership"=>$membership,
-  "startdate"=>Carbon::now(),
-"enddate"=>Carbon::now(),
-"entity"=>"University",]);
+      "qualtype"=>$qualtype,
+      "qualdegree"=>$qualdegree,
+      "membership"=>$membership,
+      "startdate"=>Carbon::now(),
+      "enddate"=>Carbon::now(),
+      "entity"=>"University",
+  ];
+  return $loarray;
+}
+
+  public function registerrequest(Request $request){
+  
+     //process form data
+      return view('regorder',RegRequestController::lockups());
 
    }
         public function uploadphoto($request){
@@ -67,6 +73,8 @@ class RegRequestController extends Controller
         if($request->hasfile('regphoto')){
           $path=$request->file('regphoto')->storeAs('public','photo_'.$regid.'.jpg');
           Auth()->user()->update(['photo'=>'photo_'.$regid.'.jpg']);
+          Auth()->user()->avatar_path=$path;
+          Auth()->user()->save();
           return $this->registerrequest($request);
         }else{
           return redirect()->back()->with('error', 'Please select a photo!');
