@@ -8,10 +8,11 @@
         document.getElementById("panqual").style.display = "block";
     };
     function removepdf(qualid) {
-        console.log("removepdf is called $qualid");
+        console.log("removepdf is called"+qualid);
         document.getElementById("panuploadpdf").style.display="block";
     };
     function modifyqual(qualid) {
+       
         if(qualid===null)
             qualid=0;
         var pdf="{{{DB::table('tblqualification')->select('pdf')->where('id',839)->pluck('pdf')->first()}}}";
@@ -41,7 +42,7 @@
               </x-primary-button>
     </div>
 
-    <div id="panqual" style="display: none;" class="flex flex-row flex-shrink pb-3">
+    <div id="panqual" style="{{$editqual?'display: block':'display:none';" class="flex flex-row flex-shrink pb-3">
         <div class="grid grid-cols-4 p-4 gap-2">
           
         <x-input-label for="qualtype" :value="__('Qualification Type')"></x-input-label>
@@ -58,7 +59,7 @@
         </select>
         <x-input-label for="entity" :value="__('Entity')"></x-input-label>
         <x-input placeholder="Enter entity name" type="text" id="entity" name="entity" required="true"
-            value={{ $entity }}></x-input>
+            value=" $entity "/>
         <x-input-label for="startdate" :value="_('Start Date')" />
         <x-pikaday placeholder="Enter start date" type="text" id="startdate" name="startdate"
             value={{ $startdate }} required="true"></x-pikaday>
@@ -68,7 +69,7 @@
             <x-label for="certificate" :value="__('Certificate')" />
             <div>
               <a id="qlink" href="certs/" target="_lank">No file!!</label></a>
-              <x-danger-button type="button" id="removepdf" onclick="removepdf(1)">x</x-danger-button>
+              <x-danger-button type="button" id="cmdrempdf" onclick="removepdf(1)">x</x-danger-button>
             </div>
             
             <div class="flex flex-shrink overflow-clip gap-2" id="panuploadpdf" style="display: none;">
@@ -148,6 +149,7 @@
                                             d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
                                     </svg>
                                 </x-secondary-button>
+                                <a href="{{ route('modify.qual',['qualid',$qual->id]) }}" class="btn divide-orange-50">modify</a>
                                 <x-danger-button type="submit" name="command"
                                     value="deletequal_{{ $qual->id }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

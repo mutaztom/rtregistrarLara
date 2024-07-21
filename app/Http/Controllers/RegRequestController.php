@@ -54,8 +54,8 @@ public static function lockups():Array{
   public function registerrequest(Request $request){
   
      //process form data
-      return view('regorder',RegRequestController::lockups());
-
+     $param=RegRequestController::lockups();
+      return view('regorder',$param);
    }
         public function uploadphoto($request){
          //upload photo of registrant

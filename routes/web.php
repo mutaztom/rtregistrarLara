@@ -40,5 +40,6 @@ Route::middleware('auth')->group(function () {
 Route::get('/photos/{imageName}', [UserAvatarController::class,'show'])->name('show.avatar');
 Route::get('/getcert/{qualid}', [QualcertController::class,'showcert'])->name('show.cert');
 Route::get('/getcertfile/{qualid}', [QualcertController::class,'certfile'])->name('cert.file');
+Route::get('/modifyqual/{qualid}', [QualcertController::class,'modify'])->name('modify.qual');
 
 require __DIR__.'/auth.php';

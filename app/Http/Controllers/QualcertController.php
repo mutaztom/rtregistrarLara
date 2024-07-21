@@ -19,4 +19,8 @@ class QualcertController extends Controller
         $cert=DB::table('tblqualification')->where('id',$qualid)->first()->pdf;
         return $pdf;
     }
+    public function modify($qualid){
+        $qual=DB::table('tblqualification')->where('id',$qualid)->first();
+        return redirect()->route('regorder',['editqual'=>$qual]);
+    }
 }
