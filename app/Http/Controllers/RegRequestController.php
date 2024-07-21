@@ -15,20 +15,10 @@ use App\Models\Tblqualtype;
 use App\Models\Tblqualdegree;
 use Carbon\Carbon;
 use Illuminate\Http\Request\filesystem;
+use Illuminate\Support\Facades\Storage;
+
 class RegRequestController extends Controller
 {
-    // var $cities=Tblcity::class;
-    // var $nationalities=Tblnationality::class;
-    // var $countries=Tblnationality::class;
-    // var $engclass=Tblengclass::class;
-    // var $jobs=Tbljob::class;
-    // var $idtypes=Tblidcardtype::class;
-    // var $engdegree=Tblengdegree::class;
-    // var $membership=Tblmembership::class;
-    // var $qualification=null;
-    // var $qualtype=null;
-    // var $qualdegree=null;
-    // var $title="regform";
 public static function lockups():Array{
     $cities=Tblcity::select('item')->pluck('item')->toArray();
     $nationalities=Tblnationality::select('item')->pluck('item')->toArray();
@@ -71,11 +61,13 @@ public static function lockups():Array{
          //upload photo of registrant
          $regid=Auth()->user()->id;
         if($request->hasfile('regphoto')){
-          $path=$request->file('regphoto')->storeAs('public','photo_'.$regid.'.jpg');
-          Auth()->user()->update(['photo'=>'photo_'.$regid.'.jpg']);
-          Auth()->user()->avatar_path=$path;
+          $path=$request->file('regphoto');
+          $ext = $path->extension();
+          Storage::delete('photo_'.$regid.'.'.$ext);
+          $path->storeAs('public/photos','photo_'.$regid.'.'.$ext);
+          Auth()->user()->avatar='photo_'.$regid.'.'.$ext;
           Auth()->user()->save();
-          return $this->registerrequest($request);
+          return redirect()->route('regorder')->with('success', 'Photo uploaded successfully!');
         }else{
           return redirect()->back()->with('error', 'Please select a photo!');
         }
@@ -130,10 +122,14 @@ public static function lockups():Array{
           else if(str_starts_with($command,'uploadcert')){
             $qualid=explode('_',$command)[1];
             //upload certificate of registrant
-            if($request->hasfile('certificate')){
-              $path = $request->file('certificate')->storeAs('public/avatars',"certificate_". str($qualid) . ".jpg");
+            if($request->hasfile('pdf')){
+              $ext=$request->file('pdf')->getClientOriginalExtension();
+              if($ext!='pdf'){
+                return redirect()->back()->with('error', 'Only PDF files are allowed!');
+              }
+              $path = $request->file('pdf')->storeAs('cert',"certificate_". str($qualid) .$ext);
               $qual=Tblqualification::find($qualid);
-              $qual->pdf =$path;
+              $qual->pdf ="certificate_". str($qualid) .$ext;
               $qual->save();
               return redirect()->back()->with('success', 'Photo uploaded successfully!');
             }else{
@@ -143,7 +139,7 @@ public static function lockups():Array{
           }
           else if($command=='uploadphoto')
             {
-              $this->uploadphoto($request);
+              return $this->uploadphoto($request);
             }
       }
       public function deletequalification($id){

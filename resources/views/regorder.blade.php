@@ -1,37 +1,40 @@
 <x-app-layout>
+    <script>
+        function onupload() {
+            document.getElementById('regphoto').style.display = 'block';
+            document.getElementById('cmdupload').style.display = 'block';
+        }
+        </script>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Registration Request') }}
         </h2>
     </x-slot>
     <div class="main h-dvh ">
-        @isset ($error)
+        @if (session('error' ))
             <div class="alert alert-success" role="danger">
-                {{ $error }}
+                {{ session('error') }}
             </div>
-        @endisset
-        @isset ($success)
+        @endif
+        @if (session('success'  ))
             <div class="alert alert-success" role="alert">
-                {{ $success }}
+                {{ session('success') }}
             </div>
-        @endisset
+        @endif
 
         <div class="container mx-auto overflow-auto py-8 bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg">
             <x-form metod="POST" action="/saveorder" id="regform" enctype="multipart/form-data">
                 @csrf
                 <section>
-                    <div class="col-span-4">
-                        @if(Auth::user()->avatar_path)
-                            <img src={{ asset('storage/.$Auth()::user->()->avatar_path')}} alt="$Auth()::user->()->avatar_path" width="100" />
-                            
-                        @else   
-                        <input type="file" id="regphoto" name="regphoto" accept="image/*" />
-                        <x-primary-button name="command" value="uploadphoto" class="round cobutton bg-primary">
-                            Upload your photo
+                    <div class="col-span-4 align-items-center">
+                        @if(Auth::user()->avatar)
+                            <img src="photos/{{ Auth::user()->avatar }}" alt="storage/photos/{{ Auth::user()->avatar }}" width="200" />
+                            <x-primary-button type="button" class='mt-4 mb-4' onclick="onupload()">{{__('Change Photo')}}</x-primary-button>
+                        @endif   
+                        <input style="display:none" type="file" id="regphoto" name="regphoto" accept="image/*" />
+                        <x-primary-button name="command" value="uploadphoto" id="cmdupload" class="round cobutton bg-primary" style="display:none">
+                            @if(Auth::user()->avatar)Modify @else Upload @endif your photo
                         </x-primary-button>
-                        @endif
-                        
-                        
                     </div>
                     <div class="grid grid-cols-4 gap-4 p-2">
                         <x-label for="regname" />

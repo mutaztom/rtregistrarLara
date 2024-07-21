@@ -9,14 +9,21 @@
     }
 
     function modifyqual(qualid) {
-        console.log("modifyqual is called");
+        if(qualid===null)
+            qualid=0;
+        var pdf="{{{DB::table('tblqualification')->select('pdf')->where('id',839)->pluck('pdf')->first()}}}";
+        console.log("modifyqual is called $qualid");
         document.getElementById("panqual").style.display = "block";
         // Get qualification data and populate the form form
-        document.getElementById("degree").value = document.getElementById("degree_" + qualid).innerText;
+        document.getElementById("qt select").value = document.getElementById("qtype_" + qualid).innerText;
+        document.getElementById("qd select").value = document.getElementById("degree_" + qualid).innerText;
         document.getElementById("entity").value = document.getElementById("entity_" + qualid).innerText;
         document.getElementById("startdate").value = document.getElementById("startdate_" + qualid).innerText;
         document.getElementById("enddate").value = document.getElementById("enddate_" + qualid).innerText;
         document.getElementById("certificate").value = "uploadcert_" + qualid;
+        
+        document.getElementById("qlink").innerText =pdf;
+        document.getElementById("qlink").setAttribute('href','cert/'+pdf);
     }
 </script>
 
@@ -33,18 +40,22 @@
 
     <div id="panqual" style="display: none;" class="flex flex-row flex-shrink pb-3">
         <div class="grid grid-cols-4 p-4 gap-2">
+          
         <x-input-label for="qualtype" :value="__('Qualification Type')"></x-input-label>
-        <select id="qualtype" class="block mt-1 w-3" name="degree" required="true">
+          <div class="qt"><select id="qualtype" class="block mt-1 w-3" name="degree" required="true">
             @foreach ($qualtype as $qtype)
                 <option value={{ $qtype }}>{{ $qtype }}</option>
             @endforeach
         </select>
+          </div>
         <x-input-label for="degree" :value="__('Degree')"></x-input-label>
+        <div id="qd">
         <select id="degree" class="block mt-1 w-3" name="degree" required="true">
             @foreach ($qualdegree as $qdegree)
                 <option value="{{ $qdegree }}">{{ $qdegree }}</option>
             @endforeach
         </select>
+        </div>
         <x-input-label for="entity" :value="__('Entity')"></x-input-label>
         <x-input placeholder="Enter entity name" type="text" id="entity" name="entity" required="true"
             value={{ $entity }}></x-input>
@@ -55,12 +66,14 @@
         <x-pikaday placeholder="Enter end date" type="text" id="enddate" name="enddate" value={{ $enddate }}
             required="true"></x-pikaday>
             <x-label for="certificate" :value="__('Certificate')" />
+            <div >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none"  viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                <path stroke-linecap="round"  stroke-linejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
               </svg>
-              <label value={{route('cert.file',['qualid'=>839])}}>{{route('cert.file',['qualid'=>839])}}</label>
+              <a id="qlink" href="cert/" target="_lank">pdf</label></a>
             <div class="flex flex-grow gap-2">
             <x-label for="certificate" :value="__('Attach Certificate')" />
+            </div>
         <x-primary-button id="certificate" type="submit" :value="__('Attach Certificate')" name="command" value="uploadcert">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                 <path stroke-linecap="round"  stroke-linejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
@@ -68,7 +81,7 @@
               {{__('upload')}}
               
         </x-primary-button>    
-        <input type="file" name="certificate">
+        <input type="file" name="certificate" type="pdf">
             </div>          
     </div>
     <div class="columns-2">
@@ -112,7 +125,7 @@
                             </svg>
                             <input  name="qualid" value={{ $qual->id }}></input>
                         </td>
-                        <td><label id="item_{{ $qual->id }}">{{ $qual->item }} </label></td>
+                        <td><label id="qtype_{{ $qual->id }}">{{ $qual->type }} </label></td>
                         <td>
                             <lable id="entity_{{ $qual->id }}">{{ $qual->entity }}</lable>
                         </td>

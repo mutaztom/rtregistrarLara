@@ -38,7 +38,7 @@ Route::middleware('auth')->group(function () {
 });
 // Add a route that can load an image from storage based on a parameter
 Route::get('/photos/{imageName}', [UserAvatarController::class,'show'])->name('show.avatar');
-Route::get('/cert/{qualid}', 'QualcertController@showcert')->name('show.cert');
-Route::get('/certfile/{qualid}', [QualcertController::class,'certfile'])->name('cert.file');
+Route::get('/getcert/{qualid}', [QualcertController::class,'showcert'])->name('show.cert');
+Route::get('/getcertfile/{qualid}', [QualcertController::class,'certfile'])->name('cert.file');
 
 require __DIR__.'/auth.php';

@@ -17,6 +17,6 @@ class QualcertController extends Controller
     }
     public function certfile($qualid){
         $cert=DB::table('tblqualification')->where('id',$qualid)->first()->pdf;
-        return $respond->write("nofile found");
+        return $pdf;
     }
 }
