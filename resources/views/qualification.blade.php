@@ -6,8 +6,11 @@
 
     function showQualification() {
         document.getElementById("panqual").style.display = "block";
-    }
-
+    };
+    function removepdf(qualid) {
+        console.log("removepdf is called $qualid");
+        document.getElementById("panuploadpdf").style.display="block";
+    };
     function modifyqual(qualid) {
         if(qualid===null)
             qualid=0;
@@ -15,16 +18,16 @@
         console.log("modifyqual is called $qualid");
         document.getElementById("panqual").style.display = "block";
         // Get qualification data and populate the form form
-        document.getElementById("qt select").value = document.getElementById("qtype_" + qualid).innerText;
-        document.getElementById("qd select").value = document.getElementById("degree_" + qualid).innerText;
+        // document.getElementById("qualtype").value = document.getElementById("qtype_" + qualid).innerText;
+        // document.getElementById("degree").value = document.getElementById("degree_" + qualid).innerText;
         document.getElementById("entity").value = document.getElementById("entity_" + qualid).innerText;
         document.getElementById("startdate").value = document.getElementById("startdate_" + qualid).innerText;
         document.getElementById("enddate").value = document.getElementById("enddate_" + qualid).innerText;
         document.getElementById("certificate").value = "uploadcert_" + qualid;
-        
         document.getElementById("qlink").innerText =pdf;
-        document.getElementById("qlink").setAttribute('href','cert/'+pdf);
-    }
+        document.getElementById("qlink").setAttribute('href','certs/'+pdf);
+    };
+   
 </script>
 
 <div class="flex flex-grow flex-col">
@@ -42,20 +45,17 @@
         <div class="grid grid-cols-4 p-4 gap-2">
           
         <x-input-label for="qualtype" :value="__('Qualification Type')"></x-input-label>
-          <div class="qt"><select id="qualtype" class="block mt-1 w-3" name="degree" required="true">
+            <select id="qualtype" name="qualtype" required="true">
             @foreach ($qualtype as $qtype)
-                <option value={{ $qtype }}>{{ $qtype }}</option>
+                <option value="{{ $qtype->id }}">{{ $qtype->item }}</option>
             @endforeach
-        </select>
-          </div>
+            </select>
         <x-input-label for="degree" :value="__('Degree')"></x-input-label>
-        <div id="qd">
-        <select id="degree" class="block mt-1 w-3" name="degree" required="true">
+        <select id="degree" name="degree" required="true">
             @foreach ($qualdegree as $qdegree)
-                <option value="{{ $qdegree }}">{{ $qdegree }}</option>
+                <option value="{{ $qdegree->id }}">{{ $qdegree->item }}</option>
             @endforeach
         </select>
-        </div>
         <x-input-label for="entity" :value="__('Entity')"></x-input-label>
         <x-input placeholder="Enter entity name" type="text" id="entity" name="entity" required="true"
             value={{ $entity }}></x-input>
@@ -66,23 +66,21 @@
         <x-pikaday placeholder="Enter end date" type="text" id="enddate" name="enddate" value={{ $enddate }}
             required="true"></x-pikaday>
             <x-label for="certificate" :value="__('Certificate')" />
-            <div >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none"  viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
-              </svg>
-              <a id="qlink" href="cert/" target="_lank">pdf</label></a>
-            <div class="flex flex-grow gap-2">
-            <x-label for="certificate" :value="__('Attach Certificate')" />
+            <div>
+              <a id="qlink" href="certs/" target="_lank">No file!!</label></a>
+              <x-danger-button type="button" id="removepdf" onclick="removepdf(1)">x</x-danger-button>
             </div>
-        <x-primary-button id="certificate" type="submit" :value="__('Attach Certificate')" name="command" value="uploadcert">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                <path stroke-linecap="round"  stroke-linejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
-              </svg>
-              {{__('upload')}}
-              
-        </x-primary-button>    
-        <input type="file" name="certificate" type="pdf">
-            </div>          
+            
+            <div class="flex flex-shrink overflow-clip gap-2" id="panuploadpdf" style="display: none;">
+                <input type="file" name="certificate" type="pdf">
+                <x-primary-button id="certificate" type="submit" :value="__('Attach Certificate')" name="command" value="uploadcert" >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round"  stroke-linejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
+                    </svg>
+                    {{__('upload')}}
+                </x-primary-button>    
+            </div>
+           
     </div>
     <div class="columns-2">
         <x-primary-button type="submit" name="command" value="savequal"> {{ __('Save') }}
@@ -103,46 +101,45 @@
     </div>
 
 
-    <div class="flex flex-shrink w-full overflow-auto">
-        <table class="table-auto border-4 border-indigo-500/100 border-separate border-spacing-2">
+    <div class="flex flex-grow  overflow-auto">
+        <table class="w-full max-w-max table-auto border-4 border-indigo-500/100 border-separate border-spacing-2">
             <thead>
                 <tr>
                     <th></th>
-                    <th>{{ __('Item') }}</th>
+                    <th>{{ __('Type') }}</th>
                     <th>{{ __('Entity') }}</th>
                     <th>{{ __('Degree') }}</th>
-                    <th>{{ __('Date') }}</th>
+                    <th>{{ __('StartDate') }}</th>
+                    <th>{{ __('EndDate') }}</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($qualification as $qual)
                     <tr>
                         <td>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke-width="1.5" stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
-                            </svg>
-                            <input  name="qualid" value={{ $qual->id }}></input>
+                            <div class="flex flex-shrink">
+                            <a href="{{ url('certs/'.$qual->pdf) }}" target="_blank">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                 stroke-width="1.5" stroke="currentColor" class="size-6">
+                                 <path stroke-linecap="round" stroke-linejoin="round"
+                                     d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v16.5c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Zm3.75 11.625a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                                </svg>
+                         </a>{{$qual->pdf}}
+                            </div>
                         </td>
-                        <td><label id="qtype_{{ $qual->id }}">{{ $qual->type }} </label></td>
+                        <td><input hidden name="qualid" value={{ $qual->id }}></input><label id="qtype_{{ $qual->id }}">{{ $qual->type }} </label></td>
                         <td>
                             <lable id="entity_{{ $qual->id }}">{{ $qual->entity }}</lable>
                         </td>
                         <td><label id="degree_{{ $qual->id }}">{{ $qual->degree }}</label></td>
-                        <td><label id="startdate_{{ $qual->id }}">{{ $qual->startdate }}</label>
-                            <label id="enddate_{{ $qual->id }}">{{ $qual->enddate }}</label>
+                        <td>
+                            <label id="startdate_{{ $qual->id }}">{{ $qual->startdate->format('d/m/Y') }}</label>
+                        </td>
+                        <td>
+                            <label id="enddate_{{ $qual->id }}">{{ $qual->enddate->format('d/m/Y') }}</label>
                         </td>
                         <td>
                             <div class="w-full">
-                                <x-secondary-button type="submit" name="command" value="viewqual_{{ $qual->id }}"
-                                    class="fa fa-view">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="size-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v16.5c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Zm3.75 11.625a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-                                    </svg>
-                                </x-secondary-button>
                                 <x-secondary-button type="button" onclick="modifyqual({{$qual->id}})" name="command"
                                     value="modifyqual_{{$qual->id}}">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

@@ -20,17 +20,17 @@ use Illuminate\Support\Facades\Storage;
 class RegRequestController extends Controller
 {
 public static function lockups():Array{
-    $cities=Tblcity::select('item')->pluck('item')->toArray();
-    $nationalities=Tblnationality::select('item')->pluck('item')->toArray();
-    $countries=Tblnationality::select('item')->pluck('item')->toArray();
-    $engclass=Tblengclass::select('item')->pluck('item')->toArray();
-    $jobs=Tbljob::select('item')->pluck('item')->toArray();
-    $idtypes=Tblidcardtype::select('item')->pluck('item')->toArray();
-    $engdegree=Tblengdegree::select('item')->pluck('item')->toArray();
-    $membership=Tblmembership::select('item')->pluck('item')->toArray();
+    $cities=Tblcity::select('id','item')->get();
+    $nationalities=Tblnationality::select('id','item')->get();
+    $countries=Tblnationality::select('id','item')->get();
+    $engclass=Tblengclass::select('id','item')->get();
+    $jobs=Tbljob::select('id','item')->get();
+    $idtypes=Tblidcardtype::select('id','item')->get();
+    $engdegree=Tblengdegree::select('id','item')->get();
+    $membership=Tblmembership::select('id','item')->get();
     $qualification=Tblqualification::where('empid',866)->get();
-    $qualtype=Tblqualtype::select('item')->pluck('item')->toArray();
-    $qualdegree=Tblqualdegree::select('item')->pluck('item')->toArray();
+    $qualtype=Tblqualtype::select('id','item')->get();
+    $qualdegree=Tblqualdegree::select('id','item')->get();
     
     $loarray=["cities"=>$cities,
       "nationalities"=>$nationalities,
@@ -122,16 +122,16 @@ public static function lockups():Array{
           else if(str_starts_with($command,'uploadcert')){
             $qualid=explode('_',$command)[1];
             //upload certificate of registrant
-            if($request->hasfile('pdf')){
-              $ext=$request->file('pdf')->getClientOriginalExtension();
+            if($request->hasfile('certificate')){
+              $ext=$request->file('certificate')->getClientOriginalExtension();
               if($ext!='pdf'){
                 return redirect()->back()->with('error', 'Only PDF files are allowed!');
               }
-              $path = $request->file('pdf')->storeAs('cert',"certificate_". str($qualid) .$ext);
+              $path = $request->file('certificate')->storeAs('public/certs',"certificate_". str($qualid).'.'.$ext);
               $qual=Tblqualification::find($qualid);
-              $qual->pdf ="certificate_". str($qualid) .$ext;
+              $qual->pdf ="certificate_". str($qualid).'.'.$ext;
               $qual->save();
-              return redirect()->back()->with('success', 'Photo uploaded successfully!');
+              return redirect()->back()->with('success', 'Certificate pdf uploaded successfully!');
             }else{
               return redirect()->back()->with('error', 'No file selected!');
             }

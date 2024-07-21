@@ -47,19 +47,19 @@
                         <x-label for="nationality">Nationalaity</x-label>
                         <select name="nationality" id="nationality" class="w-full">
                             @foreach ($nationalities as $nat)
-                                <option value="{{ $nat }}">{{ $nat }}</option>
+                                <option value="{{ $nat->id }}">{{ $nat->item }}</option>
                             @endforeach
                         </select>
                         <x-label for="country">Country</x-label>
                         <select name="country" class="w-full">
                             @foreach ($countries as $country)
-                                <option value="{{ $country }}">{{ $country }}</option>
+                                <option value="{{ $country->id }}">{{ $country->item }}</option>
                             @endforeach
                         </select>
                         <x-label for="city">City</x-label>
                         <select name="city" class="w-full">
                             @foreach ($cities as $city)
-                                <option value="{{ $city }}">{{ $city }}</option>
+                                <option value="{{ $city->id }}">{{ $city->item }}</option>
                             @endforeach
                         </select>
                         <x-label for="birthday">Birth Date</x-label>
@@ -67,7 +67,7 @@
                         <x-label for="idtype">ID Type</x-label>
                         <select id="idtype" name="idtype" class="w-full">
                             @foreach ($idtypes as $idt)
-                                <option value="{{ $idt }}">{{ $idt }}</option>
+                                <option value="{{ $idt->id }}">{{ $idt->item }}</option>
                             @endforeach
                         </select>
                         <x-label for="idno">ID Number</x-label>
@@ -79,13 +79,13 @@
                         <x-label for="regclass">Reg. Class</x-label>
                         <select id="regclass" name="regclass" class="w-full">
                             @foreach ($engclass as $regclass)
-                                <option value="{{ $regclass }}">{{ $regclass }}</option>
+                                <option value="{{ $regclass->id }}">{{ $regclass->item }}</option>
                             @endforeach
                         </select>
                         <x-label for="engdegree" />
                         <select name="engdegree" id="engdegree" class="w-full">
                             @foreach ($engdegree as $degree)
-                                <option value={{ $degree }}>{{ $degree }}</option>
+                                <option value={{ $degree->id }}>{{ $degree->item }}</option>
                             @endforeach
                         </select>
                         <x-label for="address" />
@@ -95,7 +95,7 @@
                         <x-label for="job">Job</x-label>
                         <select name="job" id="job" class="w-full">
                             @foreach ($jobs as $job)
-                                <option value={{ $job }}>{{ $job }}</option>
+                                <option value={{ $job->id }}>{{ $job->item }}</option>
                             @endforeach
                         </select>
                     </div>
