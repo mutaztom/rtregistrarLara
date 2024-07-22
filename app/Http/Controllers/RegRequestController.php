@@ -75,20 +75,21 @@ public static function lockups():Array{
         
         public function saveQualification(Request $request){
          //save data to database
-         $empid=866;
+         $empid=Auth()->user()->regid;
          $q=new Tblqualification();
          $q->item=$request->get('entity');
          $q->degree=$request->get('degree');
         $q->entity=$request->get('entity');
-        $q->startdate=$request->get(date('startdate'));
-        $q->enddate=$request->get(date('enddate'));
+        $q->startdate=$request->get('startdate');
+        $q->enddate=$request->get('enddate');
+        $q->pdf=$request->get('certificate');
         ///$q->insert($request->only(['entity','degree',date('startdate'),date('enddate')]));
          $q->appid= $empid;
-         $q->empid= $empid;
-        // $q->empid=$empid;
+         $q->empid=$empid;
          $q->save();
+         $id=$q->id;
          //redirect()->route('regorder')->with('success', 'Qualification saved successfully!');
-         
+         return $id;
         }
        
         public function saveorder(Request $request){
@@ -104,13 +105,6 @@ public static function lockups():Array{
           $qualid=explode('_',$command)[1];
           $qual=Tblqualification::find($qualid);
           return $this->registerrequest($request);
-        }else if(str_starts_with($command,'modifyqual'))
-        {
-          $qualid=explode('_',$command)[1];
-          $qual=Tblqualification::find($qualid);
-          //return view('qualform',["qual"=>$qual]);
-          //return redirect()->route('regorder')->with('success', 'Qualification saved successfully!');
-          return $this->registerrequest($request);
         }
         else if(str_starts_with($command,'deletequal'))
         {
@@ -124,16 +118,25 @@ public static function lockups():Array{
             //upload certificate of registrant
             if($request->hasfile('certificate')){
               $ext=$request->file('certificate')->getClientOriginalExtension();
+              $fname="certificate_". str($qualid).'.'.$ext;
               if($ext!='pdf'){
                 return redirect()->back()->with('error', 'Only PDF files are allowed!');
               }
-              $path = $request->file('certificate')->storeAs('public/certs',"certificate_". str($qualid).'.'.$ext);
-              $qual=Tblqualification::find($qualid);
-              $qual->pdf ="certificate_". str($qualid).'.'.$ext;
-              $qual->save();
-              return redirect()->back()->with('success', 'Certificate pdf uploaded successfully!');
+              $path = $request->file('certificate')->storeAs('public/certs',$fname);
+              $qual=new Tblqualification();
+              if($qualid>0)
+              {
+                Tblqualification::where($qualid)->update(["pdf"=>$fname]);
+              }else{
+                //if saving new qualification
+                $qid=$this->saveQualification($request);
+                $fname="certificate_". $qid.'.'.$ext;
+                Tblqualification::where('id',$qid)->update(['pdf'=>$fname]);
+              }
+              
+              return redirect()->route('regorder')->with('success', 'Certificate pdf uploaded successfully!');
             }else{
-              return redirect()->back()->with('error', 'No file selected!');
+              return redirect()->route('regorder')->with('error', 'No file selected!');
             }
             //upload photo of registrant
           }

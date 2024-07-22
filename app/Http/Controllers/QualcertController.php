@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Tblqualification;
+
+
 class QualcertController extends Controller
 {
     //show certificate
@@ -21,6 +24,10 @@ class QualcertController extends Controller
     }
     public function modify($qualid){
         $qual=DB::table('tblqualification')->where('id',$qualid)->first();
-        return redirect()->route('regorder',['editqual'=>$qual]);
+        return redirect()->route('regorder')->with('editqual',["editqual"=>$qual]);
+    }
+    public function delete($qualid){
+        DB::table('tblqualification')->where('id',$qualid)->delete();
+        return redirect()->route('regorder')->with('success', 'Qualification deleted successfully!');
     }
 }

@@ -12,14 +12,10 @@
     </x-slot>
     <div class="main h-dvh ">
         @if (session('error' ))
-            <div class="alert alert-success" role="danger">
-                {{ session('error') }}
-            </div>
+            <x-alert class="bg-green-700 text-green-100 p-4" type="error"/>
         @endif
         @if (session('success'  ))
-            <div class="alert alert-success" role="alert">
-                {{ session('success') }}
-            </div>
+            <x-alert class="bg-green-700 text-green-100 p-4" type="success"/>
         @endif
 
         <div class="container mx-auto overflow-auto py-8 bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg">

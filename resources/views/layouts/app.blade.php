@@ -15,7 +15,6 @@
         <!-- Scripts -->
         
         @bukStyles(true)
-        @bukScripts(true)
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -35,5 +34,6 @@
                 {{ $slot }}
             </main>
         </div>
+        @bukScripts(true)
     </body>
 </html>

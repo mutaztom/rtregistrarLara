@@ -41,5 +41,6 @@ Route::get('/photos/{imageName}', [UserAvatarController::class,'show'])->name('s
 Route::get('/getcert/{qualid}', [QualcertController::class,'showcert'])->name('show.cert');
 Route::get('/getcertfile/{qualid}', [QualcertController::class,'certfile'])->name('cert.file');
 Route::get('/modifyqual/{qualid}', [QualcertController::class,'modify'])->name('modify.qual');
+Route::get('/deletequal/{qualid}', [QualcertController::class,'delete'])->name('remove.qual');
 
 require __DIR__.'/auth.php';
