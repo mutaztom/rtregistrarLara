@@ -73,34 +73,64 @@ public static function lockups():Array{
         }
         }
         
-        public function saveQualification(Request $request){
-         //save data to database
-         $empid=Auth()->user()->regid;
-         $q=new Tblqualification();
-         $q->item=$request->get('entity');
-         $q->degree=$request->get('degree');
-        $q->entity=$request->get('entity');
-        $q->startdate=$request->get('startdate');
-        $q->enddate=$request->get('enddate');
-        $q->pdf=$request->get('certificate');
-        ///$q->insert($request->only(['entity','degree',date('startdate'),date('enddate')]));
-         $q->appid= $empid;
-         $q->empid=$empid;
-         $q->save();
-         $id=$q->id;
-         //redirect()->route('regorder')->with('success', 'Qualification saved successfully!');
-         return $id;
-        }
        
         public function saveorder(Request $request){
           $command=$request->get('command');
          if($command=='saveorder'){
             //save data to database
             return redirect()->route('regorder')->with('success', 'Qualification saved successfully!');
-         }else if(str_starts_with($command,'savequal')){
-          $this->saveQualification($request);
-          //return redirect()->back()->with('success', 'Qualification saved successfully!');
-          return $this->registerrequest($request);
+         }
+         else if(str_starts_with($command,'savequal'))
+         {
+          $qualid=explode('_',$command)[1];
+         if($qualid>0)
+         {
+          if(!$request->hasfile('certificate') && Tblqualification::find($qualid)->pdf=='')
+              return redirect()->back()->with('error', 'No file selected!');
+          Tblqualification::where("id",$qualid)->update
+          (["qualtype"=>$request->get('qtype'),
+            "degree"=>$request->get('degree'),
+            "entity"=>$request->get('entity'),
+            "startdate"=>$request->get('startdate'),
+            "enddate"=>$request->get('enddate'),
+            ]);
+         }
+         else{
+          $q=new Tblqualification();
+          $empid=Auth()->user()->id;
+          $q->appid= $empid;
+          $q->empid=$empid;
+          if(!$request->hasfile('certificate'))
+              return redirect()->back()->with('error', 'No file selected!');
+          //write data to database
+          $q->item=$request->get('entity');
+          $q->degree=$request->get('degree');
+          $q->entity=$request->get('entity');
+          $q->startdate=$request->get('startdate');
+          $q->enddate=$request->get('enddate');
+          $q->qualtype=$request->get('qtype');
+          $q->save();
+          $qualid=$q->id;
+         }
+         //upload certificate of registrant
+         if($request->hasfile('certificate')){
+            $ext=$request->file('certificate')->getClientOriginalExtension();
+            $fname="certificate_". str($qualid).'.'.$ext;
+            if($ext!='pdf'){
+              return redirect()->back()->with('error', 'Only PDF files are allowed!');
+            }
+            $path = $request->file('certificate')->storeAs('public/certs',$fname);
+              Tblqualification::where("id",$qualid)->update(["pdf"=>$fname]);
+            return redirect()->route('regorder')->with('success', 'Certificate pdf uploaded successfully!');
+          }
+          else 
+          {
+            if($qualid<=0)
+              return redirect()->route('regorder')->with('error', 'No file selected!');
+            else
+            return redirect()->route('regorder')->with('success', 'Qualification saved successfully.');
+          }
+          //upload photo of registrant
         }else if(str_starts_with($command,'viewqual')){
           $qualid=explode('_',$command)[1];
           $qual=Tblqualification::find($qualid);
@@ -139,6 +169,17 @@ public static function lockups():Array{
               return redirect()->route('regorder')->with('error', 'No file selected!');
             }
             //upload photo of registrant
+        }else if(str_starts_with($command,'viewqual')){
+          $qualid=explode('_',$command)[1];
+          $qual=Tblqualification::find($qualid);
+          return $this->registerrequest($request);
+        }
+        else if(str_starts_with($command,'deletequal'))
+        {
+          $qualid=explode('_',$command)[1];
+            $this->deletequalification($request->get('qualid'));
+            //return redirect()->back()->with('success', 'Qualification deleted successfully!');
+            return redirect()->back();
           }
           else if($command=='uploadphoto')
             {

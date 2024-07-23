@@ -3,6 +3,7 @@
         console.log("hideQualification is called");
         document.getElementById("panqual").style.display = "none";
      document.getElementById("panuploadpdf").style.display="block";
+     document.getElementById("cmdsavequal").value="savequal_-1" ;
     }
 
     function showQualification() {
@@ -10,17 +11,24 @@
         document.getElementById("entity").value = "";
         document.getElementById("qlink").innerText ="Select new PDF";
         document.getElementById("qlink").setAttribute('href','');
-        document.getElementById("certificate").value ='uploadcert_' + -1;
         document.getElementById("cmdrempdf").style.display="none";
         document.getElementById("panuploadpdf").style.display="block";
             };
     function removepdf() {
-        let conf=confirm("Are you sure you want to remove the PDF?");
+        const qualid=document.getElementById("cmdrempdf").dataset.qualid;
+        let conf=confirm("Are you sure you want to remove the PDF? for "+qualid);
         if(conf) {
         document.getElementById("qlink").innerText = "Select new PDF";
         document.getElementById("panuploadpdf").style.display="block";
         document.getElementById("cmdrempdf").style.display="none";
-        }
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "removequalpdf/"+qualid, false);
+        xhttp.setRequestHeader("Content-type", "text/plain-text");
+        xhttp.setRequestHeader('X-CSRF-TOKEN', document.head.querySelector('meta[name="csrf-token"]').content);
+        xhttp.send(); 
+        document.getElementById("qlink").innerHTML=xhttp.responseText;
+        document.getElementById("qlink").href="";
+    }
     };
     function modifyqual(qualid) {
         if(qualid===null)
@@ -34,10 +42,11 @@
         document.getElementById("entity").value = document.getElementById("entity_" + qualid).innerText;
         document.getElementById("startdate").value = document.getElementById("startdate_" + qualid).innerText;
         document.getElementById("enddate").value = document.getElementById("enddate_" + qualid).innerText;
+        document.getElementById("cmdsavequal").value = "savequal_" + qualid;
         document.getElementById("qlink").innerText =pdf;
         document.getElementById("qlink").setAttribute('href','certs/'+pdf);
-        document.getElementById("certificate").value ='uploadcert_' + qualid;
         document.getElementById("cmdrempdf").style.display=pdf?"block":"none";
+        document.getElementById("cmdrempdf").setAttribute("data-qualid",qualid);
         document.getElementById("panuploadpdf").style.display=pdf?"none":"block";
     };
    
@@ -82,21 +91,15 @@
             <x-label for="certificate" :value="__('Certificate')" />
             <div>
               <a id="qlink" href="certs/" target="_lank">No file!!</label></a>
-              <x-danger-button type="button" id="cmdrempdf" onclick="removepdf()">x</x-danger-button>
+              <x-danger-button type="button" id="cmdrempdf" data-qualid onclick="removepdf()">x</x-danger-button>
             </div>
         </div>
         <div class="width-full max-width-max mb-4" id="panuploadpdf" style="display: none;">
             <x-label for="Select new pdf file" />
             <input type="file" name="certificate" type="pdf">
-            <x-primary-button id="certificate" type="submit" :value="__('Attach Certificate')" name="command" value="uploadcert" >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round"  stroke-linejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
-                </svg>
-                {{__('upload')}}
-            </x-primary-button>    
         </div>
     <div class="columns-2 mt-5">
-        <x-primary-button type="submit" name="command" value="savequal"> {{ __('Save') }}
+        <x-primary-button type="submit" name="command" value="savequal_-1" id="cmdsavequal"> {{ __('Save') }}
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="size-6">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -151,7 +154,7 @@
                             <label id="enddate_{{ $qual->id }}">{{ $qual->enddate }}</label>
                         </td>
                         <td>
-                            <div class="w-full">
+                            <div class="flex flex-col-2">
                                 <x-secondary-button type="button" onclick="modifyqual({{$qual->id}})" name="command"
                                     value="modifyqual_{{$qual->id}}">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -160,16 +163,12 @@
                                             d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
                                     </svg>
                                 </x-secondary-button>
-                                <a href="{{ route('remove.qual', $qual->id)  }}" class="btn btn danger border-round border-black">Remove</a>
-                                <x-danger-button type="submit" name="command"
-                                    value="deletequal_{{ $qual->id }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="size-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M6 18 18 6M6 6l12 12" />
-                                    </svg>
-
-                                </x-danger-button>
+                                
+                                <a href="{{ route('remove.qual', $qual->id)  }}" onclick="return confirm('Do you realy want to delete this qualification?')" 
+                                    class="size-6 rounded-tl-lg bg-primary-800"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                      </svg>
+                            </a>
                             </div>
 
                         </td>
