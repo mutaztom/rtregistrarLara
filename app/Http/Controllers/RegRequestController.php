@@ -13,9 +13,10 @@ use App\Models\Tblmembership;
 use App\Models\Tblqualification;
 use App\Models\Tblqualtype;
 use App\Models\Tblqualdegree;
-use Carbon\Carbon;
+use Carbon\Carbon;  
 use Illuminate\Http\Request\filesystem;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class RegRequestController extends Controller
 {
@@ -87,7 +88,7 @@ public static function lockups():Array{
          {
           if(!$request->hasfile('certificate') && Tblqualification::find($qualid)->pdf=='')
               return redirect()->back()->with('error', 'No file selected!');
-          Tblqualification::where("id",$qualid)->update
+          $update=DB::table('tblqualification')->where("id",$qualid)->update
           (["qualtype"=>$request->get('qtype'),
             "degree"=>$request->get('degree'),
             "entity"=>$request->get('entity'),
@@ -97,7 +98,7 @@ public static function lockups():Array{
          }
          else{
           $q=new Tblqualification();
-          $empid=Auth()->user()->id;
+          $empid=Auth()->user()->regid;
           $q->appid= $empid;
           $q->empid=$empid;
           if(!$request->hasfile('certificate'))

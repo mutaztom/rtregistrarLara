@@ -4,18 +4,22 @@
             document.getElementById('regphoto').style.display = 'block';
             document.getElementById('cmdupload').style.display = 'block';
         }
-        </script>
+    </script>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Registration Request') }}
         </h2>
     </x-slot>
     <div class="main h-dvh ">
-        @if (session('error' ))
-            <x-alert class="bg-green-700 text-green-100 p-4" type="error"/>
+        @if (session('error'))
+            <x-bladewind::alert type="error">
+                {{ session('error') }}
+            </x-bladewind::alert>
         @endif
-        @if (session('success'  ))
-            <x-alert class="bg-green-700 text-green-100 p-4" type="success"/>
+        @if (session('success'))
+            <x-bladewind::alert type="success">
+                {{ session('success') }}
+            </x-bladewind::alert>
         @endif
 
         <div class="container mx-auto overflow-auto py-8 bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg">
@@ -23,16 +27,23 @@
                 @csrf
                 <section>
                     <div class="col-span-4 align-items-center">
-                        @if(Auth::user()->avatar)
-                            <img src="photos/{{ Auth::user()->avatar }}" alt="storage/photos/{{ Auth::user()->avatar }}" width="200" />
-                            <x-primary-button type="button" class='mt-4 mb-4' onclick="onupload()">{{__('Change Photo')}}</x-primary-button>
-                        @endif   
+                        @if (Auth::user()->avatar)
+                            <img src="photos/{{ Auth::user()->avatar }}" alt="storage/photos/{{ Auth::user()->avatar }}"
+                                width="200" />
+                            <x-primary-button type="button" class='mt-4 mb-4'
+                                onclick="onupload()">{{ __('Change Photo') }}</x-primary-button>
+                        @endif
                         <input style="display:none" type="file" id="regphoto" name="regphoto" accept="image/*" />
-                        <x-primary-button name="command" value="uploadphoto" id="cmdupload" class="round cobutton bg-primary" style="display:none">
-                            @if(Auth::user()->avatar)Modify @else Upload @endif your photo
+                        <x-primary-button name="command" value="uploadphoto" id="cmdupload"
+                            class="round cobutton bg-primary" style="display:none">
+                            @if (Auth::user()->avatar)
+                                Modify
+                            @else
+                                Upload
+                            @endif your photo
                         </x-primary-button>
                     </div>
-                    <div class="grid grid-cols-4 gap-4 p-2">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-2">
                         <x-label for="regname" />
                         <x-input id="regname" name="regname" readonly value="{{ Auth::user()->name }}" />
                         <x-label for="email">Email</x-label>
@@ -41,19 +52,19 @@
                         <x-label for="higheducid" :value="__('highEducationId')"></x-label>
                         <x-input id="higheducid" name="highEducationid" />
                         <x-label for="nationality">Nationalaity</x-label>
-                        <select name="nationality" id="nationality" class="w-full">
+                        <select name="nationality" id="nationality" class="w-auto">
                             @foreach ($nationalities as $nat)
                                 <option value="{{ $nat->id }}">{{ $nat->item }}</option>
                             @endforeach
                         </select>
                         <x-label for="country">Country</x-label>
-                        <select name="country" class="w-full">
+                        <select name="country" class="w-auto">
                             @foreach ($countries as $country)
                                 <option value="{{ $country->id }}">{{ $country->item }}</option>
                             @endforeach
                         </select>
                         <x-label for="city">City</x-label>
-                        <select name="city" class="w-full">
+                        <select name="city" class="w-auto">
                             @foreach ($cities as $city)
                                 <option value="{{ $city->id }}">{{ $city->item }}</option>
                             @endforeach
@@ -61,7 +72,7 @@
                         <x-label for="birthday">Birth Date</x-label>
                         <x-pikaday id="birthday" name="birthday" format="YYYY-MM-DD" />
                         <x-label for="idtype">ID Type</x-label>
-                        <select id="idtype" name="idtype" class="w-full">
+                        <select id="idtype" name="idtype" class="w-auto">
                             @foreach ($idtypes as $idt)
                                 <option value="{{ $idt->id }}">{{ $idt->item }}</option>
                             @endforeach
@@ -73,13 +84,13 @@
                         <x-label for="mobileno">Mobile Number</x-label>
                         <x-input id="mobileno" name="mobileno" />
                         <x-label for="regclass">Reg. Class</x-label>
-                        <select id="regclass" name="regclass" class="w-full">
+                        <select id="regclass" name="regclass" class="w-auto">
                             @foreach ($engclass as $regclass)
                                 <option value="{{ $regclass->id }}">{{ $regclass->item }}</option>
                             @endforeach
                         </select>
                         <x-label for="engdegree" />
-                        <select name="engdegree" id="engdegree" class="w-full">
+                        <select name="engdegree" id="engdegree" class="w-auto">
                             @foreach ($engdegree as $degree)
                                 <option value={{ $degree->id }}>{{ $degree->item }}</option>
                             @endforeach
@@ -89,15 +100,38 @@
                         <x-label for="membership">Membership</x-label>
                         <x-input id="membership" name="membership" />
                         <x-label for="job">Job</x-label>
-                        <select name="job" id="job" class="w-full">
+                        <select name="job" id="job" class="w-auto">
                             @foreach ($jobs as $job)
                                 <option value={{ $job->id }}>{{ $job->item }}</option>
                             @endforeach
                         </select>
                     </div>
                 </section>
+
                 <div class="flex flex-shrink">
                     @include('qualification')
+
+                    <section>
+                        @php
+                            $memberships = DB::table('tblregmemberships')->where('regid', Auth::user()->regid)->get();
+                        @endphp
+                        <x-bladewind::list-view compact="true" transparent="true" class="bg-yellow-50">
+                        @isset($memberships)   
+                        @foreach($memberships as $mship) 
+                        <x-bladewind::list-item>
+                            <div class="flex items-center gap-2">
+                                $mship->item
+                            </div>
+                            </x-bladewind::list-item>
+                        @endforeach 
+                            @endisset
+                        </x-bladewind::list-view>
+                       
+                        <x-membership :value="DB::table('tblregmemberships')
+                            ->where('regid', Auth::user()->regid)
+                            ->get()" />
+                    </section>
+
                     <div class="flex flex-grow">
                         <x-primary-button class="pl-4" type="submit" name="command"
                             value="saveorder">{{ __('Save') }}</x-primary-button>

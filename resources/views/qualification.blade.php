@@ -1,9 +1,13 @@
 <script>
     function hideQualification() {
-        console.log("hideQualification is called");
+        if (document.getElementById("qlink").innerText==="")
+         {
+            alert("No qualification selected! please attach a PDF to qualification");
+            return;
+         }
         document.getElementById("panqual").style.display = "none";
-     document.getElementById("panuploadpdf").style.display="block";
-     document.getElementById("cmdsavequal").value="savequal_-1" ;
+        document.getElementById("panuploadpdf").style.display="block";
+        document.getElementById("cmdsavequal").value="savequal_-1" ;
     }
 
     function showQualification() {
@@ -28,6 +32,7 @@
         xhttp.send(); 
         document.getElementById("qlink").innerHTML=xhttp.responseText;
         document.getElementById("qlink").href="";
+        document.getElementById("certificate").setAttribute('required', true);
     }
     };
     function modifyqual(qualid) {
@@ -48,6 +53,7 @@
         document.getElementById("cmdrempdf").style.display=pdf?"block":"none";
         document.getElementById("cmdrempdf").setAttribute("data-qualid",qualid);
         document.getElementById("panuploadpdf").style.display=pdf?"none":"block";
+        document.getElementById("certificate").setAttribute('required', pdf?false:true);
     };
    
 </script>
@@ -96,7 +102,7 @@
         </div>
         <div class="width-full max-width-max mb-4" id="panuploadpdf" style="display: none;">
             <x-label for="Select new pdf file" />
-            <input type="file" name="certificate" type="pdf">
+            <input type="file" name="certificate" type="pdf" required>
         </div>
     <div class="columns-2 mt-5">
         <x-primary-button type="submit" name="command" value="savequal_-1" id="cmdsavequal"> {{ __('Save') }}
