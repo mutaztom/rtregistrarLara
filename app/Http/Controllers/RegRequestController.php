@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request\filesystem;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use App\Models\Tblsociety;
 
 class RegRequestController extends Controller
 {
@@ -32,6 +33,7 @@ public static function lockups():Array{
     $qualification=Tblqualification::where('empid',866)->get();
     $qualtype=Tblqualtype::select('id','item')->get();
     $qualdegree=Tblqualdegree::select('id','item')->get();
+    $societies=Tblsociety::select('id','item')->get();
     
     $loarray=["cities"=>$cities,
       "nationalities"=>$nationalities,
@@ -47,6 +49,8 @@ public static function lockups():Array{
       "membership"=>$membership,
       "startdate"=>Carbon::now(),
       "enddate"=>Carbon::now(),
+      "societies"=>$societies,
+      "membertype"=>DB::table('tblmemberships')->select('id','item')->get(),
       "entity"=>"University",
   ];
   return $loarray;
