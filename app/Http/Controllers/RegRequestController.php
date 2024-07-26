@@ -185,8 +185,7 @@ public static function lockups():Array{
         {
           $qualid=explode('_',$command)[1];
             $this->deletequalification($request->get('qualid'));
-            //return redirect()->back()->with('success', 'Qualification deleted successfully!');
-            return redirect()->back();
+            return redirect()->back()->with('success', 'Qualification deleted successfully!');
           }
           else if($command=='uploadphoto')
             {

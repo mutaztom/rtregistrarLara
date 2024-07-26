@@ -14,16 +14,12 @@
         document.getElementById("cmdsavemembership").style.display = "none";
         document.getElementById("cmdupdatemembership").style.display = "block";
         //populate data from the server
-        let m=@json($memberships[0]);
-        console.log("Updating membership: "+ JSON.stringify(m) + m.regid +" "+ m.memtype);
+        let allmem=@json($memberships);
+        let m=allmem.filter(m => m.id == mmshipid)[0];
         document.getElementById("society").value = m.socityid;
         document.getElementById("membertype").value = m.memtype;
-        document.getElementById("dtp-membersince").value = (m.ondate);
-    }
-
-    function deletemembership() {
-        showModal("deleteMembership");
-
+        let selectedDate=new Date(Date.parse(m.ondate));
+        domEl('.membersince').value=selectedDate.getFullYear() +"-"+ ('0'+ selectedDate.getMonth()).slice(-2) +"-"+ ('0' + selectedDate.getDate()).slice(-2);;
     }
 </script>
 
@@ -51,7 +47,7 @@
             @endforeach
         </select>
         <x-label for="since" />
-        <x-bladewind::datepicker name="membersince" id="membersince" />
+        <x-bladewind::datepicker name="membersince" id="membersince" format="dd-mm-yyyy" />
         <div class="flex flex-shrink">
             <x-secondary-button type="submit" id="cmdsavemembership" name="command"
                 value="createmembership"><x-bladewind::icon name="bookmark-square"
@@ -97,8 +93,5 @@
 @endisset
 
 </x-bladewind::card>
-<x-bladewind::modal name="deleteMembership" type="error" title="Confirm Membership Deletion">
-    Are you really sure you want to delete <b class="title"></b>?
-    This action cannot be reversed.
-</x-bladewind::modal>
+
 </div>
