@@ -112,50 +112,7 @@
                     @include('qualification')
 
                     <section>
-                        @php
-                            $memberships = DB::table('tblregmemberships')->where('regid', Auth::user()->regid)->get();
-                        @endphp
-                        <x-bladewind::list-view compact="true" transparent="true" class="bg-yellow-50">
-                        @isset($memberships)   
-                        @foreach($memberships as $mship) 
-                        <x-bladewind::list-item>
-                            <div class="flex items-center gap-2">
-                                $mship->item
-                            </div>
-                            </x-bladewind::list-item>
-                        @endforeach 
-                            @endisset
-                        </x-bladewind::list-view>
-                       
-                        <x-bladewind::card>
-                            <div class='grid grid-cols-1 md:grid-cols-2 mt-4 mb-4'>
-                            <h1 class="font-bold text-xl text-cyan-500">MemberShips</h1>
-                           
-                            <x-primary-button class="columns-2" type="button" >Add new</x-primary-button>
-                            </div>
-                            
-                            <div class="columns-4" >
-                                <x-label for="Association" />
-                                <select id="Association" name="society" class="form-select w-full py-2 px-3 border">
-                                    <option value="">Select Association</option>
-                                    @foreach ($societies as $soc)
-                                        <option value="{{ $soc->id }}">{{ $soc->item }}</option>
-                                    @endforeach
-                                </select>
-                                <x-label for="membertype" />
-                                <select id="membertype" name="membertype" class="form-select w-full py-2 px-3 border">
-                                    <option value="">Select Association</option>
-                                    @foreach ($membertype as $mt)
-                                        <option value="{{ $mt->id }}">{{ $mt->item }}</option>
-                                    @endforeach
-                                </select>
-                                <x-label for="since"/>
-                                <x-bladewind::datepicker  name="membersince" id="since"/>
-                                <x-secondary-button type="submit" name="command" value="addmembership">{{ __('Add') }}</x-secondary-button>
-                                <x-secondary-button type="submit" name="command" value="closemeship">{{ __('Close') }}</x-secondary-button>
-                            </div>
-                           
-                        </x-bladewind::card>
+                       @include('membership')
                     </section>
 
                     <div class="flex flex-grow">

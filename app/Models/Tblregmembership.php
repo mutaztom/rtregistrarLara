@@ -8,6 +8,10 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Tblmembership;
+use App\Models\Tblsociety;
+use App\Models\Tblregistrant;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Class Tblregmembership
@@ -38,4 +42,13 @@ class Tblregmembership extends Model
 		'memtype',
 		'ondate'
 	];
+	public function membership():HasOne{
+		return $this->hasOne(Tblmembership::class, 'id', 'memtype');
+	}
+	public function society():HasOne{
+        return $this->hasOne(Tblsociety::class, 'id', 'socityid');
+    }
+	public function registrant():HasOne{
+        return $this->hasOne(Tblregistrant::class, 'id','regid');
+    }
 }

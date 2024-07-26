@@ -43,5 +43,6 @@ Route::get('/getcertfile/{qualid}', [QualcertController::class,'certfile'])->nam
 Route::get('/modifyqual/{qualid}', [QualcertController::class,'modify'])->name('modify.qual');
 Route::get('/deletequal/{qualid}', [QualcertController::class,'delete'])->name('remove.qual');
 Route::post('/removequalpdf/{qualid}', [QualcertController::class,'deletepdf'])->name('remove.qualpdf');
+Route::post('/removemembership/{mid}', [MembershipController::class,'destroy'])->name('remove.membership');
 
 require __DIR__.'/auth.php';

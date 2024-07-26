@@ -13,6 +13,7 @@ use App\Models\Tblmembership;
 use App\Models\Tblqualification;
 use App\Models\Tblqualtype;
 use App\Models\Tblqualdegree;
+use App\Models\Tblregmembership;
 use Carbon\Carbon;  
 use Illuminate\Http\Request\filesystem;
 use Illuminate\Support\Facades\Storage;
@@ -51,6 +52,7 @@ public static function lockups():Array{
       "enddate"=>Carbon::now(),
       "societies"=>$societies,
       "membertype"=>DB::table('tblmemberships')->select('id','item')->get(),
+      "memberships"=>Tblregmembership::where('regid',  Auth()->user()->regid)->get(),
       "entity"=>"University",
   ];
   return $loarray;
@@ -189,6 +191,20 @@ public static function lockups():Array{
           else if($command=='uploadphoto')
             {
               return $this->uploadphoto($request);
+            }
+            else if($command=='createmembership'){
+              $mm=new MembershipController();
+              return $mm->create($request);
+            }
+            else if(str_starts_with($command,'updatemembership')){
+              $id=explode('_',$command)[1];
+              $mm=new MembershipController();
+              return $mm->update($request,$id);
+            }
+            else if(str_starts_with($command,'removemembership')){
+              $id=explode('_',$command)[1];
+              $mm=new MembershipController();
+              return $mm->destroy($id);
             }
       }
       public function deletequalification($id){
