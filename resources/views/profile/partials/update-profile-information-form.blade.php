@@ -19,21 +19,39 @@
 
         <div>
             <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)"
+                required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
         <div>
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
+            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)"
+                required autocomplete="username" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
-
-            @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
+            <div class="flex flex-col columns-1 md:columns-2 lg:columns-2">
+                <x-bladewind::card title="Profile Photo" class="flex-grow">
+                    <x-bladewind::filepicker url="photos/{{ Auth::user()->avatar }}" placeholder="Profile Picture"
+                        name="regphoto" accepted_file_types="image/*, .png, .bmp" />
+                </x-bladewind::card>
+                <x-bladewind::card title="Personal Information" class="flex-grow w-80" has_shadow="true">
+                    <div class="grid grid-cols-1 w-full">
+                        <x-label for="Phone_Number"/>
+                        <x-input id="phoneno" name="phoneno" />
+                        <x-label for="Mobile_Number"/>
+                        <x-input id="mobileno" name="mobileno" />
+                        <x-label for="High_Education_Id"/>
+                        <x-input id="higheducid" name="highEducationid" />
+                    </div>
+                </x-bladewind::card>
+            </div>
+            @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !$user->hasVerifiedEmail())
                 <div>
                     <p class="text-sm mt-2 text-gray-800 dark:text-gray-200">
                         {{ __('Your email address is unverified.') }}
 
-                        <button form="send-verification" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
+                        <button form="send-verification"
+                            class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
                             {{ __('Click here to re-send the verification email.') }}
                         </button>
                     </p>
@@ -45,51 +63,14 @@
                     @endif
                 </div>
             @endif
+
         </div>
-<div>
-    <h1>التعليم</h1>
-    <div class="flex flex-wrap">
-        <x-label for="education">
-        Education</x-label><br/>
-        <table class="table-auto border-separate border border-slate-400">
-            <thead>
-                <tr>
-                    <th>Entity</th>
-                    <th>Degree</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>University of Khartoum</td>
-                    <td>Bachelour Degree</td>
-                    <td>1956</td>
-                </tr>
-                <tr>
-                    <td>University of Khartoum</td>
-                    <td>Bachelour Degree</td>
-                    <td>1956</td>
-                </tr>
-                <tr>
-                    <td>University of Khartoum</td>
-                    <td>Bachelour Degree</td>
-                    <td>1956</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 
             @if (session('status') === 'profile-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600 dark:text-gray-400"
-                >{{ __('Saved.') }}</p>
+                <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
+                    class="text-sm text-gray-600 dark:text-gray-400">{{ __('Saved.') }}</p>
             @endif
         </div>
     </form>

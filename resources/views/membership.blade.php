@@ -14,18 +14,19 @@
         document.getElementById("cmdsavemembership").style.display = "none";
         document.getElementById("cmdupdatemembership").style.display = "block";
         //populate data from the server
-        let allmem=@json($memberships);
-        let m=allmem.filter(m => m.id == mmshipid)[0];
+        let allmem = @json($memberships);
+        let m = allmem.filter(m => m.id == mmshipid)[0];
         document.getElementById("society").value = m.socityid;
         document.getElementById("membertype").value = m.memtype;
-        let selectedDate=new Date(Date.parse(m.ondate));
-        domEl('.membersince').value=selectedDate.getFullYear() +"-"+ ('0'+ selectedDate.getMonth()).slice(-2) +"-"+ ('0' + selectedDate.getDate()).slice(-2);;
+        let selectedDate = new Date(Date.parse(m.ondate));
+        domEl('.membersince').value = selectedDate.getFullYear() + "-" + ('0' + selectedDate.getMonth()).slice(-2) +
+            "-" + ('0' + selectedDate.getDate()).slice(-2);;
     }
 </script>
 
-<x-bladewind::card>
-    <div class='flex flex-shrink mt-4 mb-4 gab-4'>
-        <h1 class="font-bold text-xl text-cyan-500">MemberShips</h1>
+<x-bladewind::centered-content class="w-max-8" type="small">
+    <div class='columns-2 mt-4 mb-4 gab-4'>
+        <p class="font-bold text-xl text-cyan-500">MemberShips</p>
         <x-bladewind::button.circle icon="plus-circle" type="secondary" onclick="window.showmempanel()"
             name="addmembership">Add new</x-bladewind::button>
     </div>
@@ -35,15 +36,15 @@
         <select id="society" name="society" class="form-select w-full py-2 px-3 border">
             <option value="">----Select Society----</option>
             @foreach ($societies as $soc)
-                <option value="{{ $soc->id }}" @selected(old('society')==$soc)>{{ $soc->item }}</option>
+                <option value="{{ $soc->id }}" @selected(old('society') == $soc)>{{ $soc->item }}</option>
             @endforeach
         </select>
 
-        <x-label for="membertype"  />
+        <x-label for="membertype" />
         <select id="membertype" name="membertype" class="form-select w-full py-2 px-3 border">
             <option value="">----Select Membership----</option>
             @foreach ($membertype as $mt)
-                <option value="{{ $mt->id }}" @selected(old('membertype')==$mt)>{{ $mt->item }}</option>
+                <option value="{{ $mt->id }}" @selected(old('membertype') == $mt)>{{ $mt->item }}</option>
             @endforeach
         </select>
         <x-label for="since" />
@@ -61,37 +62,34 @@
     </div>
     <!-- table listing of membership -->
     @isset($memberships)
-    <x-bladewind::table divider="thin" name="tblmembership"
-     id="tblmembership" 
-     exclude_columns="regid" >
-    <x-slot name="header">
-        <th>id</th>
-        <th>Society</th>
-        <th>Membership</th>
-        <th>Since</th>
-        <th>Actions</th>
-    </x-slot>
-    
-    @foreach ($memberships as $membership)
+        <x-bladewind::table divider="thin" name="tblmembership" class="max-w-xl" id="tblmembership" exclude_columns="regid">
+            <x-slot name="header">
+                <th>id</th>
+                <th>Society</th>
+                <th>Membership</th>
+                <th>Since</th>
+                <th>Actions</th>
+            </x-slot>
 
-    <tr>
-        <td>{{$membership->id}}</td>
-        <td>{{$membership->society->item ?? "None"}}</td>
-        <td>{{$membership->membership->item ?? "None"}}</td>
-        <td>{{$membership->ondate}}</td>
-        <td><x-bladewind::button icon="pencil" type="secondary" id="modifymem_{{$membership->id}}"  onclick="modifymembership({{$membership->id}})"/>
-        </td>
-        <td>
-            <x-danger-button onclick="return confirm('are you sure do you want to delete this item?')" type="submit" name="command" value="removemembership_{{$membership->id}}">
-            <x-bladewind::icon name="trash" type="solid" />
-           </x-danger-button>
-        </td>
-    <tr>
-    @endforeach
-    
-    </x-bladewind::table>
-@endisset
+            @foreach ($memberships as $membership)
+                <tr>
+                    <td>{{ $membership->id }}</td>
+                    <td>{{ $membership->society->item ?? 'None' }}</td>
+                    <td>{{ $membership->membership->item ?? 'None' }}</td>
+                    <td>{{ $membership->ondate }}</td>
+                    <td><x-bladewind::button icon="pencil" type="secondary" id="modifymem_{{ $membership->id }}"
+                            onclick="modifymembership({{ $membership->id }})" />
+                    </td>
+                    <td>
+                        <x-danger-button onclick="return confirm('are you sure do you want to delete this item?')"
+                            type="submit" name="command" value="removemembership_{{ $membership->id }}">
+                            <x-bladewind::icon name="trash" type="solid" />
+                        </x-danger-button>
+                    </td>
+                <tr>
+            @endforeach
 
-</x-bladewind::card>
+        </x-bladewind::table>
+    @endisset
 
-</div>
+</x-bladewind::centered-content>

@@ -27,9 +27,6 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Route::get('/avatar', function () {
-//     return view('livewire.avatar');
-// })->middleware(['auth', 'verified'])->name('avatar');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

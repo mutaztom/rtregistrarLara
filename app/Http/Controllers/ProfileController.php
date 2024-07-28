@@ -16,9 +16,8 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-        return view('profile.edit', [
-            'user' => $request->user(),
-        ]);
+        $param=RegRequestController::lockups();
+        return view('profile.edit', $param,['user'=>Auth()->user()]);
     }
 
     /**

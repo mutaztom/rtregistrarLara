@@ -14,6 +14,8 @@ use App\Models\Tblqualification;
 use App\Models\Tblqualtype;
 use App\Models\Tblqualdegree;
 use App\Models\Tblregmembership;
+use App\Models\Tblregisterrequest;
+use App\Models\Tblspecialization;
 use Carbon\Carbon;  
 use Illuminate\Http\Request\filesystem;
 use Illuminate\Support\Facades\Storage;
@@ -35,7 +37,7 @@ public static function lockups():Array{
     $qualtype=Tblqualtype::select('id','item')->get();
     $qualdegree=Tblqualdegree::select('id','item')->get();
     $societies=Tblsociety::select('id','item')->get();
-    
+    $specialization=Tblspecialization::select('id','item')->get();
     $loarray=["cities"=>$cities,
       "nationalities"=>$nationalities,
       "countries"=>$countries,
@@ -51,6 +53,7 @@ public static function lockups():Array{
       "startdate"=>Carbon::now(),
       "enddate"=>Carbon::now(),
       "societies"=>$societies,
+      "specialization"=>$specialization,
       "membertype"=>DB::table('tblmemberships')->select('id','item')->get(),
       "memberships"=>Tblregmembership::where('regid',  Auth()->user()->regid)->get(),
       "entity"=>"University",
@@ -85,6 +88,20 @@ public static function lockups():Array{
           $command=$request->get('command');
          if($command=='saveorder'){
             //save data to database
+            $regorder=new Tblregisterrequest();
+            $regorder->ownerid=Auth()->user()->regid;
+            $regorder->idcardtype=$request->get('idtype');
+            $regorder->idcardno=$request->get('idcardno');
+            $regorder->job=$request->get('job');
+            $regorder->gender=$request->get('gender');
+            $regorder->address=$request->get('address');
+            $regorder->phone=$request->get('phone');
+            $regorder->email=$request->get('email');
+            $regorder->phone=$request->get('phone');
+            $regorder->city=$request->get('city');
+            $regorder->country=$request->get('country');
+            $regorder->ondate=$request->get('date');
+            $regorder->save();
             return redirect()->route('regorder')->with('success', 'Qualification saved successfully!');
          }
          else if(str_starts_with($command,'savequal'))
