@@ -34,13 +34,13 @@
             <x-label for="city">City</x-label>
             <select name="city" class="w-auto">
                 @foreach ($cities as $city)
-                    <option value="{{ $city->id }}">{{ $city->item }}</option>
+                    <option value="{{ $city->id }}" @selected(old('city',$registrant->city))>{{ $city->item }}</option>
                 @endforeach
             </select>
             <x-label for="birthday">Birth Date</x-label>
-            <x-bladewind::datepicker id="birthday" name="birthday" format="YYYY-MM-DD" />
+            <x-bladewind::datepicker id="birthday"  name="birthday" format="YYYY-MM-DD" />
             <x-label for="address" />
-            <x-bladewind::textarea id="address" name="address"></x-bladewind::textarea>
+            <x-bladewind::textarea id="address" name="address" placeholder="Address">default address for every user</x-bladewind::textarea>
             </div>
         </x-bladewind::card>
 
@@ -52,7 +52,7 @@
                 <x-label for="Identity_Type" />
                 <select id="idtype" name="idtype" class="w-auto">
                     @foreach ($idtypes as $idt)
-                        <option value="{{ $idt->id }}">{{ $idt->item }}</option>
+                        <option value="{{ $idt->id }}" @selected( old('idtype', $registrant->idtype))>{{ $idt->item }}</option>
                     @endforeach
                 </select>
                 <x-label for="Identity_Number" />
@@ -62,6 +62,8 @@
 
         <x-bladewind::card title="Ocupation">
             <div class="flex flex-col columns-1 md:columns-2 lg:columns-4">
+                <x-input-label for="workplace" :value="__('Workplace')"/>
+                <x-input id="workplace" name="workplace" />
                 <x-label for="job" />
                 <select name="job" id="job" class="w-auto">
                     @foreach ($jobs as $job)

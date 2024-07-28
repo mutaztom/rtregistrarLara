@@ -37,11 +37,9 @@
                 <x-bladewind::card title="Personal Information" class="flex-grow w-80" has_shadow="true">
                     <div class="grid grid-cols-1 w-full">
                         <x-label for="Phone_Number"/>
-                        <x-input id="phoneno" name="phoneno" />
-                        <x-label for="Mobile_Number"/>
-                        <x-input id="mobileno" name="mobileno" />
+                        <x-input id="phoneno" name="phoneno" :value="$registrant->phone" />
                         <x-label for="High_Education_Id"/>
-                        <x-input id="higheducid" name="highEducationid" />
+                        <x-input id="higheducid" name="highEducationid" :value="old('higheducid', $user->heigheducid)" />
                     </div>
                 </x-bladewind::card>
             </div>
