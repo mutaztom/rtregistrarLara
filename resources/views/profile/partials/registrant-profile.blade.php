@@ -5,78 +5,66 @@
         }
     </script>
 
-    @if (session('error'))
-        <x-bladewind::alert type="error">
-            {{ session('error') }}
-        </x-bladewind::alert>
-    @endif
-    @if (session('success'))
-        <x-bladewind::alert type="success">
-            {{ session('success') }}
-        </x-bladewind::alert>
-    @endif
-    <x-form metod="POST" action="/saveorder" id="regform" enctype="multipart/form-data">
+    <x-form metod="POST" action="{{ route('reginfo.update') }}" id="regform">
         @csrf
+        @method('patch')
+        <x-input hidden name="email" id="email" value="{{ Auth::user()->email }}" />
+        <x-input hidden name="name" id="name" value="{{ Auth::user()->name }}" />
+        <x-bladewind::card title="Personal Information" class="flex-grow w-80" has_shadow="true">
+            <div class="grid grid-cols-1 w-full">
+                <x-label for="Phone_Number" />
+                <x-input id="phoneno" name="phone" :value="old('phone',$registrant->phone)" />
+                <x-label for="High_Education_Id" />
+                <x-input id="higheducid" name="hieducid" :value="old('hieducid', $registrant->hieducid)" />
+                <x-label for="specialisation" />
+                <select name="specialization" id="specialization" class="w-auto">
+                    @foreach ($specialization as $sp)
+                        <option value={{ $sp->id }} @selected(old('specialization',$registrant->specialization)==$sp->id)>{{ $sp->item }}</option>
+                    @endforeach
+                </select>
+        </x-bladewind::card>
         <x-bladewind::card title="Citizenship">
             <div class="flex flex-col columns-1 md:columns-2 lg:columns-4">
-            <p>Nationality</p>
-            <select name="nationality" id="nationality" class="w-auto">
-                @foreach ($nationalities as $nat)
-                    <option value="{{ $nat->id }}">{{ $nat->item }}</option>
-                @endforeach
-            </select>
-            <x-label for="Country">Country</x-label>
-            <select name="country" class="w-auto">
-                @foreach ($countries as $country)
-                    <option value="{{ $country->id }}">{{ $country->item }}</option>
-                @endforeach
-            </select>
-            <x-label for="city">City</x-label>
-            <select name="city" class="w-auto">
-                @foreach ($cities as $city)
-                    <option value="{{ $city->id }}" @selected(old('city',$registrant->city))>{{ $city->item }}</option>
-                @endforeach
-            </select>
-            <x-label for="birthday">Birth Date</x-label>
-            <x-bladewind::datepicker id="birthday"  name="birthday" format="YYYY-MM-DD" />
-            <x-label for="address" />
-            <x-bladewind::textarea id="address" name="address" placeholder="Address">default address for every user</x-bladewind::textarea>
+                <p>Nationality</p>
+                <select name="nationality" id="nationality" class="w-auto">
+                    @foreach ($nationalities as $nat)
+                        <option value="{{ $nat->id }}" @selected(old('nationality',$registrant->nationality)==$nat->id)>{{ $nat->item }}</option>
+                    @endforeach
+                </select>
+                <x-label for="birth_place"></x-label>
+                <select id="birth_place" name="birthplace" class="w-auto">
+                    @foreach ($cities as $city)
+                        <option value="{{ $city->id }}" @selected(old('birthplace', $registrant->birthplace)==$city->id)>{{ $city->item }}</option>
+                    @endforeach
+                </select>
+                <x-label for="birthday">Birth Date</x-label>
+                <x-bladewind::datepicker id="birthday" name="birthdate"  :default_date="old('birthdate',$registrant->birthdate)" />
+                <x-label for="address" />
+                <x-bladewind::textarea id="address" selected_value="{{old('address',$registrant->address)}}" name="address"  placeholder="Address">
+                   </x-bladewind::textarea>
             </div>
         </x-bladewind::card>
 
         <x-bladewind::card title="IDentity">
             <div class="flex flex-col columns-1 md:columns-2 lg:columns-4">
                 <x-label for="gender" />
-                <x-bladewind::radio-button label="Male" name="gender" />
-                <x-bladewind::radio-button label="Female" name="gender" />
+                <x-bladewind::radio-button label="Male" name="gender" value="Male" :checked="old('gender',$registrant->gender)=='Male'" />
+                <x-bladewind::radio-button label="Female" name="gender" value="Female" :checked="old('gender',$registrant->gender)=='Female'"/>
                 <x-label for="Identity_Type" />
                 <select id="idtype" name="idtype" class="w-auto">
                     @foreach ($idtypes as $idt)
-                        <option value="{{ $idt->id }}" @selected( old('idtype', $registrant->idtype))>{{ $idt->item }}</option>
+                        <option value="{{ $idt->id }}" @selected(old('idtype', $registrant->idtype))>{{ $idt->item }}</option>
                     @endforeach
                 </select>
                 <x-label for="Identity_Number" />
-                <x-input id="idno" name="idno" />
+                <x-input id="idnumber" name="idnumber" :value="old('idnumber', $registrant->idnumber)" />
             </div>
         </x-bladewind::card>
 
-        <x-bladewind::card title="Ocupation">
-            <div class="flex flex-col columns-1 md:columns-2 lg:columns-4">
-                <x-input-label for="workplace" :value="__('Workplace')"/>
-                <x-input id="workplace" name="workplace" />
-                <x-label for="job" />
-                <select name="job" id="job" class="w-auto">
-                    @foreach ($jobs as $job)
-                        <option value={{ $job->id }}>{{ $job->item }}</option>
-                    @endforeach
-                </select>
-                <x-label for="work_address" />
-                <x-bladewind::textarea id="workaddress" name="workaddress"></x-bladewind::textarea>
-            </div>
-        </x-bladewind::card>
+        
 
         <x-bladewind::centered-content size="tiny">
-            <x-primary-button type="sumbit" name="command" value="saveorder">{{ __('Save') }}</x-primary-button>
+            <x-bladewind::button type="primary" name="command" can_submit="true">{{ __('Save') }}</x-bladewind::button>
         </x-bladewind::centered-content>
 
     </x-form>

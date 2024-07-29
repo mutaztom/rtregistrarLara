@@ -74,6 +74,20 @@
                             </select>
                             </div>
                         </x-bladewind::card>
+                        <x-bladewind::card title="Ocupation">
+            <div class="flex flex-col columns-1 md:columns-2 lg:columns-4">
+                <x-input-label for="workplace" :value="__('Workplace')" />
+                <x-input id="workplace" name="workplace" />
+                <x-label for="job" />
+                <select name="job" id="job" class="w-auto">
+                    @foreach ($jobs as $job)
+                        <option value={{ $job->id }}>{{ $job->item }}</option>
+                    @endforeach
+                </select>
+                <x-label for="work_address" />
+                <x-bladewind::textarea id="workaddress" name="workaddress"></x-bladewind::textarea>
+            </div>
+        </x-bladewind::card>
                     </div>
                 </section>
 

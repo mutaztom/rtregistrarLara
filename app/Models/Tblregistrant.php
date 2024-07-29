@@ -33,6 +33,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $engsociety
  * @property Carbon|null $ondate
  * @property int|null $specialization
+ * @property int|null $idtype
+ * @property int|null $idnumber
  *
  * @package App\Models
  */
@@ -74,6 +76,8 @@ class Tblregistrant extends Model
 		'membership',
 		'engsociety',
 		'ondate',
-		'specialization'
+		'specialization',
+		'idnumber',
+		'idtype',
 	];
 }

@@ -34,14 +34,7 @@
                     <x-bladewind::filepicker url="photos/{{ Auth::user()->avatar }}" placeholder="Profile Picture"
                         name="regphoto" accepted_file_types="image/*, .png, .bmp" />
                 </x-bladewind::card>
-                <x-bladewind::card title="Personal Information" class="flex-grow w-80" has_shadow="true">
-                    <div class="grid grid-cols-1 w-full">
-                        <x-label for="Phone_Number"/>
-                        <x-input id="phoneno" name="phoneno" :value="$registrant->phone" />
-                        <x-label for="High_Education_Id"/>
-                        <x-input id="higheducid" name="highEducationid" :value="old('higheducid', $user->heigheducid)" />
-                    </div>
-                </x-bladewind::card>
+                
             </div>
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !$user->hasVerifiedEmail())
                 <div>

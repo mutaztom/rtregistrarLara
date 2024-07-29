@@ -18,7 +18,7 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-        $dat=Tblregistrant::where('id',866)->get()->first();
+        $dat=Tblregistrant::where('id',Auth()->user()->regid)->get()->first();
         $param=RegRequestController::lockups();
         //dd($dat);
         return view('profile.edit', $param,['user'=>Auth()->user(),'registrant'=>$dat]);
@@ -33,27 +33,6 @@ class ProfileController extends Controller
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
         }
-        //write data to tblregistrant
-        $profile=new Tblregistrant();
-        $profile->regid = $request->user()->regid;
-        $profile->nationality=$request->get('nationality');
-        $profile->city=$request->get('city');
-        $profile->phone=$request->get('phone');
-        $profile->email=$request->get('email');
-        $profile->address=$request->get('address');
-        $profile->birthdate=$request->get('birthdate');
-        $profile->gender=$request->get('gender');
-        $profile->socityMember=$request->get('socityMember');
-        $profile->mobile=$request->get('mobile');
-        $profile->hieducid=$request->get('hieducid');
-        $profile->birthplace=$request->get('birthplace');
-        $profile->workplace=$request->get('workplace');
-        $profile->job=$request->get('job');
-        $profile->higheducid=$request->get('higheducid');
-        $profile->workaddress=$request->get('workaddress');
-        $profile->specialization=$request->get('specialization');
-        $profile->engsociety=$request->get('engsociety');
-        $profile->save();
         $request->user()->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
@@ -78,5 +57,33 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function updatereginfo(ProfileUpdateRequest $request): RedirectResponse
+    {
+        //write data to tblregistrant
+        $profile=new Tblregistrant();
+       $request->merge(['regname'=>$request->get('name')]);
+        $profile->where('id',Auth()->user()->regid)->update($request->except(['_token','_method','name']));
+        // $profile->regid = $request->user()->regid;
+        // $profile->nationality=$request->get('nationality');
+        // $profile->city=$request->get('city');
+        // $profile->phone=$request->get('phone');
+        // $profile->email=$request->get('email');
+        // $profile->address=$request->get('address');
+        // $profile->birthdate=$request->get('birthdate');
+        // $profile->gender=$request->get('gender');
+        // $profile->socityMember=$request->get('socityMember');
+        // $profile->mobile=$request->get('mobile');
+        // $profile->hieducid=$request->get('hieducid');
+        // $profile->birthplace=$request->get('birthplace');
+        // $profile->workplace=$request->get('workplace');
+        // $profile->job=$request->get('job');
+        // $profile->higheducid=$request->get('higheducid');
+        // $profile->workaddress=$request->get('workaddress');
+        // $profile->specialization=$request->get('specialization');
+        // $profile->engsociety=$request->get('engsociety');
+        // $profile->save();
+        return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 }

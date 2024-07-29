@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::patch('/reginfo', [ProfileController::class, 'updatereginfo'])->name('reginfo.update');
 });
 // Add a route that can load an image from storage based on a parameter
 Route::get('/photos/{imageName}', [UserAvatarController::class,'show'])->name('show.avatar');

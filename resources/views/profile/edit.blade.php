@@ -4,18 +4,27 @@
             {{ __('Profile') }}
         </h2>
     </x-slot>
+    @if (session('error'))
+        <x-bladewind::alert type="error">
+            {{ session('error') }}
+        </x-bladewind::alert>
+    @endif
+    @if (session('success'))
+        <x-bladewind::alert type="success">
+            {{ session('success') }}
+        </x-bladewind::alert>
+    @endif
 
-    
-            <x-bladewind::tab-group name="profile" style="system">
-                <x-slot:headings>
-                    <x-bladewind::tab-heading name="personalinfo" icon="user-circle" :label="__('Personal Information')" active="true" />
-                    <x-bladewind::tab-heading name="accountmanager" icon="lock-closed" :label="__('Account Manager')" />
-                </x-slot:headings>
-                <x-bladewind::tab-body>
-                    <x-bladewind::tab-content name="personalinfo">
+    <x-bladewind::tab-group name="profile" style="system">
+        <x-slot:headings>
+            <x-bladewind::tab-heading name="personalinfo" icon="user-circle" :label="__('Personal Information')" active="true" />
+            <x-bladewind::tab-heading name="accountmanager" icon="lock-closed" :label="__('Account Manager')" />
+        </x-slot:headings>
+        <x-bladewind::tab-body>
+            <x-bladewind::tab-content name="personalinfo" active="true">
 
-                    <div class="py-12">
-                        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+                <div class="py-12">
+                    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                         <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                             <div class="max-w-xl">
                                 @include('profile.partials.update-profile-information-form')
@@ -40,13 +49,13 @@
                             </div>
                         </div>
 
-                        </div>
                     </div>
-                    </x-bladewind::tab-content>
+                </div>
+            </x-bladewind::tab-content>
 
-                    <x-bladewind::tab-content name="accountmanager">
-                        <div class="py-12">
-                            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <x-bladewind::tab-content name="accountmanager">
+                <div class="py-12">
+                    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                         <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                             <div class="max-w-xl">
                                 @include('profile.partials.update-password-form')
@@ -58,9 +67,9 @@
                                 @include('profile.partials.delete-user-form')
                             </div>
                         </div>
-                            </div>
-                        </div>
-                    </x-bladewind::tab-content>
-                </x-bladewind::tab-body>
-                </x-bladewind::tab-group>
+                    </div>
+                </div>
+            </x-bladewind::tab-content>
+        </x-bladewind::tab-body>
+    </x-bladewind::tab-group>
 </x-app-layout>

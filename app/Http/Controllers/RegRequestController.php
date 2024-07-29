@@ -90,8 +90,7 @@ public static function lockups():Array{
             //save data to database
             $regorder=new Tblregisterrequest();
             $regorder->ownerid=Auth()->user()->regid;
-            $regorder->idcardtype=$request->get('idtype');
-            $regorder->idcardno=$request->get('idcardno');
+           
             $regorder->job=$request->get('job');
             $regorder->gender=$request->get('gender');
             $regorder->address=$request->get('address');
