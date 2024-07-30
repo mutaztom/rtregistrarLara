@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-
+use App\Models\Tblregistrant;
 class UserAvatarController extends Controller
 {
     public function update(Request $request):string{
@@ -31,4 +31,24 @@ class UserAvatarController extends Controller
         // Return the image as a response
         return ($path); 
     }
+    public function uploadphoto(Request $request){
+        //upload photo of registrant
+        $regid=Auth()->user()->id;
+       if($request->hasFile('regphoto')){
+         $path=$request->file('regphoto');
+         $ext = $path->extension();
+         $fname='photo_'.$regid.'.'.$ext;
+         if(Storage::exists('public/photos/' . $fname))
+            Storage::delete('public/photos/'.auth()->user()->avatar);
+         Storage::putFileAs('public/photos/',$request->file('regphoto'),$fname);
+         //$path->storeAs('public/photos/',$fname);
+         Auth()->user()->avatar=$fname;
+         Auth()->user()->save();
+         Tblregistrant::where('id',auth()->user()->regid)
+         ->update(['photofile'=>$fname]);
+         return redirect()->route('profile.edit')->with('success', 'Photo uploaded successfully!');
+       }else{
+         return redirect()->route('profile.edit')->with('error', 'Please select a photo!');
+       }
+       }
 }

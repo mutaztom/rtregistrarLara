@@ -65,25 +65,7 @@ class ProfileController extends Controller
         $profile=new Tblregistrant();
        $request->merge(['regname'=>$request->get('name')]);
         $profile->where('id',Auth()->user()->regid)->update($request->except(['_token','_method','name']));
-        // $profile->regid = $request->user()->regid;
-        // $profile->nationality=$request->get('nationality');
-        // $profile->city=$request->get('city');
-        // $profile->phone=$request->get('phone');
-        // $profile->email=$request->get('email');
-        // $profile->address=$request->get('address');
-        // $profile->birthdate=$request->get('birthdate');
-        // $profile->gender=$request->get('gender');
-        // $profile->socityMember=$request->get('socityMember');
-        // $profile->mobile=$request->get('mobile');
-        // $profile->hieducid=$request->get('hieducid');
-        // $profile->birthplace=$request->get('birthplace');
-        // $profile->workplace=$request->get('workplace');
-        // $profile->job=$request->get('job');
-        // $profile->higheducid=$request->get('higheducid');
-        // $profile->workaddress=$request->get('workaddress');
-        // $profile->specialization=$request->get('specialization');
-        // $profile->engsociety=$request->get('engsociety');
-        // $profile->save();
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
+    
 }

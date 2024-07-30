@@ -23,31 +23,27 @@
         @endif
 
         <div class="container mx-auto overflow-auto text-gray-500 py-8 bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg">
-            <x-form metod="POST" action="/saveorder" id="regform" enctype="multipart/form-data">
+            <x-form metod="posst" action="{{route('saveorder')}}" id="regform">
                 @csrf
+                @method('post')
                 <section>
                     <div class="flex flex-col columns-1 md:columns-2 lg:columns-2">
-                            
-                            
-                            
                             <x-bladewind::card title="Personal Information" class="flex-grow w-80"  has_shadow="true">
                             <div class="grid grid-cols-1 w-full">    
                                 <x-bladewind::avatar    
                                 image="/photos/{{ Auth::user()->avatar}}"
                                     size="omg"/>
-                                    <p class="text-blue-600">Registrant Name</p>
+                                    <p>Registrant Name</p>
                                     <span class="text-2xl">{{ Auth::user()->name }}</span>
-                                <p class="text-blue-600">Email</p>
+                                <p>Email</p>
                                 <span class="text-2xl">{{ Auth::user()->email }}</span>
-                                <p class="text-blue-600">Phone Number</p>
-                            <x-input id="phoneno" name="phoneno" />
-                            <p class="text-blue-600">Mobile Number</p>
-                            <x-input id="mobileno" name="mobileno" />
-                                <p class="text-blue-600">High Education Id</p>
-                                <x-input id="higheducid" name="highEducationid" />
+                                <p>Phone Number</p>
+                            <span class="text-2xl">{{Auth::user()->registrant->phone ?: 'None'}}</span>
+                            <p>High Education Id</p>
+                            <span class="text-2xl">{{Auth::user()->registrant->higheducid ?: 'None'}}</span>
                             </div>
                             <x-label for="engineering_council_id"/>
-                            <p class="text-4xl">{{Auth::user()->id}}</p>
+                            <p class="text-2xl">{{Auth::user()->registrant->engcouncilid ?: 'None'}}</p>
                             </x-bladewind::card>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 p-2">
@@ -61,17 +57,13 @@
                                 @endforeach
                             </select>
                             <x-label for="registration_degree" />
-                            <select name="engdegree" id="engdegree" class="w-auto">
+                            <select name="regcat" id="engdegree" class="w-auto">
                                 @foreach ($engdegree as $degree)
                                     <option value={{ $degree->id }}>{{ $degree->item }}</option>
                                 @endforeach
                             </select>
                             <x-label for="specialization" />
-                            <select name="specialization" id="specialization" class="w-auto">
-                                @foreach ($specialization as $degree)
-                                    <option value={{ $degree->id }}>{{ $degree->item }}</option>
-                                @endforeach
-                            </select>
+                            <span class="text-2xl">{{ Auth::user()->registrant->specialization}}</span>
                             </div>
                         </x-bladewind::card>
                         <x-bladewind::card title="Ocupation">
@@ -84,8 +76,8 @@
                         <option value={{ $job->id }}>{{ $job->item }}</option>
                     @endforeach
                 </select>
-                <x-label for="work_address" />
-                <x-bladewind::textarea id="workaddress" name="workaddress"></x-bladewind::textarea>
+                {{-- <x-label for="work_address" />
+                <x-bladewind::textarea id="workaddress" name="workaddress"></x-bladewind::textarea> --}}
             </div>
         </x-bladewind::card>
                     </div>

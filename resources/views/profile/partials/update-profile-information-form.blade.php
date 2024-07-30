@@ -29,13 +29,7 @@
             <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)"
                 required autocomplete="username" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
-            <div class="flex flex-col columns-1 md:columns-2 lg:columns-2">
-                <x-bladewind::card title="Profile Photo" class="flex-grow">
-                    <x-bladewind::filepicker url="photos/{{ Auth::user()->avatar }}" placeholder="Profile Picture"
-                        name="regphoto" accepted_file_types="image/*, .png, .bmp" />
-                </x-bladewind::card>
-                
-            </div>
+            
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !$user->hasVerifiedEmail())
                 <div>
                     <p class="text-sm mt-2 text-gray-800 dark:text-gray-200">

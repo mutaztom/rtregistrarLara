@@ -22,7 +22,6 @@
         </x-slot:headings>
         <x-bladewind::tab-body>
             <x-bladewind::tab-content name="personalinfo" active="true">
-
                 <div class="py-12">
                     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                         <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
@@ -30,10 +29,33 @@
                                 @include('profile.partials.update-profile-information-form')
                             </div>
                         </div>
-
                         <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                             <div class="max-w-xl">
-                                @include('qualification')
+                                @includeWhen(@isset($qual),'qualification')
+                            </div>
+                        </div>
+                        <form action="{{ route('avatar.edit') }}" method="post" enctype="multipart/form-data">
+                            @csrf
+                            @method('patch')
+                            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+                                <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                                    <div class="max-w-xl">
+                                        <span class="text-xl">{{Auth::user()->avatar}}</span>
+                                        <x-bladewind::card title="Profile Photo" class="flex-grow">
+                                            <x-bladewind::filepicker url="photos/{{ Auth::user()->avatar }}"
+                                                placeholder="Profile Picture" name="regphoto" 
+                                                accepted_file_types="image/*, .png, .bmp" />
+                                                <x-bladewind::button name="cmdavatar" can_submit="true" type="primary">
+                                                <x-bladewind::icon name="arrow-long-up"/>    
+                                                {{__('Upload')}}</x-bladewind::button>
+                                        </x-bladewind::card>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                            <div class="max-w-xl">
+                                @include('qualification.qualificationlist')
                             </div>
                         </div>
 

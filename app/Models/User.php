@@ -8,6 +8,8 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\Tblregistrant;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * Class User
  * 
@@ -42,4 +44,7 @@ class User extends Authenticatable
 		'password',
 		'remember_token'
 	];
+	public function registrant():hasOne{
+		return $this->hasOne(Tblregistrant::class, 'id', 'regid');
+	}
 }

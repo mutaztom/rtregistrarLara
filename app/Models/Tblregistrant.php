@@ -8,7 +8,8 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\Tblspecialization;
+use Illuminate\Database\Eloquent\Model\HasOne;
 /**
  * Class Tblregistrant
  * 
@@ -80,4 +81,7 @@ class Tblregistrant extends Model
 		'idnumber',
 		'idtype',
 	];
+	public function specialization_name() :hasOne{
+		return $this->hasOne(Tblspecialization::class, 'id', 'specialization');
+	}
 }
