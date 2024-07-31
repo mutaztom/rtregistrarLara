@@ -59,7 +59,7 @@
         </x-bladewind::card>
 
         <x-bladewind::centered-content size="tiny">
-            <x-bladewind::button type="primary" name="command" can_submit="true">{{ __('Save') }}</x-bladewind::button>
+            <x-bladewind::button type="primary" name="command" icon="server" can_submit="true">{{ __('Save') }}</x-bladewind::button>
         </x-bladewind::centered-content>
 
     </x-form>

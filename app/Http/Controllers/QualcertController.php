@@ -14,49 +14,61 @@ class QualcertController extends Controller
     public function index(){
         $qual=new Tblqualification();
         return view('qualification',['qual'=>$qual,'qualtype'=>Tblqualification::all(),
-    'qualdegree'=>Tblqualdegree::all()]); //
+    'qualdegree'=>Tblqualdegree::all()]);
     }
     public function show(int $qualid){
         $qualifications=DB::table('tblqualification')->where('id',$qualid)->get();
         return view('qualification',compact(['qual'=>$qualifications]));
     }
     public function editQualification(Request $request){
-        $qualid=$request->get('qualid');
+        $qualid=$request->get('id');
+        $validated = $request->validate([
+          'entity' => 'required',
+          'start_date' => 'required',
+          'end_date' => 'required',
+      ]);
         if($qualid>0)
         {
-         if(!$request->hasfile('certificate') && Tblqualification::find($qualid)->pdf=='')
-             return redirect()->back()->with('error', 'No file selected!');
-        $update=DB::table('tblqualification')->where("id",$qualid)->update($request->except(['_tocket','csrf','command']));
          
+        $update=DB::table('tblqualification')->where("id",$qualid)
+            ->update(['entity'=>$request->get('entity')
+            ,'startdate'=>$request->get('start_date'),
+            'enddate'=>$request->get('end_date'),
+            'degree'=>$request->get('degree'),
+            'qualtype'=>$request->get('qualtype')]);
         }
         else{
-         $q=new Tblqualification();
-         $empid=Auth()->user()->regid;
-         $q->appid= $empid;
-         $q->empid=$empid;
+          if(!$request->hasfile('certificate') && Tblqualification::find($qualid)->pdf=='')
+             return redirect()->route('profile.edit')->with('error', 'No file selected!');
+         $update=DB::table('tblqualification')->create(
+         ["regid",Auth()->user()->regid,
+         'entity'=>$request->get('entity')
+         ,'startdate'=>$request->get('start_date'),
+         'enddate'=>$request->get('end_date'),
+         'degree'=>$request->get('degree'),
+         'qualtype'=>$request->get('qualtype')]);
+         $id=Tblqualification::where('id',$regid)->get()->last()->id;
+     }
          if(!$request->hasfile('certificate'))
-             return redirect()->back()->with('error', 'No file selected!');
-         //write data to database
-         DB::table('qualifications')->create($request->except(['_token','csrf','command']));
-         $qualid=$q->id;
-        }
+             return redirect()->back()->with('error', 'No pdf file selected, Please attach a certificate!');
         //upload certificate of registrant
         if($request->hasfile('certificate')){
+          $qualid=$qualid>0?$qualid:$id;
            $ext=$request->file('certificate')->getClientOriginalExtension();
            $fname="certificate_". str($qualid).'.'.$ext;
            if($ext!='pdf'){
-             return redirect()->back()->with('error', 'Only PDF files are allowed!');
+             return redirect()->route('profile.edit')->with('error', 'Only PDF files are allowed!');
            }
            $path = $request->file('certificate')->storeAs('public/certs',$fname);
              Tblqualification::where("id",$qualid)->update(["pdf"=>$fname]);
-           return redirect()->route('regorder')->with('success', 'Certificate pdf uploaded successfully!');
+           return redirect()->route('profile.edit')->with('success', 'Certificate pdf uploaded successfully!');
          }
          else 
          {
            if($qualid<=0)
-             return redirect()->route('regorder')->with('error', 'No file selected!');
+             return redirect()->route('profile.edit')->with('error', 'No file selected!');
            else
-           return redirect()->route('regorder')->with('success', 'Qualification saved successfully.');
+           return redirect()->route('profile.edit')->with('success', 'Qualification saved successfully.');
          }
          //upload photo of registrant
     }

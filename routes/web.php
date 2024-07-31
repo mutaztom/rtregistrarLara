@@ -31,14 +31,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::patch('/reginfo', [ProfileController::class, 'updatereginfo'])->name('reginfo.update');
     Route::patch('/uploadphoto', 'App\Http\Controllers\UserAvatarController@uploadphoto')->name('avatar.edit');
+    Route::get('/myorders', 'App\Http\Controllers\RegRequestController@orderList')->name('order.list');
+    Route::get('/modifyorder/{orderid}', 'App\Http\Controllers\RegRequestController@modifyOrder')->name('order.modify');
+    Route::post('/deleteorder/{orderid}', 'App\Http\Controllers\RegRequestController@deleteOrder')->name('order.delete');
 });
 // Add a route that can load an image from storage based on a parameter
 Route::get('/photos/{imageName}', [UserAvatarController::class,'show'])->name('show.avatar');
 Route::get('/getcert/{qualid}', [QualcertController::class,'showcert'])->name('show.cert');
 Route::get('/getcertfile/{qualid}', [QualcertController::class,'certfile'])->name('cert.file');
-Route::get('/qualifications', [QualcertController::class,'index'])->name('qual.index');
+Route::patch('/qualifications', [QualcertController::class,'index'])->name('qual.index');
 Route::get('/qualifications/{qualid}', [QualcertController::class,'show'])->name('qual.show');
-Route::patch('/modifyqual', [QualcertController::class,'edit'])->name('modify.qual');
+Route::patch('/modifyqual', [QualcertController::class,'editQualification'])->name('modify.qual');
 Route::get('/deletequal/{qualid}', [QualcertController::class,'delete'])->name('remove.qual');
 Route::post('/removequalpdf/{qualid}', [QualcertController::class,'deletepdf'])->name('remove.qualpdf');
 Route::post('/removemembership/{mid}', [MembershipController::class,'destroy'])->name('remove.membership');

@@ -1,9 +1,4 @@
-<div class="columns-2">
-    <h1 class="text-2xl">Qualification</h1>
-    <x-primary-button class="ml-2 mr-2" type="button" id="cmdaddnew" onclick="showQualification()">{{ __('Add New') }}
-        <x-bladewind::icon name="academic-cap"/>
-    </x-primary-button>
-</div>
+
 
 
 <x-bladewind::table name="tblqualifications" class="w-max-7">

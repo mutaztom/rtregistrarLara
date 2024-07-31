@@ -14,6 +14,13 @@
             {{ session('success') }}
         </x-bladewind::alert>
     @endif
+    @if ($errors->any())
+        @foreach ($errors->all() as $error)
+            <x-bladewind::alert type="error">
+                {{ $error }}
+            </x-bladewind::alert>
+        @endforeach
+    @endif
 
     <x-bladewind::tab-group name="profile" style="system">
         <x-slot:headings>
@@ -29,31 +36,37 @@
                                 @include('profile.partials.update-profile-information-form')
                             </div>
                         </div>
-                        <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                        <div id="panqualdiv" style="display:none" class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                             <div class="max-w-xl">
-                                @includeWhen(@isset($qual),'qualification')
+                                @include('qualification')
                             </div>
                         </div>
                         <form action="{{ route('avatar.edit') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             @method('patch')
-                            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+                            
                                 <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                                     <div class="max-w-xl">
-                                        <span class="text-xl">{{Auth::user()->avatar}}</span>
                                         <x-bladewind::card title="Profile Photo" class="flex-grow">
                                             <x-bladewind::filepicker url="photos/{{ Auth::user()->avatar }}"
-                                                placeholder="Profile Picture" name="regphoto" 
+                                                placeholder="Profile Picture" name="regphoto"
                                                 accepted_file_types="image/*, .png, .bmp" />
-                                                <x-bladewind::button name="cmdavatar" can_submit="true" type="primary">
-                                                <x-bladewind::icon name="arrow-long-up"/>    
-                                                {{__('Upload')}}</x-bladewind::button>
+                                            <x-bladewind::button name="cmdavatar" can_submit="true" type="primary">
+                                                <x-bladewind::icon name="arrow-long-up" />
+                                                {{ __('Upload') }}</x-bladewind::button>
                                         </x-bladewind::card>
                                     </div>
                                 </div>
-                            </div>
+                            
                         </form>
                         <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                            <div class="columns-2">
+                                <h1 class="text-2xl">Qualification</h1>
+                                <x-primary-button class="ml-2 mr-2" type="button" id="cmdaddnew"
+                                    onclick="showQualification()">{{ __('Add New') }}
+                                    <x-bladewind::icon name="academic-cap" />
+                                </x-primary-button>
+                            </div>
                             <div class="max-w-xl">
                                 @include('qualification.qualificationlist')
                             </div>

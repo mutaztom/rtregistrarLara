@@ -57,7 +57,7 @@
                 style="display:none;"><x-bladewind::icon name="bookmark-square"
                     type="solid" />{{ __('Update') }}</x-secondary-button>
             <x-secondary-button type="button" onclick="hidemempanel()"><x-bladewind::icon name="close"
-                    type="solid" />{{ __('Close') }}</x-secondary-button>
+                    type="solid" /><x-bladewind::icon name="x-circle"/>{{ __('Close') }}</x-secondary-button>
         </div>
     </div>
     <!-- table listing of membership -->
@@ -83,7 +83,7 @@
                     <td>
                         <x-danger-button onclick="return confirm('are you sure do you want to delete this item?')"
                             type="submit" name="command" value="removemembership_{{ $membership->id }}">
-                            <x-bladewind::icon name="trash" type="solid" />
+                            <x-bladewind::icon name="x-circle" type="solid" />
                         </x-danger-button>
                     </td>
                 <tr>

@@ -8,7 +8,9 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\HasOne;
+use App\Models\Tblregclass;
+use App\Models\Tblregdegree;
 /**
  * Class Tblregisterrequest
  * 
@@ -107,4 +109,10 @@ class Tblregisterrequest extends Model
 		'modifydate',
 		'noticed'
 	];
+	public function regclass_name():hasOne{
+		return $this->hasOne(Tblregclass::class, 'id','regclass');
+	}
+	public function regcat_name():hasOne{
+        return $this->hasOne(Tblregdegree::class, 'id','regcat');
+    }
 }

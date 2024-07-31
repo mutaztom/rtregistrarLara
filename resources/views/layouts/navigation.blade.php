@@ -18,7 +18,7 @@
                     <x-nav-link :href="route('regorder')" :active="request()->routeIs('regorder')">
                     {{ __('Register Request')}}
                     </x-nav-link>
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="route('order.list')" :active="request()->routeIs('order.list')">
                     {{ __('My Requests')}}
                     </x-nav-link>
                     <x-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.edit')">
@@ -85,7 +85,7 @@
             <x-responsive-nav-link :href="route('regorder')" :active="request()->routeIs('regorder')">
                 {{ __('Registration Request') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('regorder')" :active="request()->routeIs('regorder')">
+            <x-responsive-nav-link :href="route('order.list')" :active="request()->routeIs('roder.list')">
                 {{ __('My Orders') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.edit')">

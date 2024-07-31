@@ -150,5 +150,26 @@ public static function lockups():Array{
           $q->delete();
         //}
       }
-      
+public function orderList(Request $request){
+  $regid=Auth()->user()->regid;
+  $icons = [
+    "icon:pencil | tip:edit order | color:green | click:window.open('/modifyorder/'+{id},'_self')",
+    "icon:trash | color:red | click:showModal('confirmDelete')",
+];
+  $engcouncilid=Auth()->user()->registrant->engcouncilid ?: "None!";
+  $orders=DB::table('vwregisterrequest')->where('ownerid',$regid)
+  ->select('id','item','engclass','engdegree','ondate','status','payed')->get();
+  return view('myorders',compact('orders','icons','engcouncilid'));
+}
+public function modifyOrder(Request $request,$orderid){
+  $order=DB::table('vwregisterrequest')->where('id',$orderid)->first();
+  $param=RegRequestController::lockups();
+  $param['order']=$order;
+  return view('regorder',$param);
+}
+public function deleteOrder(Request $request,$orderid){
+  //DB::table('tblregisterrequest')->where('id',$orderid)->delete();
+  dd('delete is called');
+  return redirect()->route('order.liast')->with('success', 'Order deleted successfully!');
+}
 }
