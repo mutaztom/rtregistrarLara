@@ -21,6 +21,8 @@ use Illuminate\Http\Request\filesystem;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tblsociety;
+use Illuminate\View\View;
+use Illuminate\Support\Facades\Redirect;
 
 class RegRequestController extends Controller
 {
@@ -65,6 +67,9 @@ public static function lockups():Array{
   
      //process form data
      $param=RegRequestController::lockups();
+     $order=new TblregisterRequest();
+     $order->ownerid=Auth()->user()->regid;
+     $param['order']=$order;
       return view('regorder',$param);
    }
         
@@ -72,13 +77,21 @@ public static function lockups():Array{
           $command=$request->get('command');
          if($command=='saveorder'){
             //save data to database
-            $regorder=new Tblregisterrequest();
+            if($request->has('order'))
+              {
+                $orderid=$request->get('order')->get('id');
+                dd($orderid);
+              }
             $regorder->ownerid=Auth()->user()->regid;
-            $request->merge(['regid'=>$regorder->ownerid]);
-           DB::table('tblregisterrequest')->updateOrInsert($request->except(['_crsrf','_method','_token','command']));
+            $request->merge(['ownerid'=>$regorder->ownerid]);
+            $request->merge(['ondate'=>Carbon::now()]);
+            $request->merge(['status'=>'Requested'])
+            ->merge(['item'=>"New order request"]);
+           DB::table('tblregisterrequest')->where('id',$orderid)->updateOrInsert($request->except(['_crsrf','_method','_token','command']));
             return redirect()->route('regorder')->with('success', 'Request order saved successfully!');
+         }else if($command=='close'){
+          return redirect()->route('order.list');
          }
-        
         else if(str_starts_with($command,'deletequal'))
         {
           $qualid=explode('_',$command)[1];
@@ -150,11 +163,11 @@ public static function lockups():Array{
           $q->delete();
         //}
       }
-public function orderList(Request $request){
+public function orderList(Request $request):View{
   $regid=Auth()->user()->regid;
   $icons = [
     "icon:pencil | tip:edit order | color:green | click:window.open('/modifyorder/'+{id},'_self')",
-    "icon:trash | color:red | click:showModal('confirmDelete')",
+    "icon:trash | tip:delete order | color:red | click:confirmDelete({id})",
 ];
   $engcouncilid=Auth()->user()->registrant->engcouncilid ?: "None!";
   $orders=DB::table('vwregisterrequest')->where('ownerid',$regid)
@@ -162,14 +175,13 @@ public function orderList(Request $request){
   return view('myorders',compact('orders','icons','engcouncilid'));
 }
 public function modifyOrder(Request $request,$orderid){
-  $order=DB::table('vwregisterrequest')->where('id',$orderid)->first();
+  $order=DB::table('tblregisterrequest')->where('id',$orderid)->first();
   $param=RegRequestController::lockups();
   $param['order']=$order;
   return view('regorder',$param);
 }
-public function deleteOrder(Request $request,$orderid){
-  //DB::table('tblregisterrequest')->where('id',$orderid)->delete();
-  dd('delete is called');
-  return redirect()->route('order.liast')->with('success', 'Order deleted successfully!');
+public function destroy(Request $request,int $orderid) {
+  DB::table('tblregisterrequest')->where('id',$orderid)->delete();
+  return redirect()->route('order.list')->with('success','Order deleted successfully!');
 }
 }

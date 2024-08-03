@@ -4,25 +4,23 @@
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
-
-    @if (session('error'))
-        <x-bladewind::alert type="error">
-            {{ session('error') }}
-        </x-bladewind::alert>
-    @endif
-    @if (session('success'))
-        <x-bladewind::alert type="success">
-            {{ session('success') }}
-        </x-bladewind::alert>
-    @endif
-    <x-bladewind::notification />
-    @if ($errors->any())
-        @foreach ($errors->all() as $error)
-            <x-bladewind::alert type="error">
-                {{ $error }}
-            </x-bladewind::alert>
-        @endforeach
-    @endif
+<script>
+    let selectedOrder=-1;
+    function deleteOrder(orderid){
+        console.log("requested delete "+selectedOrder);
+        hideModal('confirmDelete');
+        act=domEl('.profile-form').getAttribute('action');
+        act=act.replace('-1',selectedOrder);
+        console.log(act+"    "+selectedOrder);
+        domEl('.profile-form').setAttribute('action',act);
+        domEl('.profile-form').submit();
+    }
+    function confirmDelete(orderid){
+        showModal('confirmDelete');
+        selectedOrder = orderid;
+        console.log("selected order: "+selectedOrder);
+    }
+    </script>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -53,7 +51,7 @@
                     {{ __('My Requests!') }}
                     @if ($orders->count() > 0)
                         <x-bladewind::table :data="$orders" compact="true" striped="true" divider="thin"
-                            exclude_columns="ownerid,rpin" :action_icons="$icons">
+                            name="tblorders" exclude_columns="ownerid,rpin" :action_icons="$icons">
                         </x-bladewind::table>
                     @else
                         <x-bladewind::empty-state message="You have no orders yet." empty_state="false"
@@ -64,13 +62,14 @@
             </div>
         </div>
     </div>
-    <x-bladewind::modal name="confirmDelete" show_action_buttons="false" title="Are you sure">
-        <form method="get" :action="route('order.delete',22)" class="profile-form-simple">
+    <x-bladewind::modal name="confirmDelete" type="warning"
+     ok_button_action="deleteOrder({id})"
+     title="Are you sure">
+        <form action="deleteorder/-1" method="POST" id="confirmDelete" class="profile-form">
             @csrf
-            @method('post')
-            <b>If you delete rgistration order {id}, all of your data associated with order will be lost.</b>
+            @method('patch')
+            <b>If you delete rgistration order, all of your data associated with order will be lost.</b>
             <br />
-            <x-bladewind::button type="primary" icon="x-mark" color="red" can_submit="true" name="cmddelete">Delete</x-bladewind::button>
         </form>
     </x-bladewind::modal>
 </x-app-layout>

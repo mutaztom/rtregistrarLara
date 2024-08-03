@@ -20,10 +20,22 @@ class ProfileController extends Controller
     {
         $dat=Tblregistrant::where('id',Auth()->user()->regid)->get()->first();
         $param=RegRequestController::lockups();
+        $profilecompletion=$this->calculateProfile();
         //dd($dat);
-        return view('profile.edit', $param,['user'=>Auth()->user(),'registrant'=>$dat]);
+        return view('profile.edit', $param,['user'=>Auth()->user(),'registrant'=>$dat,'profcomp'=>$profilecompletion]);
     }
-
+private function calculateProfile():int{
+    //add your logic here to calculate profile completion percentage
+    //for example, assuming you have 5 fields in tblregistrant table
+    $percomp=0;
+    $qual=round((DB::table('tblqualification')->where('empid',Auth()->user()->regid)->count()));
+    $memb=round((DB::table('tblregmemberships')->where('regid',Auth()->user()->regid)->count()));
+    $reg=Tblregistrant::where('id',Auth()->user()->regid)->get()->first;
+    //check for all empty fields in reg
+    $percomp=($qual>=1?30:0)+($memb>=1?30:0);
+    $reg->nationality==null;
+    return $percomp;
+}
     /**
      * Update the user's profile information.
      */
