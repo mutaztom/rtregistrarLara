@@ -76,19 +76,19 @@ public static function lockups():Array{
         public function saveorder(Request $request){
           $command=$request->get('command');
          if($command=='saveorder'){
-            //save data to database
-            if($request->has('order'))
-              {
-                $orderid=$request->get('order')->get('id');
-                dd($orderid);
+            //save data to databas
+            $orderid=$request->get('orderid');
+              if($orderid>0){
+                DB::table('tblregisterrequest')->where('id',$orderid)->update($request->except(['_crsrf','_method','_token','command','orderid']));
+              }else{
+                    $request->merge(['ownerid'=>Auth()->user()->regid]);
+                    $request->merge(['ondate'=>Carbon::now()]);
+                    $request->merge(['status'=>'Requested'])
+                    ->merge(['item'=>"New order request"]);
+                    DB::table('tblregisterrequest')->insert($request->except(['_crsrf','_method','_token','command','orderid']));
+                    $regid=DB::table('tblregisterrequest')->where('ownerid',Auth()->user()->regid)->get()->last()->id;
               }
-            $regorder->ownerid=Auth()->user()->regid;
-            $request->merge(['ownerid'=>$regorder->ownerid]);
-            $request->merge(['ondate'=>Carbon::now()]);
-            $request->merge(['status'=>'Requested'])
-            ->merge(['item'=>"New order request"]);
-           DB::table('tblregisterrequest')->where('id',$orderid)->updateOrInsert($request->except(['_crsrf','_method','_token','command']));
-            return redirect()->route('regorder')->with('success', 'Request order saved successfully!');
+              return redirect()->route('order.modify',['orderid'=>$orderid])->with('success', 'Request order saved successfully!');
          }else if($command=='close'){
           return redirect()->route('order.list');
          }

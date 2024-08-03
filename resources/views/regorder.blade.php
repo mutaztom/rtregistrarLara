@@ -48,11 +48,12 @@
 
                         <x-bladewind::card title="Registration Details" class="flex-shrink">
                             <div class="flex flex-col columns-1 md:columns-2 lg:columns-4">
+                                <input hidden name="orderid" value={{$order->id}} id="orderid"/>
                                 <x-label for="registration_class" />
                                 <select id="regclass" name="regclass" class="w-auto">
                                     <option value="">... Select ...</option>
                                     @foreach ($engclass as $regclass)
-                                        <option value="{{ $regclass->id }}" @selected($order->engclass == $regclass->id)>
+                                        <option value="{{ $regclass->id }}" @selected($order->regclass == $regclass->id)>
                                             {{ $regclass->item }}</option>
                                     @endforeach
                                 </select>
@@ -60,7 +61,7 @@
                                 <select name="regcat" id="engdegree" class="w-auto">
                                     <option value="">... Select ...</option>
                                     @foreach ($engdegree as $degree)
-                                        <option value={{ $degree->id }} @selected($order->engdegree == $degree->id)>
+                                        <option value={{ $degree->id }} @selected($order->regcat == $degree->id)>
                                             {{ $degree->item }}</option>
                                     @endforeach
                                 </select>

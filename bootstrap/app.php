@@ -12,6 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         //
+        dd($middleware->getGuard());
+        if($middleware->getGuard()->name()=='admin'){
+                $middleware->redirectGuestsTo('staff.login');
+        }
+    
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
