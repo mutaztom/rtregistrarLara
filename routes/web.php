@@ -25,7 +25,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth:admin')->group(function () {
-    Route::get('/inbox',[InboxController::class, 'inbox'])->name('inbox');
+    Route::get('/inbox',[InboxController::class, 'index'])->name('inbox');
     
 });
 

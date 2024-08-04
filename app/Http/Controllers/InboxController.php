@@ -11,7 +11,12 @@ class InboxController extends Controller
      */
     public function index()
     {
-        return view('inbox');
+        $user=Staffuser::getorFail(1);
+        Auth::guard('admin')->login($user);
+        if (Auth::guard()->attempt()) 
+            return view('inbox');
+            else 
+            return redirect('stafflogin');
     }
 
     /**
