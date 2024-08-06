@@ -6,6 +6,12 @@
     </x-slot>
     
 <div>
-    <x-bladewind::statistic label="New Orders" number="22"/>
+    <x-bladewind::centered-content size="small">
+
+    <x-bladewind::card>
+        this content is centered in this column
+    </x-bladewind::card>
+
+</x-bladewind::centered-content>
 </div>
 </x-app-layout>

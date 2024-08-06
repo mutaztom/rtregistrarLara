@@ -19,8 +19,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Auth::viaRequest('admin', function (Request $request) {
-            return User::where('token', (string) $request->token)->first();
-        });
+        // Auth::viaRequest('admin', function (Request $request) {
+        //     return User::where('token', (string) $request->token)->first();
+        // });
     }
 }

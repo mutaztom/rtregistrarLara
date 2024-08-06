@@ -4,7 +4,9 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-Illuminate\Contracts\Auth\UserProvider;
+use Illuminate\Notifications\Notifiable;
+
+use Illuminate\Contracts\Auth\UserProvider;
 /**
  * Class StaffUser
  * 
@@ -23,6 +25,7 @@ class Staffuser extends Authenticatable
 {
     use HasFactory;
     protected $table='staffuser';
+
     protected $casts = [
 		'email_verified_at' => 'datetime'
 	];

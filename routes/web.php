@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegRequestController;
 use App\Http\Controllers\QualcertController;
 use App\Http\Controllers\UserAvatarController;
+use App\Http\Controllers\Auth\AdminSessionAuthenticator;
+use App\Http\Controllers\InboxController;
+use App\Http\Controllers\SettingsController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,10 +27,13 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth:admin')->group(function () {
-    Route::get('/inbox',[InboxController::class, 'index'])->name('inbox');
-    
+Route::get('/stafflogin', [AdminSessionAuthenticator::class, 'getLogin'])->name('staff.login');
+Route::post('/stafflogin', [AdminSessionAuthenticator::class, 'postLogin'])->name('staff.login.post');
+Route::group(['namespace'=>'Admin','middleware'=>'admin'], function () {
+    Route::get('/inbox',[InboxController::class,'index'])->name('inbox');
+    Route::get('/settings',[SettingsController::class, 'create'])->name('settings');
 });
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

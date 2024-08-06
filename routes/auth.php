@@ -34,10 +34,10 @@ Route::middleware('guest')->group(function () {
     Route::post('reset-password', [NewPasswordController::class, 'store'])
                 ->name('password.store');
 
-    Route::get('stafflogin',[AdminSessionAuthenticator::class,'create'])
+    Route::get('stafflogin',[AdminSessionAuthenticator::class,'getLogin'])
                 ->name('staff.login');
-    Route::post('stafflogin',[AdminSessionAuthenticator::class,'store'])
-                ->name('staff.login');
+    Route::post('stafflogin',[AdminSessionAuthenticator::class,'postLogin'])
+                ;
 });
 
 Route::middleware('auth')->group(function () {
@@ -62,7 +62,12 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->name('logout');
 });
-
-Route::middleware('auth:admin')->group(function () {
-    Route::get('inbox',[InboxController::class,'create'])->name('inbox');
+Route::middleware('guest:admin')->group(function(){
+    Route::get('stafflogin',[AdminSessionAuthenticator::class,'getLogin'])
+                ->name('staff.login');
+    Route::post('stafflogin',[AdminSessionAuthenticator::class,'postLogin'])
+                ->name('staff.login.post');
 });
+// Route::middleware('auth:admin')->group(function () {
+//     Route::get('inbox',[InboxController::class,'index']);
+// });

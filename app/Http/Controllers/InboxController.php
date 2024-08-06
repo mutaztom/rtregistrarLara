@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Tblregisterrequest;
 
 class InboxController extends Controller
 {
@@ -11,12 +12,8 @@ class InboxController extends Controller
      */
     public function index()
     {
-        $user=Staffuser::getorFail(1);
-        Auth::guard('admin')->login($user);
-        if (Auth::guard()->attempt()) 
-            return view('inbox');
-            else 
-            return redirect('stafflogin');
+        $orders=Tblregisterrequest::all();
+       return view("admin.inbox",['orders'=>$orders]);
     }
 
     /**
@@ -24,7 +21,8 @@ class InboxController extends Controller
      */
     public function create()
     {
-        return view('inbox');
+        $orders=Tblregisterrequest::all();
+        return view('admin.inbox',['orders'=>$orders]);
     }
 
     /**
