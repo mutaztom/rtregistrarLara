@@ -32,6 +32,7 @@ Route::post('/stafflogin', [AdminSessionAuthenticator::class, 'postLogin'])->nam
 Route::group(['namespace'=>'Admin','middleware'=>'admin'], function () {
     Route::get('/inbox',[InboxController::class,'index'])->name('inbox');
     Route::get('/settings',[SettingsController::class, 'create'])->name('settings');
+    Route::patch('/updatesettings',[SettingsController::class, 'edit'])->name('settings.edit');
 });
 
 

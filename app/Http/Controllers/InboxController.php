@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Tblregisterrequest;
+use App\Models\Vwregisterrequest;
 
 class InboxController extends Controller
 {
@@ -12,7 +12,8 @@ class InboxController extends Controller
      */
     public function index()
     {
-        $orders=Tblregisterrequest::all();
+        $orders=Vwregisterrequest::select('id','item','regname','engclass','engdegree','ondate','status')
+        ->orderBy('id','desc')->get();
        return view("admin.inbox",['orders'=>$orders]);
     }
 
