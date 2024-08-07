@@ -44,4 +44,7 @@ class Staffuser extends Authenticatable
 		'password',
 		'remember_token'
 	];
+	public function avatar(){
+		return asset('storage/staffuser/'.photo);
+	}
 }

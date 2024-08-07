@@ -33,6 +33,7 @@ Route::group(['namespace'=>'Admin','middleware'=>'admin'], function () {
     Route::get('/inbox',[InboxController::class,'index'])->name('inbox');
     Route::get('/settings',[SettingsController::class, 'create'])->name('settings');
     Route::patch('/updatesettings',[SettingsController::class, 'edit'])->name('settings.edit');
+    Route::patch('/deletesettings',[SettingsController::class, 'delete'])->name('settings.delete');
 });
 
 

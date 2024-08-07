@@ -27,10 +27,16 @@ class SettingsController extends Controller
     }
     public function edit(Request $request){
         //save form data into option
-        $id=$request->get('optionid');
+        $id=$request->get('itemid');
         $tbl=$request->get('tbl');
         DB::table($tbl)->where('id',$id)->update(['item'=>$request->get('item')
         ,'aritem'=>$request->get('aritem')]);
-        return redirect()->back()->with('success','option updated');
+        return redirect()->route('settings')->with('success','option updated');
+    }
+    public function delete(Request $request){
+        $id=$request->get('rem_itemid');
+        $tbl=$request->get('rem_tbl');
+        DB::table($tbl)->where('id',$id)->delete();
+        return redirect()->back()->with('success','option deleted');
     }
 }
