@@ -8,7 +8,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * Class Tblfee
  * 
@@ -45,4 +45,10 @@ class Tblfee extends Model
 		'regdegree',
 		'amount'
 	];
+	public function regclass_name():HasOne{
+		return $this->hasOne(Tblengclass::class, 'id','regclass');
+	}
+	public function regdegree_name():HasOne{
+        return $this->hasOne(Tblengdegree::class, 'id','regdegree');
+    }
 }

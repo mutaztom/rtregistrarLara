@@ -34,6 +34,8 @@ Route::group(['namespace'=>'Admin','middleware'=>'admin'], function () {
     Route::get('/settings',[SettingsController::class, 'create'])->name('settings');
     Route::patch('/updatesettings',[SettingsController::class, 'edit'])->name('settings.edit');
     Route::patch('/deletesettings',[SettingsController::class, 'delete'])->name('settings.delete');
+    Route::patch('/updatefee',[SettingsController::class,'modifyFee'])->name('fees.update');
+    Route::patch('/deletefee',[SettingsController::class,'deleteFee'])->name('fees.delete');
 });
 
 

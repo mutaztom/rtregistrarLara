@@ -14,6 +14,19 @@
         document.getElementById('rem_itemid').value = itemid;
         document.getElementById('rem_tbl').value = tblname;
     }
+
+    function modifyFee(feeid) {
+        showModal('modifyFee');
+        document.getElementById('feeid').value = feeid;
+        document.getElementById('regclass').value = document.getElementById('regclass_' + feeid).innerText;
+        document.getElementById('regdegree').value = document.getElementById('regdegree_' + feeid).innerText;
+        document.getElementById('amount').value = document.getElementById('amount_' + feeid).innerText;
+    }
+
+    function deleteFee(feeid) {
+        document.getElementById('rem_feeid').value = feeid;
+        showModal('deleteFee');
+    }
 </script>
 <x-admin-layout>
     <x-slot name="header">
@@ -72,8 +85,38 @@
                         </div>
                     </x-bladewind::tab-content>
                     <x-bladewind::tab-content name="fees">
-                        <p>Fees</p>
-                        <x-bladewind::table data="{{DB::table('tblfees')->get()}}" empty_state="true"/>
+                        <x:bladewind::card class="max-h-2">
+                            <div class="flex flex-row bg-primary-50 gap-2 p-3">
+                                <span class="text-2xl">Registration Fees</span>
+                                <x-bladewind::button type="primary" name="addfees" icon="plus-circle"
+                                    onclick="modifyFee(-1)">
+                                    {{ __('Add Fee') }}
+                                </x-bladewind::button>
+                            </div>
+                            </x:bladewind::content-center>
+                            <x-bladewind::table empty_state="true">
+                                <x-slot:header>
+                                    <th>id</th>
+                                    <th>Registration Class</th>
+                                    <th>Registration Degree</th>
+                                    <th>Registration Fee</th>
+                                    <th>Actions</th>
+                                </x-slot:header>
+                                @foreach ($fees as $f)
+                                    <tr>
+                                        <td>{{ $f->id }}</td>
+                                        <td>{{ $f->regclass_name->item }}</td>
+                                        <td>{{ $f->regdegree_name == null ? 'None' : $f->regdegree_name->item }}</td>
+                                        <td>{{ $f->amount }}</td>
+                                        <td>
+                                            <x-bladewind::button.circle icon="pencil"
+                                                onclick="modifyFee({{ $f->id }})"></x-bladewind::button.circle>
+                                            <x-bladewind::button.circle icon="trash" color='red'
+                                                onclick="deleteFee({{ $f->id }})"></x-bladewind::button.circle>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </x-bladewind::table>
                     </x-bladewind::tab-content>
                     <x-bladewind::tab-content name="communication">
                         <x-bladewind::card name="mailsettings" size="tiny">
@@ -84,13 +127,14 @@
                             </x-slot:header>
                             <x-label for="host_name" />
                             <x-bladewind::input name="hostname" size="regular" :value="old('hostname')" />
-                        <x-label for="user_name" />
-                        <x-bladewind::input name="username" :value="old('username')" />
-                        <x-label for="password" />
-                        <x-bladewind::input name="password" size="regular" type="password" icon="key" :value="old('password')" />
-                         <x-label for="port" />
-                         <x-bladewind::input name="port" :value="old('port')" />
-                         <x-bladewind::button type="primary">__('Save')</x-bladewind::button>
+                            <x-label for="user_name" />
+                            <x-bladewind::input name="username" :value="old('username')" />
+                            <x-label for="password" />
+                            <x-bladewind::input name="password" size="regular" type="password" icon="key"
+                                :value="old('password')" />
+                            <x-label for="port" />
+                            <x-bladewind::input name="port" :value="old('port')" />
+                            <x-bladewind::button type="primary">{{ __('Save') }}</x-bladewind::button>
                         </x-bladewind::card>
                     </x-bladewind::tab-content>
                 </x-bladewind::tab-body>
@@ -137,5 +181,45 @@
             <p>Are you sure you want to delete this item?</p>
             <x-bladewind::button can_submit="true" color="red">Delete</x-bladewind::button>
             <x-bladewind::button onclick="hideModal('confirmDelete')">Cancel</x-bladewind::button>
+    </x-bladewind::modal>
+    <x-bladewind::modal name="deleteFee" show_action_buttons="false" title="Confirm Delete Fee.">
+        <form method="post" action={{ route('fees.delete') }}>
+            @csrf
+            @method('patch')
+            <input type="hidden" id="rem_feeid" name="rem_feeid" />
+            <p>Are you sure you want to delete this fee?</p>
+            <p>This step can not be undone.</p>
+            <x-bladewind::button can_submit="true" icon="trash" color="red">Delete</x-bladewind::button>
+            <x-bladewind::button icon="cross" onclick="hideModal('deleteFee')">Cancel</x-bladewind::button>
+        </form>
+    </x-bladewind::modal>
+    <x-bladewind::modal name="modifyFee" show_action_buttons="false">
+        <form method="POST" action="{{ route('fees.update') }}">
+            @method("patch")
+            @csrf
+           <div class="flex flex-col gap-1">
+            <x-input type="hidden" name="feeid" />
+            <x-label for="registration_class" />
+            <select id="registration_class" name="regclass">
+                @foreach (DB::table('tblengclass')->get() as $regclass)
+                    <option value={{ $regclass->id }}>{{ $regclass->item }}</option>
+                @endforeach
+            </select>
+            <x-label for="registration_degree" />
+            <select id="registration_degree" name="regdegree">
+                @foreach (DB::table('tblengdegree')->get() as $regdegree)
+                    <option value={{ $regdegree->id }}>{{ $regdegree->item }}</option>
+                @endforeach
+            </select>
+            <x-label for="amount" />
+            <x-bladewind::input type="number" id="amount" name="amount" class="w-full px-3 py-2 text-gray-700" />
+            <div class="flex flex-row">
+            <x-bladewind::button name="cmdsaveFee" can_submit="true" class="ml-2 mr-2"
+                icon="server">{{ __('Save') }}</x-bladewind::button>
+            <x-bladewind::button name="cmdcancelFee" icon="cross" class="columns-1"
+                onclick="hideModal('modifyFee')">{{ __('Cancel') }}</x-bladewind::button>
+           </div>       
+           </div>
+        </form>
     </x-bladewind::modal>
 </x-admin-layout>
