@@ -26,15 +26,9 @@ class SettingsController extends Controller
             $vals=DB::table($tbl)->get();
             $opdat[$tbl]=$vals;
         }
+        
         return view('admin.settings',['optionlist'=>$optionlist,
-        'opdat'=>$opdat,
-    'fees'=>$fees]);
-        foreach($optionlist as $option){
-            $tbl=$option->tblname;
-            $vals=DB::table($tbl)->get();
-            $opdat[$tbl]=$vals;
-        }
-        return view('admin.settings',['optionlist'=>$optionlist,'opdat'=>$opdat]);
+        'opdat'=>$opdat,'fees'=>$fees]);
     }
     //save settings
     public function store(Request $request){

@@ -8,7 +8,7 @@ use App\Http\Controllers\UserAvatarController;
 use App\Http\Controllers\Auth\AdminSessionAuthenticator;
 use App\Http\Controllers\InboxController;
 use App\Http\Controllers\SettingsController;
-
+use App\Http\Controllers\OrderController;
 Route::get('/', function () {
     return view('welcome');
 });
@@ -36,6 +36,9 @@ Route::group(['namespace'=>'Admin','middleware'=>'admin'], function () {
     Route::patch('/deletesettings',[SettingsController::class, 'delete'])->name('settings.delete');
     Route::patch('/updatefee',[SettingsController::class,'modifyFee'])->name('fees.update');
     Route::patch('/deletefee',[SettingsController::class,'deleteFee'])->name('fees.delete');
+    Route::get('/viewregrequest',[OrderController::class,"index"])->name('regrequest.view');
+    Route::patch('/deleteregrequest',[OrderController::class,"deleteOrder"])->name('regrequest.delete');
+    Route::patch('/modifyregrequest',[OrderController::class,"modifyOrder"])->name('regrequest.modify');
 });
 
 

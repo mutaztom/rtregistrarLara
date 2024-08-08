@@ -12,9 +12,16 @@ class InboxController extends Controller
      */
     public function index()
     {
+        //action buttons
+        $actionbuttons=[
+            "icon:eye |tip:View Order for processing |color:blue | click:redirect('/viewregrequest/{id}')",
+            "icon:trash |tip:Delete selected order | color:red | click:deleteOrder({id})",
+           
+        ];
+        //load orders with action buttons
         $orders=Vwregisterrequest::select('id','item','regname','engclass','engdegree','ondate','status')
         ->orderBy('id','desc')->get();
-       return view("admin.inbox",['orders'=>$orders]);
+       return view("admin.inbox",['orders'=>$orders,"actionButtons"=>$actionbuttons]);
     }
 
     /**
