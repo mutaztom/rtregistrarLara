@@ -68,6 +68,3 @@ Route::middleware('guest:admin')->group(function(){
     Route::post('stafflogin',[AdminSessionAuthenticator::class,'postLogin'])
                 ->name('staff.login.post');
 });
-// Route::middleware('auth:admin')->group(function () {
-//     Route::get('inbox',[InboxController::class,'index']);
-// });

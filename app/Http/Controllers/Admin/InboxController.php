@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Models\Vwregisterrequest;
+use App\Http\Controllers\Controller;
 
 class InboxController extends Controller
 {
@@ -14,7 +15,7 @@ class InboxController extends Controller
     {
         //action buttons
         $actionbuttons=[
-            "icon:eye |tip:View Order for processing |color:blue | click:redirect('/viewregrequest/{id}')",
+            "icon:eye |tip:View Order for processing |color:blue | click:window.open('/viewregrequest/'+{id},'_self')",
             "icon:trash |tip:Delete selected order | color:red | click:deleteOrder({id})",
            
         ];
@@ -71,5 +72,7 @@ class InboxController extends Controller
     public function destroy(string $id)
     {
         //
+        Tblregisterrequest::where('id',$request())->get('orderid')->delete();
+        return redirect()->back()->with('success', 'Order has been deleted successfully');
     }
 }

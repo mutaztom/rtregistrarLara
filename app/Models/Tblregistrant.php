@@ -9,7 +9,10 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Tblspecialization;
-use Illuminate\Database\Eloquent\Model\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Tblqualification;
+use App\Models\Tblregmembership;
 /**
  * Class Tblregistrant
  * 
@@ -81,7 +84,13 @@ class Tblregistrant extends Model
 		'idnumber',
 		'idtype',
 	];
-	public function specialization_name() :hasOne{
+	public function specialization_name() :HasOne{
 		return $this->hasOne(Tblspecialization::class, 'id', 'specialization');
 	}
+	public function qualifications() :HasMany{
+        return $this->hasMany(Tblqualification::class, 'empid', 'id');
+    }
+	public function memberships() :HasMany{
+        return $this->hasMany(Tblregmembership::class, 'regid', 'id');
+    }
 }

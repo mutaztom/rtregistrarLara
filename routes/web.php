@@ -6,9 +6,9 @@ use App\Http\Controllers\RegRequestController;
 use App\Http\Controllers\QualcertController;
 use App\Http\Controllers\UserAvatarController;
 use App\Http\Controllers\Auth\AdminSessionAuthenticator;
-use App\Http\Controllers\InboxController;
+use App\Http\Controllers\Admin\InboxController;
 use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Admin\OrderController;
 Route::get('/', function () {
     return view('welcome');
 });
@@ -36,9 +36,16 @@ Route::group(['namespace'=>'Admin','middleware'=>'admin'], function () {
     Route::patch('/deletesettings',[SettingsController::class, 'delete'])->name('settings.delete');
     Route::patch('/updatefee',[SettingsController::class,'modifyFee'])->name('fees.update');
     Route::patch('/deletefee',[SettingsController::class,'deleteFee'])->name('fees.delete');
-    Route::get('/viewregrequest',[OrderController::class,"index"])->name('regrequest.view');
-    Route::patch('/deleteregrequest',[OrderController::class,"deleteOrder"])->name('regrequest.delete');
+    Route::get('/viewregrequest/{orderid}',[OrderController::class,'index'])->name('regrequest.view');
+    Route::patch('/deleteregrequest',[InboxController::class,"destroy"])->name('regrequest.delete');
     Route::patch('/modifyregrequest',[OrderController::class,"modifyOrder"])->name('regrequest.modify');
+    Route::get('/admindashboard','AdmindashboardController@index')->name('admindashboard');
+    //admin manipuation for orders
+    Route::patch('/rejectorder',[OrderController::class,"rejectOrder"])->name('order.reject');
+    Route::patch('/approveorder',[OrderController::class,"approveOrder"])->name('order.approve');
+    Route::get('/inspectorder/{orderid}',[OrderController::class,"inspectOrder"])->name('order.inspect');
+    Route::patch('/orderpay',[OrderController::class,"payOrder"])->name('order.pay');
+    Route::patch('/registrantmail',[OrderController::class,"mailRegistrant"])->name('registrant.mail');
 });
 
 
@@ -51,7 +58,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/myorders', 'App\Http\Controllers\RegRequestController@orderList')->name('order.list');
     Route::get('/modifyorder/{orderid}', 'App\Http\Controllers\RegRequestController@modifyOrder')->name('order.modify');
     Route::patch('/deleteorder/{orderid}', 'App\Http\Controllers\RegRequestController@destroy')->name('order.delete');
-    
 });
 // Add a route that can load an image from storage based on a parameter
 Route::get('/photos/{imageName}', [UserAvatarController::class,'show'])->name('show.avatar');
