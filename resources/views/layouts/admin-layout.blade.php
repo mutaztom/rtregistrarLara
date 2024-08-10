@@ -40,14 +40,12 @@
         <!-- Page Content -->
         <main>
             @if (session('error'))
-            @foreach (session('error') as $er)
-            <x-bladewind::alert type="error">
-               {{$er}}
+           <x-bladewind::alert type="error">
+            {{session('error') }}
             </x-bladewind::alert>
             <x-bladewind::notification type="error">
-                {{ $er }}
+                {{session('error') }}
             </x-bladewind::notification>
-            @endforeach
         @endif
         @if (session('success'))
             <x-bladewind::alert type="success">

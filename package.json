@@ -20,6 +20,7 @@
         "vite": "^5.0"
     },
     "dependencies": {
+        "@heroicons/vue": "^2.1.5",
         "pikaday": "^1.8.2"
     }
 }

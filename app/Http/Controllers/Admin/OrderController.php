@@ -6,16 +6,19 @@ use Illuminate\Http\Request;
 use App\Models\Tblregisterrequest;
 use App\Http\Controllers\Controller; 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
+    protected static $qualactions=[
+        "icon:eye | tip:View Certificate |color:blue | click:window.open('/certs/{pdf}','_blank')",
+        ];
     //view order by its id
     public function index(int $orderid){
-        $qualactions=[
-            "icon:eye | tip:View Certificate |color:blue | click:window.open('/certs/{pdf}','_blank')",
-            ];
        $order= Tblregisterrequest::where('id',$orderid)->first();
-            return view('vieworder',['order'=>$order,'qualactions'=>$qualactions]);
+            return view('vieworder',['order'=>$order,
+            'qualactions'=>OrderController::$qualactions
+        ,'errors'=>collect([])]);
     }
     /**
      * Show the form for creating a new resource.
@@ -28,39 +31,30 @@ class OrderController extends Controller
         Tblregisterrequest::where('id',$request())->get('orderid')->delete();
         return redirect()->back()->with('success', 'Order has been deleted successfully');
     }
-    public function rejectOrder($request){
+    public function rejectOrder(Request $request){
+        Validator::make($request->all(), [
+            'orderid' => 'required',
+            'reject_reason' => 'required',
+        ])->validate();
+        Tblregisterrequest::where('id',$request->get('orderid'))
+        ->update(['status'=>'Rejected',
+                'rejectreason'=>$request->get('reject_reason'),]);
         return redirect()->back()->with('success', 'Order has been rejected');
     }
-    public function approveOrder($request){
+    public function approveOrder(Request $request){
+        Tblregisterrequest::where('id', $request->get('orderid'))
+        ->update(['status'=>'Processing']);
         return redirect()->back()->with('success', 'Order has been approved');
     }
 
     public function inspectOrder(int $orderid){
-        $errors=array();
+        $errors=collect([]);
         //check if registrant has qualifications
-        $order=Tblregisterrequest::find($orderid);
-        if($order->registrant->qualifications()->count()==0)
-            $errors['Qualifcation Missing'] = "Registrant didn't provide his qualifications";
-        //check all attached pdf for qualifications if missing
-        foreach($order->registrant->qualifications as $qual)
-        {
-            if($qual->pdf==null)
-                $errors['Certificate Missing'] = "Registrant didn't provide his certificate for qualification type: ".$qua->item;
-            else
-            {
-                if(!Storage::disk('public')->exists('certs/'.$qual->pdf))
-                $error['Missing PDF attachment'] = "Registrant didn't provide his PDF attachment for qualification type: ".$qual->item;
-            }
-        }
-        $error['Just missing up'] = "Registration missing somethin";
-        //check if registrant has memberships
-        if($order->registrant->memberships()->count()==0)
-            $errors['Membership Missing'] = "Registrant didn't provide his memberships";
-        if($order->registrant->specialization==null || $order->registrant->specialization<=0)
-            $errors['Specialization Missing'] = "Registrant didn't provide his specialization";
+       $errors=checkOrder($orderid);
         if(!empty($errors))
-            return redirect()->back()->with('error',$errors);
-           
+            return view('vieworder',['order'=>$order,
+                'qualactions'=>OrderController::$qualactions,
+                'inspectResult'=>$errors])->with('error','Inspection found problems in the order');
         return redirect()->back()->with('success', 'Order has been inspected, everything is good');
     }
     public function payOrder($request){
@@ -68,5 +62,36 @@ class OrderController extends Controller
     }
     public function mailRegistrant($request){
         return redirect()->back()->with('success', 'Email has been sent to registrant');
+    }
+
+    protected function checkOrder(int $orderid){
+        $order=Tblregisterrequest::find($orderid);
+        if($order->registrant->qualifications()->count()==0)
+            $errors->put("Qualifcation Missing", "Registrant didn't provide his qualifications");
+        //check all attached pdf for qualifications if missing
+        foreach($order->registrant->qualifications as $qual)
+        {
+            if($qual->pdf==null)
+                $errors->put("Certificate Missing","Registrant didn't provide his certificate for qualification type: ".$qua->item);
+            else
+            {
+                if(!Storage::disk('public')->exists('certs/'.$qual->pdf))
+                $errors->put("Missing PDF attachment","Registrant didn't provide his PDF attachment for qualification type: ".$qual->item);
+            }
+        }
+        //check if registrant has memberships
+        if($order->registrant->memberships()->count()==0)
+            $errors->put("Membership Missing","Registrant didn't provide his memberships");
+        if($order->registrant->specialization==null || $order->registrant->specialization<=0)
+            $errors->put("Specialization Missing","Registrant didn't provide his specialization");
+        //check registratin degree and registration class
+        if($order->regcat==null || $order->regcat<=0)
+            $errors->put("Registration Degree Missing", "Registrant didn't provide his registration degree");
+        if($order->regclass==null || $order->regclass<=0)
+            $errors->put('Registration Class Missing',"Registrant didn't provide his registration class");
+        //check if order has payment and status is pending
+        if($order->payment==null || $order->status!='pending')
+            $errors->put('Payment Missing',"Order has no payment or payment status is not pending");
+    return $errors;
     }
 }
