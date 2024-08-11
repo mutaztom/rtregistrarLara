@@ -24,7 +24,7 @@
                             <x-bladewind::icon name="hand-raised" />
                             <span class=" text-blue-600">{{ __('Reject Request') }}</span>
                         </x-nav-link>
-                        <x-nav-link href="javascript:{showModal('confirmAccept')}" :active="request()->routeIs('order.approve')">
+                        <x-nav-link :href="route('order.approve',['orderid'=>$order->id])" :active="request()->routeIs('order.approve')">
                             <x-bladewind::icon name="hand-thumb-up" />
                             <span class=" text-blue-600">{{ __('Accept Request') }}</span>
                         </x-nav-link>
@@ -167,10 +167,5 @@
                     onclick="hideModal('frmEmailSend')">{{ __('Cancel ') }}</x-bladewind::button>
             </form>
         </x-bladewind::modal>
-        <x-bladewind::modal name="confirmAccept"
-         title="Order Acceptance Confirmation" show_action_buttons="true">
-            <p>Are you sure you would like to accept this order    </p>
-            <a :href="route('order.inspect',$orderid)">
-                <x-bladewind::icon name="check"/>Inspect first</a>
-    </x-bladewind::modal>
+        
 </x-admin-layout>

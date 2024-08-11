@@ -7,7 +7,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::get('/checkOrder',function(Request $request) {
+Route::get('/checkOrder/{orderid}',function(Request $request) {
    $result= OrderController::checkOrder($request->get('orderid'));
     return $result;
-});
+})->middleware('auth:admin');

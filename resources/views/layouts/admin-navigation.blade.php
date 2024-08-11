@@ -91,18 +91,19 @@
             <x-responsive-nav-link :href="route('regorder')" :active="request()->routeIs('regorder')">
                 {{ __('Registration Request') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('order.list')" :active="request()->routeIs('roder.list')">
-                {{ __('My Orders') }}
+            <x-responsive-nav-link :href="route('inbox')" :active="request()->routeIs('inbox')">
+                {{ __('Inbox') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.edit')">
-                {{ __('My Profile') }}
+            <x-responsive-nav-link :href="route('settings')" :active="request()->routeIs('settings')">
+                {{ __('Settings') }}
             </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
             <div class="px-4">
-                <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ Auth::guard('admin')->user()->name }}</div>
+                <div class="font-medium text-base text-gray-800 dark:text-gray-200">
+                    {{ Auth::guard('admin')->user()->name }}</div>
                 <div class="font-medium text-sm text-gray-500">{{ Auth::guard('admin')->user()->email }}</div>
             </div>
 

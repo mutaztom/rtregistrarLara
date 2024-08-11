@@ -9,6 +9,9 @@ use App\Http\Controllers\Auth\AdminSessionAuthenticator;
 use App\Http\Controllers\Admin\InboxController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\AdmindashboardController;
+use App\Http\Controllers\MembershipController;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -39,13 +42,14 @@ Route::group(['namespace'=>'Admin','middleware'=>'admin'], function () {
     Route::get('/viewregrequest/{orderid}',[OrderController::class,'index'])->name('regrequest.view');
     Route::patch('/deleteregrequest',[InboxController::class,"destroy"])->name('regrequest.delete');
     Route::patch('/modifyregrequest',[OrderController::class,"modifyOrder"])->name('regrequest.modify');
-    Route::get('/admindashboard','AdmindashboardController@index')->name('admindashboard');
+    Route::get('/admindashboard',[AdmindashboardController::class,'index'])->name('admindashboard');
     //admin manipuation for orders
     Route::patch('/rejectorder',[OrderController::class,"rejectOrder"])->name('order.reject');
-    Route::patch('/approveorder',[OrderController::class,"approveOrder"])->name('order.approve');
     Route::get('/inspectorder/{orderid}',[OrderController::class,"inspectOrder"])->name('order.inspect');
     Route::patch('/orderpay',[OrderController::class,"payOrder"])->name('order.pay');
     Route::patch('/registrantmail',[OrderController::class,"mailRegistrant"])->name('registrant.mail');
+    Route::get('/approveorder/{orderid}',[OrderController::class,"approveOrder"])->name('order.approve');
+    Route::post('/approveorder/{orderid}',[OrderController::class,'saveApproval']);
 });
 
 
