@@ -10,4 +10,4 @@ Route::get('/user', function (Request $request) {
 Route::get('/checkOrder/{orderid}',function(Request $request) {
    $result= OrderController::checkOrder($request->get('orderid'));
     return $result;
-})->middleware('auth:admin');
+})->middleware('auth:sanctum');

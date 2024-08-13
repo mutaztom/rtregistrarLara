@@ -12,43 +12,40 @@
                     {{ __('Registrant information !') }}
 
                 </div>
-                <form method="POST" action="">
-                    @csrf
-                    @method('patch')
-                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex font-bold">
-                        <x-nav-link :href="route('order.inspect', ['orderid' => $order->id])" :active="request()->routeIs('order.inspect')">
-                            <x-bladewind::icon name="check" />
-                            <span class=" text-blue-600">{{ __('Inspect Request') }}</span>
-                        </x-nav-link>
-                        <x-nav-link href="javascript:{showModal('confirmReject')}" :active="request()->routeIs('order.reject')">
-                            <x-bladewind::icon name="hand-raised" />
-                            <span class=" text-blue-600">{{ __('Reject Request') }}</span>
-                        </x-nav-link>
-                        <x-nav-link :href="route('order.approve',['orderid'=>$order->id])" :active="request()->routeIs('order.approve')">
-                            <x-bladewind::icon name="hand-thumb-up" />
-                            <span class=" text-blue-600">{{ __('Accept Request') }}</span>
-                        </x-nav-link>
-                        <x-nav-link href="javascript:{alert('payment')}" :active="request()->routeIs('order.approve')">
-                            <x-bladewind::icon name="redit-card" />
-                            <span class=" text-blue-600">{{ __('Payment Processing') }}</span>
-                        </x-nav-link>
-                        <x-nav-link href="javascript:{showModal('frmEmailSend')}" :active="request()->routeIs('registrant.mail')">
-                            <x-bladewind::icon name="envelope" />
-                            <span class=" text-blue-600">{{ __('Send Email Registrant') }}</span>
-                        </x-nav-link>
-                    </div>
-                </form>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex font-bold">
+                    <x-nav-link :href="route('order.inspect', ['orderid' => $order->id])" :active="request()->routeIs('order.inspect')">
+                        <x-bladewind::icon name="check" />
+                        <span class=" text-blue-600">{{ __('Inspect Request') }}</span>
+                    </x-nav-link>
+                    <x-nav-link href="javascript:{showModal('confirmReject')}" :active="request()->routeIs('order.reject')">
+                        <x-bladewind::icon name="hand-raised" />
+                        <span class=" text-blue-600">{{ __('Reject Request') }}</span>
+                    </x-nav-link>
+                    <x-nav-link :href="route('order.approve', ['orderid' => $order->id])" :active="request()->routeIs('approveorder')">
+                        <x-bladewind::icon name="hand-thumb-up" />
+                        <span class=" text-blue-600">{{ __('Accept Request') }}</span>
+                    </x-nav-link>
+                    <x-nav-link href="javascript:{alert('payment')}" :active="request()->routeIs('order.approve')">
+                        <x-bladewind::icon name="redit-card" />
+                        <span class=" text-blue-600">{{ __('Payment Processing') }}</span>
+                    </x-nav-link>
+                    <x-nav-link href="javascript:{showModal('frmEmailSend')}" :active="request()->routeIs('registrant.mail')">
+                        <x-bladewind::icon name="envelope" />
+                        <span class=" text-blue-600">{{ __('Send Email Registrant') }}</span>
+                    </x-nav-link>
+                </div>
+
             </div>
         </div>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     @if (@isset($inspectResult))
-                        <x-bladewind::card title="inspectResult" name="inspectResult" id="inspection"
-                       >
+                        <x-bladewind::card title="inspectResult" name="inspectResult" id="inspection">
                             <div class="flex flex-row-reverse">
                                 <x-bladewind::button.circle outline="true" color="red" icon="x-mark" size="tiny"
-                                 tag="a" :href="route('regrequest.view', $order->id)">
+                                    tag="a" :href="route('regrequest.view', $order->id)">
                                 </x-bladewind::button.circle>
                             </div>
                             <x-bladewind::list-view>
@@ -141,7 +138,8 @@
                 <input type="hidden" name="orderid" id="orderid" />
                 <p>Are you sure you want to reject this registration request?</p>
                 <x-label for="reject_reason" />
-                <x-bladewind::textarea id="reject_reason" name="reject_reason" required rows="4"></x-bladewind::textarea>
+                <x-bladewind::textarea id="reject_reason" name="reject_reason" required
+                    rows="4"></x-bladewind::textarea>
                 <x-bladewind::button id="cmdreject" color='red' can_submit="true"
                     icon="cross">{{ __('Reject') }}</x-bladewind::button>
                 <x-bladewind::button type="primary" name="cmdcancel" color='green' icon="undo"
@@ -167,5 +165,5 @@
                     onclick="hideModal('frmEmailSend')">{{ __('Cancel ') }}</x-bladewind::button>
             </form>
         </x-bladewind::modal>
-        
+
 </x-admin-layout>

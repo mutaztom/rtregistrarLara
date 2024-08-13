@@ -125,24 +125,5 @@ class OrderController extends Controller
         return $errors;
     }
 
-    public function saveApproval(int $orderid,Request $request):RedirectResponse
-    {
-        //save approval details
-        $validator = Validator::validate(
-            ['meetingnumber' => 'required',
-            ])->validate();
-            dd("saving approval");
-        $order=Tblregistrerequest::find($orderid);
-        Tblregisterrequest::where('id',$orderid)
-            ->update(['status' => 'Approved',
-                'meetingdate' => $request()->get('meetingdate'),
-                'meetingnumber' => $request()->get('meetingnumber'),
-                'commiteesecretary' => $request()->get('commiteesecretary'),
-                'descission' => $request()->get('descission'),
-                'approvaldate' => Carbon::parse($request()->get('approvaldate')),
-                'engcouncilNumber' => Carbon::parse($request()->get('engoucnilnumber')),
-                'commeteenotes' => $request()->get('commiteenotes')]);
 
-        return Redirect::view('/approveorder/{orderid}','approval', ['orderid' => $order->id])->with('success', 'Order has been approved');
-    }
 }
