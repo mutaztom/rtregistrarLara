@@ -119,4 +119,5 @@ class Tblregisterrequest extends Model
 	public function registrant():HasOne{
         return $this->hasOne(Tblregistrant::class, 'id','ownerid');
     }
+	
 }

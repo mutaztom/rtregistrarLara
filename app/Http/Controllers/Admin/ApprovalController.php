@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Tblregisterrequest;
-use Illuminate\Support\Facades\Validators;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class ApprovalController extends Controller
 {
@@ -23,7 +23,9 @@ class ApprovalController extends Controller
     public function create(int $orderid)
     {
         $order = Tblregisterrequest::find($orderid);
-
+        $order->approvalDate = $order->approvalDate ? $order->approvalDate : Carbon::now();
+        $order->meetingdate = $order->meetingdate ? $order->meetingdate : Carbon::now();
+        $order->paid = true;
         return view('approval', compact('order'));
     }
 
@@ -37,16 +39,21 @@ class ApprovalController extends Controller
                 'meetingno' => 'required',
                 'meetingdate' => 'required',
                 // 'approval' => 'required',
-                'ecnumber' => 'required',
-                'approval_date' => 'required',
-                'commitesecretary' => 'required',
+                'engcouncilNumber' => 'required',
+                'approvalDate' => 'required',
+                'decision' => 'required',
+                'committeecomment' => 'required',
             ]);
-        
-        $order = Tblregisterrequest::find($orderid);
-        $order->where('id', $orderid)
-            ->update($request->except(['_token','_csrf','_method']));
 
-        return redirect()->route('order.view', ['orderid' => $order->id])->with('success', 'Order has been approved');
+        $order = Tblregisterrequest::find($orderid);
+
+        $request->merge(['status' => $request->get('approval') ? 'Approved' : 'Rejected',
+            'rpin' => rand(1000000000, 1000000000000000).'-'.$orderid,
+        ]);
+        $order->where('id', $orderid)
+            ->update($request->except(['_token', '_csrf', '_method', 'approval']));
+
+        return redirect()->route('regrequest.view', ['orderid' => $orderid])->with('success', 'Order has been approved');
 
     }
 

@@ -4,7 +4,32 @@
             {{ __('Registration Order View') }}
         </h2>
     </x-slot>
+    <script>
+        function reject() {
+            @if ($order->status == 'Rejected')
+                showNotification('Rejected', 'This order is already rejected', 'error');
+            @else
+                showModal('confirmReject');
+            @endif
 
+        }
+
+        function approve(orderid) {
+            @if ($order->status == 'Approved')
+                showModal('approved');
+            @else
+                window.open('/saveapproval/' + orderid, '_self');
+            @endif
+        }
+
+        function payment() {
+            @if ($order->payed)
+                showNotification('Payed', 'This order is already paid', 'error');
+            @else
+                showModal('payment');
+            @endif
+        }
+    </script>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -18,28 +43,33 @@
                         <x-bladewind::icon name="check" />
                         <span class=" text-blue-600">{{ __('Inspect Request') }}</span>
                     </x-nav-link>
-                    <x-nav-link href="javascript:{showModal('confirmReject')}" :active="request()->routeIs('order.reject')">
+                    <x-nav-link disabled="true" href="javascript:{reject();}" :active="request()->routeIs('order.reject')">
                         <x-bladewind::icon name="hand-raised" />
                         <span class=" text-blue-600">{{ __('Reject Request') }}</span>
                     </x-nav-link>
-                    <x-nav-link :href="route('order.approve', ['orderid' => $order->id])" :active="request()->routeIs('approveorder')">
+                    <x-nav-link href="javascript:{approve({{ $order->id }});}" :active="request()->routeIs('approveorder')">
                         <x-bladewind::icon name="hand-thumb-up" />
-                        <span class=" text-blue-600">{{ __('Accept Request') }}</span>
+                        <span class=" text-blue-600">{{ __('Approve Request') }}</span>
                     </x-nav-link>
-                    <x-nav-link href="javascript:{alert('payment')}" :active="request()->routeIs('order.approve')">
-                        <x-bladewind::icon name="redit-card" />
+                    <x-nav-link href="javascript:{payment();}" :active="request()->routeIs('order.approve')">
+                        <x-bladewind::icon name="credit-card" />
                         <span class=" text-blue-600">{{ __('Payment Processing') }}</span>
                     </x-nav-link>
                     <x-nav-link href="javascript:{showModal('frmEmailSend')}" :active="request()->routeIs('registrant.mail')">
                         <x-bladewind::icon name="envelope" />
                         <span class=" text-blue-600">{{ __('Send Email Registrant') }}</span>
                     </x-nav-link>
+                    <x-nav-link href="javascript:{showNotification('print','printing order','info');}"
+                        :active="request()->routeIs('order.history')">
+                        <x-bladewind::icon name="printer" />
+                        <span class="text-blue-600">{{ __('Print Order') }}</span>
+                    </x-nav-link>
                 </div>
 
             </div>
         </div>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white dark:bg-gray-800  shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     @if (@isset($inspectResult))
                         <x-bladewind::card title="inspectResult" name="inspectResult" id="inspection">
@@ -58,7 +88,7 @@
                             </x-bladewind::list-view>
                         </x-bladewind::card>
                     @endif
-                    <x-bladewind::card title="Personal Information" class="flex-grow w-80" has_shadow="true">
+                    <x-bladewind::card title="Personal Information" class="flex flex-grow" has_shadow="true">
                         <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 w-full">
                             <div class="columns-1">
                                 <x-bladewind::avatar image="/photos/{{ $order->registrant->photo ?: 'nophoto.png' }}"
@@ -69,14 +99,18 @@
                             </div>
                             <div class="columns-1">
                                 <span class="text-2xl">{{ $order->registrant->regname }}</span>
-                                <p>Email</p>
-                                <span class="text-2xl">{{ $order->registrant->email }}</span>
-                                <p>Phone Number</p>
-                                <span class="text-2xl">{{ $order->registrant->phone ?: 'None' }}</span>
-                                <p>High Education Id</p>
-                                <span class="text-2xl">{{ $order->registrant->higheducid ?: 'None' }}</span>
+                                <p>Email
+                                    <span class="text-2xl">{{ $order->registrant->email }}</span>
+                                </p>
+                                <p>Phone
+                                    <span class="text-2xl">{{ $order->registrant->phone ?: 'None' }}</span>
+                                </p>
+                                <p>High Education Id
+                                    <span class="text-2xl">{{ $order->registrant->higheducid ?: 'None' }}</span>
+                                </p>
                                 <x-label for="engineering_council_id" />
-                                <p class="text-2xl">{{ $order->registrant->engcouncilid ?: 'None' }}</p>
+                                <p class="text-2xl">{{ $order->engcouncilNumber ?: 'None' }}</p>
+                                <P class="text-2xl text-blue-500">Fees: {{ $fees ?: 0.0 }} SDG</P>
                             </div>
                         </div>
                     </x-bladewind::card>
@@ -98,20 +132,21 @@
                             <span class="font-bold text-lg">{{ $order->status }}</span>
                             <p>Payment Status</p>
                             <span
-                                class="font-bold text-lg {{ $order->payed ? 'text-red-800' : 'text-green-800' }}">{{ $order->payed }}</span>
+                                class="font-bold text-lg {{ $order->payed ? 'text-red-800' : 'text-green-800' }}">{{ $order->payed ? 'Payed' : 'Not Payed' }}</span>
                         </div>
                     </x-bladewind::centered-content>
-                    <x-bladewind::card title="Education Information" class="flex-grow w-80 mt-3" has_shadow="true">
-                        <x-bladewind::table data="{{ $order->registrant->qualifications }}"
-                            exclude_columns="id,empid,appid,salary,pdf,quality" group_by="qualtype"
+                    <x-bladewind::card title="Education Information" class="flex overflow-scroll mt-3"
+                        has_shadow="true">
+                        <x-bladewind::table class="flex flex-col " data="{{ $order->registrant->qualifications }}"
+                            striped="true" exclude_columns="id,empid,appid,salary,pdf,quality" group_by="qualtype"
                             no_data_message="Qualification is not set!!" :action_icons="$qualactions"
                             message_as_empty_state="true">
 
                         </x-bladewind::table>
                     </x-bladewind::card>
-                    <x-bladewind::card title="Memberships" class="flex-grow w-80 mt-3" has_shadow="true">
-                        <x-bladewind::table group_by="membertype" no_data_message="Memberships are not set!!"
-                            message_as_empty_state="true">
+                    <x-bladewind::card title="Memberships" class="flex overflow-scroll mt-3" has_shadow="true">
+                        <x-bladewind::table class="table-auto " group_by="membertype"
+                            no_data_message="Memberships are not set!!" message_as_empty_state="true">
                             <x-slot:header>
                                 <th>Title</th>
                                 <th>Since</th>
@@ -165,5 +200,39 @@
                     onclick="hideModal('frmEmailSend')">{{ __('Cancel ') }}</x-bladewind::button>
             </form>
         </x-bladewind::modal>
-
+        <x-bladewind::modal name="approved" show_action_buttons="false"
+            title="This request order is approved, do you want to modify approval data? This">
+            <x-bladewind::button tag="a" :href="route('approval.save', ['orderid' => $order->id])">Modify</x-bladewind::button>
+            <x-bladewind::button tag="button" color="red"
+                onclick="hideModal('approved')">{{ __('Cancel') }}</x-bladewind::button>
+        </x-bladewind::modal>
+        <x-bladewind::modal name="payment" title="Payment Information" show_action_buttons="false">
+            <form method="POST" :action="route('ordery.pay', ['orderid' => $order - > id])">
+                @csrf
+                @method('patch')
+                <div class="flex flex-col">
+                    <x-input type="hidden" name="orderid" value="<?php echo $order->id; ?>" />
+                    <x-label for="PIN_CODE" />
+                    <span class="font-bold text-2xl text-blue-500">{{ $order->rpin }}</span>
+                    <x-label for="payment_method" />
+                    <div class="flex-row">
+                        <x-bladewind::radio-button label="Bank Deposit" name="paymethod" />
+                        <x-bladewind::radio-button label="Cash" name="paymethod" />
+                        <x-bladewind::radio-button label="Online Payment" name="paymethod" />
+                    </div>
+                    <x-label for="Fees" />
+                    <p class="text-red-500 text-4xl">{{ $fees ?: 0.0 }}</p>
+                    <x-label for="receipt_id" />
+                    <x-bladewind::input type="text" id="receipt_id" name="receipt_id"
+                        placeholder="Enter Receipt ID" required />
+                    <x-label for="amount" />
+                    <x-bladewind::input type="number" id="amount" name="amount" placeholder="Enter Amount"
+                        required />
+                </div>
+                <x-bladewind::button type="primary" color='blue'
+                    icon="paper-plane">{{ __('Pay') }}</x-bladewind::button>
+                <x-bladewind::button type="primary" name="cmdCancel" onclick="hideModal('payment')" color='red'
+                    icon="undo">{{ __('Cancel') }}</x-bladewind::button>
+            </form>
+        </x-bladewind::modal>
 </x-admin-layout>

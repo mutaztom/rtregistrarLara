@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Models\Vwregisterrequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class InboxController extends Controller
 {
@@ -21,8 +22,9 @@ class InboxController extends Controller
         ];
         //load orders with action buttons
         $orders=Vwregisterrequest::select('id','item','regname','engclass','engdegree','ondate','status')
-        ->orderBy('id','desc')->get();
-       return view("admin.inbox",['orders'=>$orders,"actionButtons"=>$actionbuttons]);
+        ->orderBy('id','desc')->paginate(15);
+       return view("admin.inbox",['orders'=>$orders,
+       "actionButtons"=>$actionbuttons]);
     }
 
     /**

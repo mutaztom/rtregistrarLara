@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tblfee;
 use App\Models\Tblregisterrequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -18,8 +19,10 @@ class OrderController extends Controller
     public function index(int $orderid)
     {
         $order = Tblregisterrequest::where('id', $orderid)->first();
+        $fees = Tblfee::where(['regclass' => $order->engclass, 'regdegree' => $order->engdegree])
+            ->select('amount')->first();
 
-        return view('vieworder', ['order' => $order,
+        return view('vieworder', ['order' => $order, 'fees' => $fees,
             'qualactions' => OrderController::$qualactions, 'errors' => collect([])]);
     }
 
@@ -65,12 +68,15 @@ class OrderController extends Controller
     {
         $errors = collect([]);
         $order = Tblregisterrequest::find($orderid);
+        $qualactions = OrderController::$qualactions;
+        $fees = Tblfee::where(['regclass' => $order->regclass,
+            'regdegree' => $order->regdegree])->select('amount')->first() ?: 0.0;
         //check if registrant has qualifications
         $errors = OrderController::checkOrder($orderid);
         if (! empty($errors)) {
             return view('vieworder', ['order' => $order,
                 'qualactions' => OrderController::$qualactions,
-                'inspectResult' => $errors])->with('error', 'Inspection found problems in the order');
+                'inspectResult' => $errors, 'fees' => 0.0])->with('error', 'Inspection found problems in the order');
         }
 
         return redirect()->back()->with('success', 'Order has been inspected, everything is good');
@@ -124,6 +130,4 @@ class OrderController extends Controller
 
         return $errors;
     }
-
-
 }
