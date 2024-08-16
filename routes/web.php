@@ -47,7 +47,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => 'admin'], function () {
     //admin manipuation for orders
     Route::patch('/rejectorder', [OrderController::class, 'rejectOrder'])->name('order.reject');
     Route::get('/inspectorder/{orderid}', [OrderController::class, 'inspectOrder'])->name('order.inspect');
-    Route::patch('/orderpay', [OrderController::class, 'payOrder'])->name('order.pay');
+    Route::post('/orderpay/{orderid}', [OrderController::class, 'payOrder'])->name('order.pay');
     Route::patch('/registrantmail', [OrderController::class, 'mailRegistrant'])->name('registrant.mail');
     Route::get('/saveapproval/{orderid}', [ApprovalController::class, 'create'])->name('order.approve');
     Route::patch('/saveapproval/{orderid}', [ApprovalController::class, 'store'])->name('approval.save');

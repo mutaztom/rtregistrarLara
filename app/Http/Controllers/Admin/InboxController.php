@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
-use App\Models\Vwregisterrequest;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
+use App\Models\Vwregisterrequest;
+use Illuminate\Http\Request;
 
 class InboxController extends Controller
 {
@@ -15,16 +14,17 @@ class InboxController extends Controller
     public function index()
     {
         //action buttons
-        $actionbuttons=[
+        $actionbuttons = [
             "icon:eye |tip:View Order for processing |color:blue | click:window.open('/viewregrequest/'+{id},'_self')",
-            "icon:trash |tip:Delete selected order | color:red | click:deleteOrder({id})",
-           
+            'icon:trash |tip:Delete selected order | color:red | click:deleteOrder({id})',
+
         ];
         //load orders with action buttons
-        $orders=Vwregisterrequest::select('id','item','regname','engclass','engdegree','ondate','status')
-        ->orderBy('id','desc')->paginate(15);
-       return view("admin.inbox",['orders'=>$orders,
-       "actionButtons"=>$actionbuttons]);
+        $orders = Vwregisterrequest::select('id', 'item', 'regname', 'engclass', 'engdegree', 'ondate', 'status')
+            ->orderBy('id', 'desc')->get();
+
+        return view('admin.inbox', ['orders' => $orders,
+            'actionButtons' => $actionbuttons]);
     }
 
     /**
@@ -32,8 +32,9 @@ class InboxController extends Controller
      */
     public function create()
     {
-        $orders=Tblregisterrequest::all();
-        return view('admin.inbox',['orders'=>$orders]);
+        $orders = Tblregisterrequest::all();
+
+        return view('admin.inbox', ['orders' => $orders]);
     }
 
     /**
@@ -74,7 +75,8 @@ class InboxController extends Controller
     public function destroy(string $id)
     {
         //
-        Tblregisterrequest::where('id',$request())->get('orderid')->delete();
+        Tblregisterrequest::where('id', $request())->get('orderid')->delete();
+
         return redirect()->back()->with('success', 'Order has been deleted successfully');
     }
 }

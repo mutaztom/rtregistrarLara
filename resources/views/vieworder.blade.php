@@ -207,29 +207,30 @@
                 onclick="hideModal('approved')">{{ __('Cancel') }}</x-bladewind::button>
         </x-bladewind::modal>
         <x-bladewind::modal name="payment" title="Payment Information" show_action_buttons="false">
-            <form method="POST" :action="route('ordery.pay', ['orderid' => $order - > id])">
+            <form method="POST" action="{{ url('orderpay/' . $order->id) }}">
                 @csrf
-                @method('patch')
+                @method('post')
                 <div class="flex flex-col">
-                    <x-input type="hidden" name="orderid" value="<?php echo $order->id; ?>" />
                     <x-label for="PIN_CODE" />
                     <span class="font-bold text-2xl text-blue-500">{{ $order->rpin }}</span>
                     <x-label for="payment_method" />
                     <div class="flex-row">
-                        <x-bladewind::radio-button label="Bank Deposit" name="paymethod" />
-                        <x-bladewind::radio-button label="Cash" name="paymethod" />
-                        <x-bladewind::radio-button label="Online Payment" name="paymethod" />
+                        <x-bladewind::radio-button label="Bank Deposit" name="type" value="BankDeposit" />
+                        <x-bladewind::radio-button label="Cash" name="type" value="Cash" />
+                        <x-bladewind::radio-button label="Online Payment" name="type" value="OnlinePayment" />
                     </div>
                     <x-label for="Fees" />
+                    <x-label for="On_date" />
+                    <x-bladewind::datepicker name="ondate" selected_date="{{ Carbon\Carbon::now() }}" />
                     <p class="text-red-500 text-4xl">{{ $fees ?: 0.0 }}</p>
-                    <x-label for="receipt_id" />
-                    <x-bladewind::input type="text" id="receipt_id" name="receipt_id"
-                        placeholder="Enter Receipt ID" required />
+                    <x-label for="receiptid" />
+                    <x-bladewind::input type="text" id="receipt_id" name="receipt" placeholder="Enter Receipt ID"
+                        required />
                     <x-label for="amount" />
                     <x-bladewind::input type="number" id="amount" name="amount" placeholder="Enter Amount"
                         required />
                 </div>
-                <x-bladewind::button type="primary" color='blue'
+                <x-bladewind::button type="primary" color='blue' can_submit="true"
                     icon="paper-plane">{{ __('Pay') }}</x-bladewind::button>
                 <x-bladewind::button type="primary" name="cmdCancel" onclick="hideModal('payment')" color='red'
                     icon="undo">{{ __('Cancel') }}</x-bladewind::button>

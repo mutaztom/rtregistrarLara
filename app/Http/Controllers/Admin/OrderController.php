@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tblfee;
+use App\Models\Tblpayment;
 use App\Models\Tblregisterrequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -82,9 +85,25 @@ class OrderController extends Controller
         return redirect()->back()->with('success', 'Order has been inspected, everything is good');
     }
 
-    public function payOrder($request)
+    public function payOrder(Request $request, int $orderid): RedirectResponse
     {
-        return redirect()->back()->with('success', 'Payment has been made');
+        $order = Tblregisterrequest::find($orderid);
+        $fees = DB::table('tblfee')->
+        where(['engclass' => $order->engclass, 'regdegree' => $order->regdegree]);
+        Validator::make($request->all(), [
+            'amount' => 'required|min:$fees',
+            'receipt' => 'required',
+            'type' => 'required',
+            'amount' => 'required|numeric',
+        ])->validate();
+        $request->merge(['item' => 'Payment of order '.$orderid, 'paid' => true]);
+        Tblpayment::updateOrCreate($request->except(['_token', '_method']))
+            ->where('orderid', '=', $orderid);
+        //if payment saved successfully update order payment status
+        Tblregisterrequest::where('id', $orderid)->update(['status' => 'Paid']);
+        $order->where('id', '=', $orderid)->update(['payed' => true]);
+
+        return redirect()->route('regrequest.view', ['orderid' => $orderid])->with('success', 'Payment has been made');
     }
 
     public function mailRegistrant($request)
