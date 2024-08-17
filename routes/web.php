@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdmindashboardController;
+use App\Http\Controllers\Admin\ApprovalController;
 use App\Http\Controllers\Admin\InboxController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Auth\AdminSessionAuthenticator;
@@ -10,8 +11,6 @@ use App\Http\Controllers\QualcertController;
 use App\Http\Controllers\RegRequestController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserAvatarController;
-use App\Http\Controllers\Admin\ApprovalController;
-
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -58,6 +57,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::patch('/reginfo', [ProfileController::class, 'updatereginfo'])->name('reginfo.update');
+    Route::get('/profile/{regid}', 'App\Http\Controllers\ProfileController@viewProfile')->name('profile.view');
     Route::patch('/uploadphoto', 'App\Http\Controllers\UserAvatarController@uploadphoto')->name('avatar.edit');
     Route::get('/myorders', 'App\Http\Controllers\RegRequestController@orderList')->name('order.list');
     Route::get('/modifyorder/{orderid}', 'App\Http\Controllers\RegRequestController@modifyOrder')->name('order.modify');

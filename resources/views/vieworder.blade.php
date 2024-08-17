@@ -88,33 +88,22 @@
                             </x-bladewind::list-view>
                         </x-bladewind::card>
                     @endif
-                    <x-bladewind::card title="Personal Information" class="flex flex-grow" has_shadow="true">
-                        <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 w-full">
-                            <div class="columns-1">
+                    <x-bladewind::card title="Personal Information" has_shadow="true">
+                        <div class="flex flex-cols md:flex-row lg:flex-row xl:flex-row gap-2">
+                            <div class="basis-full md:basis-1/4 lg:basis-1/4 xl:basis-1/4 gap-2">
                                 <x-bladewind::avatar image="/photos/{{ $order->registrant->photo ?: 'nophoto.png' }}"
                                     size="omg" />
-                                <x-bladewind::progress-bar class="pl-3 pr-4 mt-4" percentage="75"
+                                <x-bladewind::progress-bar class="pl-3 pr-4 mt-4 w-46" shade="dark" percentage="{{$comp}}"
                                     show_percentage_label_inline="false" percentage_suffix="Profile completion"
-                                    show_percentage_label="true" />
+                                    show_percentage_label="true" color="{{$comp>50?($comp>70?'green':'blue'):'red'}}" />
                             </div>
-                            <div class="columns-1">
-                                <span class="text-2xl">{{ $order->registrant->regname }}</span>
-                                <p>Email
-                                    <span class="text-2xl">{{ $order->registrant->email }}</span>
-                                </p>
-                                <p>Phone
-                                    <span class="text-2xl">{{ $order->registrant->phone ?: 'None' }}</span>
-                                </p>
-                                <p>High Education Id
-                                    <span class="text-2xl">{{ $order->registrant->higheducid ?: 'None' }}</span>
-                                </p>
-                                <x-label for="engineering_council_id" />
-                                <p class="text-2xl">{{ $order->engcouncilNumber ?: 'None' }}</p>
-                                <P class="text-2xl text-blue-500">Fees: {{ $fees ?: 0.0 }} SDG</P>
+                            <div class="basis-full md:basis-3/4 lg:basis-3/4 xl:basis-3/4">
+                                @include('ProfileView', ['registrant' => $order->registrant])
                             </div>
                         </div>
                     </x-bladewind::card>
-                    <x-bladewind::centered-content title="{{ __('Order Details') }}">
+
+                    <x-bladewind::card title="{{ __('Order Details') }}" class="mt-2">
                         <div
                             class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-1 mt-3 mb-5 text-sm text-blue-500">
                             <p>Registration Class</p>
@@ -134,7 +123,7 @@
                             <span
                                 class="font-bold text-lg {{ $order->payed ? 'text-red-800' : 'text-green-800' }}">{{ $order->payed ? 'Payed' : 'Not Payed' }}</span>
                         </div>
-                    </x-bladewind::centered-content>
+                    </x-bladewind::card>
                     <x-bladewind::card title="Education Information" class="flex overflow-scroll mt-3"
                         has_shadow="true">
                         <x-bladewind::table class="flex flex-col " data="{{ $order->registrant->qualifications }}"

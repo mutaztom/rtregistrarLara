@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ProfileController;
 use App\Models\Tblfee;
 use App\Models\Tblpayment;
 use App\Models\Tblregisterrequest;
@@ -24,9 +25,10 @@ class OrderController extends Controller
         $order = Tblregisterrequest::where('id', $orderid)->first();
         $fees = Tblfee::where(['regclass' => $order->engclass, 'regdegree' => $order->engdegree])
             ->select('amount')->first();
+        $comp = ProfileController::calculateProfile($order->registrant);
 
         return view('vieworder', ['order' => $order, 'fees' => $fees,
-            'qualactions' => OrderController::$qualactions, 'errors' => collect([])]);
+            'qualactions' => OrderController::$qualactions, 'comp' => $comp, 'errors' => collect([])]);
     }
 
     /**
@@ -76,9 +78,10 @@ class OrderController extends Controller
             'regdegree' => $order->regdegree])->select('amount')->first() ?: 0.0;
         //check if registrant has qualifications
         $errors = OrderController::checkOrder($orderid);
+        $comp = ProfileController::calculateProfile($order->registrant);
         if (! empty($errors)) {
             return view('vieworder', ['order' => $order,
-                'qualactions' => OrderController::$qualactions,
+                'qualactions' => OrderController::$qualactions, 'comp' => $comp,
                 'inspectResult' => $errors, 'fees' => 0.0])->with('error', 'Inspection found problems in the order');
         }
 
