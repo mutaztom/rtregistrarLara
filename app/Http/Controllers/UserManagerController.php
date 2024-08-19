@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+
 class UserManagerController extends Controller
 {
     /**
@@ -77,18 +78,24 @@ class UserManagerController extends Controller
      */
     public function destroy(Request $request)
     {
-        staffuser::delete($request->get('userid'));
+        if (staffuser::all()->count() == 1) {
+            return redirect()->route('usermanager')->with('error', 'Cannot delete the last admin user');
+        }
+        staffuser::where('id', $request->get('userid'))->delete($request->get('userid'));
 
         return redirect()->route('usermanager')->with('success', 'User deleted successfully');
     }
 
     public function updatePhoto(Request $request)
     {
-        $userid = $request->get('userid');
+        if (! $request->hasFile('userphoto')) {
+            return redirect()->back()->with('error', 'No photo was selected');
+        }
+        $userid = $request->get('photo_userid');
         $staff = Staffuser::find($userid);
-        $fname=$staff->name.'.'.$request->file('userphoto')->extension();
-        Storage::putFileAs('public/photos/',$request->file('userphoto'),$fname);
-        $staff->photo =$fname;
+        $fname = $request->get('username').'.'.$request->file('userphoto')->extension();
+        Storage::putFileAs('public/photos/', $request->file('userphoto'), $fname);
+        $staff->photo = $fname;
         $staff->save();
 
         return redirect()->back()->with('success', 'Photo updated successfully');

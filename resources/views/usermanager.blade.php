@@ -30,22 +30,20 @@
                     @foreach ($userlist as $stuser)
                         <tr>
                             <td><x-bladewind::avatar size="small" image="photos/{{ $stuser->photo }}" /></td>
-                            <td>{{ $stuser->id }}</td>
-                            <td>{{ $stuser->name }}</td>
-                            <td>{{ $stuser->email }}</td>
+                            <td id="userid_{{ $stuser->id }}">{{ $stuser->id }}</td>
+                            <td id="username_{{ $stuser->id }}">{{ $stuser->name }}</td>
+                            <td id="email_{{ $stuser->id }}">{{ $stuser->email }}</td>
                             <td>
                                 <x-bladewind::button.circle icon="pencil" outline="true" size="tiny"
-                                    onclick="editUser({{ json_encode($stuser->name) }})">
-                                </x-bladewind::button.circle>
+                                    onclick="editUser({{ $stuser->id }})" />
+
                                 <x-bladewind::button.circle icon="trash" outline="true" size="tiny"
-                                    onclick="deleteUser({{ $stuser->id }})"
-                                    title="Delete User"></x-bladewind::button.circle>
+                                    onclick="deleteUser({{ $stuser->id }})" title="Delete User" />
                                 <x-bladewind::button.circle outline="true" size="tiny" icon="lock-closed"
-                                    onclick="changePassword({{ json_encode($stuser) }})"
-                                    title="Change Password"></x-bladewind::button.circle>
+                                    onclick="changePassword({{ $stuser->id }})" title="Change Password" />
                                 <x-bladewind::button.circle icon="user" outline="true" size="tiny"
                                     onclick="changePhoto({{ $stuser->id }},'{{ $stuser->photo }}')"
-                                    title="Change Avatar"></x-bladewind::button.circle>
+                                    title="Change Avatar" />
                             </td>
                         </tr>
                     @endforeach
@@ -55,12 +53,12 @@
         </div>
 
     </div>
-    <x-bladewind::modal name="confdelete" show_action_buttons="false">
+    <x-bladewind::modal name="confdelete" show_action_buttons="false" title="Confirm Delete">
         <p>Are you sure you want to delete this user</p>
         <form method="post" action="{{ route('user.destroy') }}">
             @csrf
             @method('patch')
-            <input type="hidden" name="userid" name="userid" value="{{ $stuser->id }}">
+            <input type="hidden" name="userid" id="userid">
             <x-bladewind::button color="red" can_submit="true" icon="trash">Delete</x-bladewind::button>
             <x-bladewind::button color="blue" onclick="hideModal('confdelete')">Cancel</x-bladewind::button>
         </form>
@@ -78,21 +76,23 @@
                 <x-bladewind::input prefix="envelope" prefix_is_icon="true" type="email" id="user_email"
                     name="email" required="true" />
             </div>
-            <x-label for="user_password" />
-            <x-bladewind::input type="password" id="user_password" prefix="lock-closed" prefix_is_icon="true"
-                name="password" required />
-            <x-label for="confirm_password" />
-            <x-bladewind::input type="password" id="user_password_confirmation" prefix="lock-closed"
-                prefix_is_icon="true" name="password_confirmation" required />
+            <div id='panpassword'>
+                <x-label for="user_password" />
+                <x-bladewind::input type="password" id="user_password" prefix="lock-closed" prefix_is_icon="true"
+                    name="password" required />
+                <x-label for="confirm_password" />
+                <x-bladewind::input type="password" id="user_password_confirmation" prefix="lock-closed"
+                    prefix_is_icon="true" name="password_confirmation" required />
+            </div>
             <x-bladewind::button color="blue" can_submit="true" icon="plus-circle">Add User</x-bladewind::button>
             <x-bladewind::button color="red" onclick="hideModal('adduser')">Cancel</x-bladewind::button>
         </form>
     </x-bladewind::modal>
-    <x-bladewind::modal name="changephoto" show_action_buttons="false">
+    <x-bladewind::modal name="changephoto" show_action_buttons="false" title="Change Avatar">
         <form method="post" enctype="multipart/form-data" action="{{ route('user.photo') }}">
             @csrf
             @method('patch')
-            <input type="hidden" id="userid" name="userid" />
+            <input type="hidden" id="photo_userid" name="photo_userid" />
             <x-bladewind::filepicker url="photos/nophoto.png" name="userphoto" id="userphoto" />
             <x-bladewind::button color="blue" can_submit="true" icon="image">Change Photo</x-bladewind::button>
             <x-bladewind::button color="red" onclick="hideModal('changephoto')"
@@ -112,23 +112,24 @@
             document.getElementById('user_password').value = '';
             document.getElementById('user_password_confirmation').value = '';
             document.getElementById('panuserinfo').style.display = 'block';
+            document.getElementById('panpassword').style.display = 'block';
             showModal('adduser');
         }
 
-        function editUser(user) {
-            // console.log(user);
-            document.getElementById('user_id').value = user.id;
-            document.getElementById('user_name').value = user.name;
-            document.getElementById('user_email').value = user.email;
-            document.getElementById('user_password').value = user.password;
-            document.getElementById('user_password_confirmation').value = user.password;
+        function editUser(userid) {
+            document.getElementById('user_id').value = document.getElementById("userid_" + userid).innerText;
+            document.getElementById('user_name').value = document.getElementById("username_" + userid).innerText;
+            document.getElementById('user_email').value = document.getElementById("email_" + userid).innerText;
+            document.getElementById('user_password').value = "";
+            document.getElementById('user_password_confirmation').value = "";
             document.getElementById('panuserinfo').style.display = 'block';
+            document.getElementById('panpassword').style.display = 'none';
             showModal('adduser');
         }
 
         function changePhoto(userid, photo) {
-            document.getElementById('userid').value = userid;
-            domEl('.userphoto').url = 'photos/' + photo;
+            document.getElementById('photo_userid').value = userid;
+            dom_el('.userphoto').url = 'photos/' + photo;
             showModal('changephoto');
         }
 
@@ -140,6 +141,7 @@
             document.getElementById('user_password').value = user.password;
             document.getElementById('user_password_confirmation').value = user.password;
             document.getElementById('panuserinfo').style.display = 'none';
+            document.getElementById('panpassword').style.display = 'block';
             showModal('adduser');
         }
     </script>
