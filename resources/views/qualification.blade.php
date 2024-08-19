@@ -2,6 +2,7 @@
     function hideQualification() {
         document.getElementById("panqual").style.display = "none";
         document.getElementById("panqualdiv").style.display = "none";
+        dom_el('.tblqualifications').scrollIntoView();
     }
     function showQualification() {
         document.getElementById("panqual").style.display = "block";
@@ -37,6 +38,7 @@
         if (qualid === null)
             return;
             var pdf = document.getElementById("pdf_" + qualid).innerText;
+            showQualification(qualid);
         document.getElementById("qualid").value = qualid;
         console.log("modifyqual is called " + qualid + " pdf: " + pdf);
         document.getElementById("panqual").style.display = "block";

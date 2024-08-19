@@ -4,8 +4,8 @@
         <x-input hidden name="email" id="email" value="{{ Auth::user()->email }}" />
         <x-input hidden name="name" id="name" value="{{ Auth::user()->name }}" />
 
-        <x-bladewind::card title="Personal Information" class="flex-grow w-80" has_shadow="true">
-            <div class="grid grid-cols-1 w-full">
+        <x-bladewind::card title="Personal Information"  has_shadow="true">
+            <div class="flex flex-col columns-1 md:columns-2 lg:columns-4">
                 <x-label for="Phone_Number" />
                 <x-input id="phoneno" name="phone" :value="old('phone',$registrant->phone)" />
                 <x-label for="High_Education_Id" />

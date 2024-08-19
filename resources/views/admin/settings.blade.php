@@ -58,10 +58,10 @@
                                                 @foreach ($opdat[$opt->tblname] as $item)
                                                     <x-bladewind::list-item>
                                                         <div class="grid grid-cols-4 gap-4 w-full">
-                                                            <span class="text-4xl">{{ $item->id }}</span>
-                                                            <span class="text-4xl pl-4"
+                                                            <span class="text-l">{{ $item->id }}</span>
+                                                            <span class="text-l pl-4"
                                                                 id="{{ $opt->tblname . '_' . $item->id }}">{{ $item->item }}</span>
-                                                            <span class="text-4xl pl-4"
+                                                            <span class="text-l pl-4"
                                                                 id="{{ 'ar_' . $opt->tblname . '_' . $item->id }}">{{ $item->aritem }}</span>
                                                             <div class="place-content-end w-full">
                                                                 <x-bladewind::button.circle
@@ -84,7 +84,7 @@
                         </div>
                     </x-bladewind::tab-content>
                     <x-bladewind::tab-content name="fees">
-                        <x:bladewind::card class="max-h-2">
+                        <x:bladewind::card >
                             <div class="flex flex-row bg-primary-50 gap-2 p-3">
                                 <span class="text-2xl">Registration Fees</span>
                                 <x-bladewind::button type="primary" name="addfees" icon="plus-circle"
@@ -92,43 +92,42 @@
                                     {{ __('Add Fee') }}
                                 </x-bladewind::button>
                             </div>
-                            </x:bladewind::content-center>
-                            <x-bladewind::table empty_state="true">
-                                <x-slot:header>
-                                    <th>id</th>
-                                    <th>Registration Class</th>
-                                    <th>Registration Degree</th>
-                                    <th>Registration Fee</th>
-                                    <th>Actions</th>
-                                </x-slot:header>
-                                @foreach ($fees as $f)
-                                    <tr>
-                                        <td>{{ $f->id }}</td>
-                                        <td id="regclass_{{ $f->id }}" data-itemid="{{ $f->regclass }}">
-                                            {{ $f->regclass_name->item }}</td>
-                                        <td id="regdegree_{{ $f->id }}" data-itemid="{{ $f->regdegree }}">
-                                            {{ $f->regdegree_name == null ? 'None' : $f->regdegree_name->item }}</td>
-                                        <td id="amount_{{ $f->id }}">{{ $f->amount }}</td>
-                                        <td>
-                                            <x-bladewind::button.circle icon="pencil"
-                                                onclick="modifyFee({{ $f->id }})"></x-bladewind::button.circle>
-                                            <x-bladewind::button.circle icon="trash" color='red'
-                                                onclick="deleteFee({{ $f->id }})"></x-bladewind::button.circle>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </x-bladewind::table>
+                        </x:bladewind::card>
+                        <x-bladewind::table empty_state="true">
+                            <x-slot:header>
+                                <th>id</th>
+                                <th>Registration Class</th>
+                                <th>Registration Degree</th>
+                                <th>Registration Fee</th>
+                                <th>Actions</th>
+                            </x-slot:header>
+                            @foreach ($fees as $f)
+                                <tr>
+                                    <td>{{ $f->id }}</td>
+                                    <td id="regclass_{{ $f->id }}" data-itemid="{{ $f->regclass }}">
+                                        {{ $f->regclass_name->item }}</td>
+                                    <td id="regdegree_{{ $f->id }}" data-itemid="{{ $f->regdegree }}">
+                                        {{ $f->regdegree_name == null ? 'None' : $f->regdegree_name->item }}</td>
+                                    <td id="amount_{{ $f->id }}">{{ $f->amount }}</td>
+                                    <td>
+                                        <x-bladewind::button.circle icon="pencil"
+                                            onclick="modifyFee({{ $f->id }})"></x-bladewind::button.circle>
+                                        <x-bladewind::button.circle icon="trash" color='red'
+                                            onclick="deleteFee({{ $f->id }})"></x-bladewind::button.circle>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </x-bladewind::table>
                     </x-bladewind::tab-content>
                     <x-bladewind::tab-content name="communication">
-                        <x-bladewind::card name="mailsettings" size="tiny">
-
+                        <x-bladewind::card name="mailsettings" title="Email Settings">
                             <div class="text-2xl text-blue-500 align-items-center px-3 py-3">
                                 Mail Settings
                             </div>
                         </x-bladewind::card>
                         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6 text-gray-900 dark:text-gray-100">
-                                <div class="flex flex-col columns-2 md:columns-2 lg:columns-4 max-w-1">
+                                <div class="flex flex-col columns-2 md:columns-2 lg:columns-4 w-1/3">
                                     <x-label for="host_name" />
                                     <x-bladewind::input name="hostname" size="regular" :value="old('hostname')" />
                                     <x-label for="user_name" />

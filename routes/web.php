@@ -11,6 +11,7 @@ use App\Http\Controllers\QualcertController;
 use App\Http\Controllers\RegRequestController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserAvatarController;
+use App\Http\Controllers\UserManagerController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -50,6 +51,11 @@ Route::group(['namespace' => 'Admin', 'middleware' => 'admin'], function () {
     Route::patch('/registrantmail', [OrderController::class, 'mailRegistrant'])->name('registrant.mail');
     Route::get('/saveapproval/{orderid}', [ApprovalController::class, 'create'])->name('order.approve');
     Route::patch('/saveapproval/{orderid}', [ApprovalController::class, 'store'])->name('approval.save');
+    Route::get('/usermanager', [UserManagerController::class, 'index'])->name('usermanager');
+    Route::post('/usermanager', [UserManagerController::class, 'create'])->name('user.create');
+    Route::patch('/edituser', [UserManagerController::class, 'edit'])->name('user.edit');
+    Route::patch('/deleteuser', [UserManagerController::class, 'destroy'])->name('user.destroy');
+    Route::patch('/userphoto', [UserManagerController::class, 'updatePhoto'])->name('user.photo');
 });
 
 Route::middleware('auth')->group(function () {

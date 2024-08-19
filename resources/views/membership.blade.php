@@ -1,10 +1,12 @@
 <script>
     function showmempanel() {
         document.getElementById('panmembership').style.display = "block";
+        document.getElementById('panmembership').scrollIntoView();
     }
 
     function hidemempanel() {
         document.getElementById('panmembership').style.display = "none";
+        domEl('.tblmembership').scrollIntoView();
     }
 
     function modifymembership(mmshipid) {
@@ -13,6 +15,7 @@
         document.getElementById("cmdupdatemembership").value = "updatemembership_" + mmshipid;
         document.getElementById("cmdsavemembership").style.display = "none";
         document.getElementById("cmdupdatemembership").style.display = "block";
+        document.getElementById('panmembership').scrollIntoView();
         //populate data from the server
         let allmem = @json($memberships);
         let m = allmem.filter(m => m.id == mmshipid)[0];
@@ -57,7 +60,7 @@
                 style="display:none;"><x-bladewind::icon name="bookmark-square"
                     type="solid" />{{ __('Update') }}</x-secondary-button>
             <x-secondary-button type="button" onclick="hidemempanel()"><x-bladewind::icon name="close"
-                    type="solid" /><x-bladewind::icon name="x-circle"/>{{ __('Close') }}</x-secondary-button>
+                    type="solid" /><x-bladewind::icon name="x-circle" />{{ __('Close') }}</x-secondary-button>
         </div>
     </div>
     <!-- table listing of membership -->

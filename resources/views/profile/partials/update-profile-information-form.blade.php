@@ -60,7 +60,8 @@
             </div>
             <x-bladewind::centered-content size="tiny">
                 <x-bladewind::progress-circle :percentage="$profcomp" size="200" circle_width="35" text_size="50"
-                    align="100" valign="50" show_label="true" label="Profile completion" show_percent="true" />
+                    align="100" valign="50" show_label="true" label="Profile completion" show_percent="true"
+                    color="{{ $profcomp > 50 ? ($profcomp > 70 ? 'green' : 'blue') : 'red' }}" shade="dark" />
                 <div class="min-w-10">
                     <span class="text-2xl">Profile completion</span>
                 </div>

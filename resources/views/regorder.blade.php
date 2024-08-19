@@ -19,36 +19,34 @@
                 @method('post')
                 <section>
                     <div class="flex flex-col columns-1 md:columns-2 lg:columns-2">
-                        <x-bladewind::card title="Personal Information" class="flex-grow w-80" has_shadow="true">
-                            <div class="grid grid-cols-2 w-full">
-                                <div class="columns-1">
+                        <x-bladewind::card title="Personal Information" class="overflow-auto" has_shadow="true">
+                            <div class="flex flex-cols md:flex-row lg:flex-row xl:flex-row gap-2">
+                                <div class="basis-full md:basis-1/4 lg:basis-1/4 xl:basis-1/4 gap-2">
                                     <x-bladewind::avatar image="/photos/{{ Auth::user()->avatar }}" size="omg" />
-                                    <x-bladewind::progress-bar class="pl-3 pr-4 mt-4"
-                                    percentage="75"
-                                    show_percentage_label_inline="false"
-                                    percentage_suffix="Profile completion"
-                                    show_percentage_label="true" />
+                                    <x-bladewind::progress-bar class="pl-3 pr-4 mt-4" percentage="75"
+                                        show_percentage_label_inline="false" percentage_suffix="Profile completion"
+                                        show_percentage_label="true" />
                                 </div>
-                                <div class="columns-1">
+                                <div class="basis-full md:basis-3/4 lg:basis-3/4 xl:basis-3/4">
                                     <p>Registrant Name</p>
-                                    <span class="text-2xl">{{ Auth::user()->name }}</span>
+                                    <span class="text-xl">{{ Auth::user()->name }}</span>
                                     <p>Email</p>
-                                    <span class="text-2xl">{{ Auth::user()->email }}</span>
+                                    <span class="text-xl">{{ Auth::user()->email }}</span>
                                     <p>Phone Number</p>
-                                    <span class="text-2xl">{{ Auth::user()->registrant->phone ?: 'None' }}</span>
+                                    <span class="text-xl">{{ Auth::user()->registrant->phone ?: 'None' }}</span>
                                     <p>High Education Id</p>
-                                    <span class="text-2xl">{{ Auth::user()->registrant->higheducid ?: 'None' }}</span>
+                                    <span class="text-xl">{{ Auth::user()->registrant->higheducid ?: 'None' }}</span>
                                     <x-label for="engineering_council_id" />
-                                    <p class="text-2xl">{{ Auth::user()->registrant->engcouncilid ?: 'None' }}</p>
+                                    <p class="text-xl">{{ Auth::user()->registrant->engcouncilid ?: 'None' }}</p>
                                 </div>
                             </div>
                         </x-bladewind::card>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 p-2">
 
-                        <x-bladewind::card title="Registration Details" class="flex-shrink">
+                        <x-bladewind::card title="Registration Details">
                             <div class="flex flex-col columns-1 md:columns-2 lg:columns-4">
-                                <input hidden name="orderid" value={{$order->id}} id="orderid"/>
+                                <input hidden name="orderid" value={{ $order->id }} id="orderid" />
                                 <x-label for="registration_class" />
                                 <select id="regclass" name="regclass" class="w-auto">
                                     <option value="">... Select ...</option>
@@ -66,7 +64,7 @@
                                     @endforeach
                                 </select>
                                 <x-label for="specialization" />
-                                <span class="text-2xl">{{ Auth::user()->registrant->specialization }}</span>
+                                <span class="text-xl">{{ Auth::user()->registrant->specialization }}</span>
                             </div>
                         </x-bladewind::card>
                         <x-bladewind::card title="Ocupation">
@@ -90,12 +88,10 @@
 
                 <div class="flex flex-shrink">
                     <x-bladewind::centered-content size="tiny">
-
                         <x-primary-button type="sumbit" name="command"
-                            value="saveorder">{{ __('Save') }}</x-primary-button>
-                        <x-danger-button type="submit" name="command" value="close"
-                            >{{ __('Close') }}</x-danger-button>
-
+                            value="saveorder"><x-bladewind::icon name="server"/>{{ __('Submit') }}</x-primary-button>
+                        <x-danger-button type="submit" name="command"
+                            value="close"><x-bladewind::icon name="x-mark"/>{{ __('Close') }}</x-danger-button>
                     </x-bladewind::centered-content>
                 </div>
             </x-form>
