@@ -70,22 +70,24 @@
             <div id="panuserinfo">
                 <input type="hidden" id="user_id" name="userid" />
                 <x-label for="user_name" />
-                <x-bladewind::input type="text" prefix="user" prefix_is_icon="true" id="user_name" name="name"
-                    required="true" />
+                <x-bladewind::input type="text" prefix="user" prefix_is_icon="true" id="user_name" name="name" />
                 <x-label for="user_email" />
                 <x-bladewind::input prefix="envelope" prefix_is_icon="true" type="email" id="user_email"
-                    name="email" required="true" />
+                    name="email" />
             </div>
             <div id='panpassword'>
                 <x-label for="user_password" />
                 <x-bladewind::input type="password" id="user_password" prefix="lock-closed" prefix_is_icon="true"
-                    name="password" required />
+                    name="password" />
                 <x-label for="confirm_password" />
                 <x-bladewind::input type="password" id="user_password_confirmation" prefix="lock-closed"
-                    prefix_is_icon="true" name="password_confirmation" required />
+                    prefix_is_icon="true" name="password_confirmation" />
             </div>
-            <x-bladewind::button color="blue" can_submit="true" icon="plus-circle">Add User</x-bladewind::button>
-            <x-bladewind::button color="red" onclick="hideModal('adduser')">Cancel</x-bladewind::button>
+            <x-bladewind::button name="cmdSaveuser" color="blue" can_submit="true"
+                icon="plus-circle">{{ __('Save') }}
+            </x-bladewind::button>
+            <x-bladewind::button color="red"
+                onclick="hideModal('adduser')">{{ __('Cancel') }}</x-bladewind::button>
         </form>
     </x-bladewind::modal>
     <x-bladewind::modal name="changephoto" show_action_buttons="false" title="Change Avatar">
@@ -93,7 +95,8 @@
             @csrf
             @method('patch')
             <input type="hidden" id="photo_userid" name="photo_userid" />
-            <x-bladewind::filepicker url="photos/nophoto.png" name="userphoto" id="userphoto" />
+            <x-bladewind::filepicker url="/photos/nophoto.png" name="userphoto" id="userphoto"
+                accepted_file_types="image/*" />
             <x-bladewind::button color="blue" can_submit="true" icon="image">Change Photo</x-bladewind::button>
             <x-bladewind::button color="red" onclick="hideModal('changephoto')"
                 icon="image">{{ __('Cancel') }}</x-bladewind::button>
@@ -113,6 +116,7 @@
             document.getElementById('user_password_confirmation').value = '';
             document.getElementById('panuserinfo').style.display = 'block';
             document.getElementById('panpassword').style.display = 'block';
+            document.getElementById('frmadduser').action = "{{ url('/usermanager') }}";
             showModal('adduser');
         }
 
@@ -124,24 +128,26 @@
             document.getElementById('user_password_confirmation').value = "";
             document.getElementById('panuserinfo').style.display = 'block';
             document.getElementById('panpassword').style.display = 'none';
+            document.getElementById('frmadduser').action = "{{ url('/edituser') }}";
             showModal('adduser');
         }
 
         function changePhoto(userid, photo) {
             document.getElementById('photo_userid').value = userid;
-            dom_el('.userphoto').url = 'photos/' + photo;
+            dom_el('.bw-fp-userphoto .selection').innerHTML =
+                '<img src="/photos/' + photo + '" class="rounded-md" />'
             showModal('changephoto');
         }
 
-        function changePassword(user) {
-            console.log(user);
-            document.getElementById('userid').value = user.id;
-            document.getElementById('user_name').value = user.name;
-            document.getElementById('user_email').value = user.email;
-            document.getElementById('user_password').value = user.password;
-            document.getElementById('user_password_confirmation').value = user.password;
+        function changePassword(userid) {
+            document.getElementById('user_id').value = document.getElementById("userid_" + userid).innerText;
+            document.getElementById('user_name').value = document.getElementById("username_" + userid).innerText;
+            document.getElementById('user_email').value = document.getElementById("email_" + userid).innerText;
+            document.getElementById('user_password').value = "";
+            document.getElementById('user_password_confirmation').value = "";
             document.getElementById('panuserinfo').style.display = 'none';
             document.getElementById('panpassword').style.display = 'block';
+            document.getElementById('frmadduser').action = "{{ url('/updatepassword') }}";
             showModal('adduser');
         }
     </script>

@@ -53,7 +53,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => 'admin'], function () {
     Route::patch('/saveapproval/{orderid}', [ApprovalController::class, 'store'])->name('approval.save');
     Route::get('/usermanager', [UserManagerController::class, 'index'])->name('usermanager');
     Route::post('/usermanager', [UserManagerController::class, 'create'])->name('user.create');
-    Route::patch('/edituser', [UserManagerController::class, 'edit'])->name('user.edit');
+    Route::post('/edituser', [UserManagerController::class, 'edit'])->name('user.edit');
+    Route::post('/updatepassword', [UserManagerController::class, 'updatePassword'])->name('user.updatepassword');
     Route::patch('/deleteuser', [UserManagerController::class, 'destroy'])->name('user.destroy');
     Route::patch('/userphoto', [UserManagerController::class, 'updatePhoto'])->name('user.photo');
 });

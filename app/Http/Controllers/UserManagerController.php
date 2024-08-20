@@ -6,7 +6,10 @@ use App\Models\Staffuser;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class UserManagerController extends Controller
 {
@@ -36,6 +39,7 @@ class UserManagerController extends Controller
         $request->mergeIfMissing(['photo' => 'nophoto.png',
             'usertype' => 'admin', 'remember_token' => 'false', 'email_verified_at' => Carbon::now(),
             'status' => 'active', 'ondate' => Carbon::now()]);
+        $request->merge(['password' => Hash::make($request->get('password'))]);
         Staffuser::create($request->except(['_token', '_method']));
 
         return redirect()->route('usermanager')->with('success', 'User created successfully');
@@ -60,17 +64,41 @@ class UserManagerController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request)
     {
-        //
+        //update user password in database
+        $validator = Validator::make($request->input(),
+            [
+                'name' => ['required',
+                    Rule::unique('staffuser')->ignore($request->get('userid'), 'id')],
+                'email' => ['required', Rule::unique('staffuser')->ignore($request->get('userid'))],
+            ]);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator);
+        }
+
+        Staffuser::where('id', $request->get('userid'))
+            ->update(['name' => $request->get('name'),
+                'email' => $request->get('email'), ]);
+
+        return redirect()->route('usermanager')->with('success', 'User updated successfully');
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function updatePassword(Request $request)
     {
-        //
+        //update user in database, and not to update password
+        $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+        Staffuser::where('id', $request->get('userid'))
+            ->update([
+                'password' => Hash::make($request->get('password')),
+            ]);
+
+        return redirect()->route('usermanager')->with('success', 'User updated successfully');
     }
 
     /**
@@ -93,7 +121,7 @@ class UserManagerController extends Controller
         }
         $userid = $request->get('photo_userid');
         $staff = Staffuser::find($userid);
-        $fname = $request->get('username').'.'.$request->file('userphoto')->extension();
+        $fname = $staff->name.'.'.$request->file('userphoto')->extension();
         Storage::putFileAs('public/photos/', $request->file('userphoto'), $fname);
         $staff->photo = $fname;
         $staff->save();
