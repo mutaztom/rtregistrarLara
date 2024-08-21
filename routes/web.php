@@ -43,7 +43,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => 'admin'], function () {
     Route::get('/viewregrequest/{orderid}', [OrderController::class, 'index'])->name('regrequest.view');
     Route::patch('/deleteregrequest', [InboxController::class, 'destroy'])->name('regrequest.delete');
     Route::patch('/modifyregrequest', [OrderController::class, 'modifyOrder'])->name('regrequest.modify');
-    Route::get('/admindashboard', [AdmindashboardController::class, 'index'])->name('admindashboard');
+    Route::get('/admindashboard', [AdmindashboardController::class, 'index'])->name('admin.dashboard');
     //admin manipuation for orders
     Route::patch('/rejectorder', [OrderController::class, 'rejectOrder'])->name('order.reject');
     Route::get('/inspectorder/{orderid}', [OrderController::class, 'inspectOrder'])->name('order.inspect');

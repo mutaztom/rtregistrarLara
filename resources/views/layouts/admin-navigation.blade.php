@@ -12,7 +12,7 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('admindashboard')" :active="request()->routeIs('admindashboard')">
+                    <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admindashboard')">
                         {{ __('Admin.Dashboard') }}
                     </x-nav-link>
                     <x-nav-link :href="route('regorder')" :active="request()->routeIs('regorder')">
@@ -26,6 +26,9 @@
                     </x-nav-link>
                     <x-nav-link :href="route('usermanager')" :active="request()->routeIs('usermanager')">
                         {{ __('User Manager') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('usermanager')" :active="request()->routeIs('usermanager')">
+                        {{ __('System Reports') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -88,7 +91,7 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('admindashboard')" :active="request()->routeIs('admindashboard')">
+            <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admindashboard')">
                 {{ __('Admin.Dashboard') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('regorder')" :active="request()->routeIs('regorder')">
@@ -102,6 +105,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('usermanager')" :active="request()->routeIs('usermanager')">
                 {{ __('User Manager') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('usermanager')" :active="request()->routeIs('usermanager')">
+                {{ __('System Manager') }}
             </x-responsive-nav-link>
         </div>
 

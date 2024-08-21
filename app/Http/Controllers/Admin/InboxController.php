@@ -20,11 +20,13 @@ class InboxController extends Controller
 
         ];
         //load orders with action buttons
-        $orders = Vwregisterrequest::select('id', 'item', 'regname', 'engclass', 'engdegree', 'ondate', 'status')
-            ->orderBy('id', 'desc')->get();
+        $neworders = Vwregisterrequest::select()->where('status', 'Requested')
+            ->orderBy('id', 'desc')->paginate(10);
+        $processing = Vwregisterrequest::select('id', 'item', 'regname', 'engclass', 'engdegree', 'ondate', 'status')
+            ->where('status','Processing')->orderBy('id', 'desc')->paginate(10);
 
-        return view('admin.inbox', ['orders' => $orders,
-            'actionButtons' => $actionbuttons]);
+        return view('admin.inbox', ['processing' => $processing,
+            'actionButtons' => $actionbuttons, 'neworders' => $neworders]);
     }
 
     /**
