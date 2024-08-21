@@ -20,6 +20,6 @@ class AdmindashboardController extends Controller
         $payments = DB::table('tblpayment')->where('paid', true)->orderby('id', 'desc')->limit(7)->get();
 
         return view('admin.admindashboard', compact('rejected', 'processing', 'neworders',
-            'totalfees', 'done', 'lastorders', 'recentorders','payments'));
+            'totalfees', 'done', 'lastorders', 'recentorders', 'payments'));
     }
 }

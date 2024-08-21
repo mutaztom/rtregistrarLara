@@ -23,7 +23,7 @@ class InboxController extends Controller
         $neworders = Vwregisterrequest::select()->where('status', 'Requested')
             ->orderBy('id', 'desc')->paginate(10);
         $processing = Vwregisterrequest::select('id', 'item', 'regname', 'engclass', 'engdegree', 'ondate', 'status')
-            ->where('status','Processing')->orderBy('id', 'desc')->paginate(10);
+            ->where('status','!=','Requested')->orderBy('id', 'desc')->paginate(10);
 
         return view('admin.inbox', ['processing' => $processing,
             'actionButtons' => $actionbuttons, 'neworders' => $neworders]);

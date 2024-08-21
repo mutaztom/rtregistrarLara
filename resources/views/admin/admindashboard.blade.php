@@ -21,8 +21,9 @@
                             @foreach ($lastorders as $lord)
                                 <x-bladewind::list-item>
                                     <div class="text-sm font-medium text-blue-800" style="color:blue;">
-                                        {{ $lord->id }} | {{ $lord->regname }} {{ $lord->engclass }}
-                                        {{ $lord->engdegree }}
+                                        <a href="{{ route('regrequest.view', ['orderid' => $lord->id]) }}">
+                                            {{ $lord->id }} | {{ $lord->regname }} {{ $lord->engclass }}
+                                            {{ $lord->engdegree }}</a>
                                     </div>
                                 </x-bladewind::list-item>
                             @endforeach
@@ -33,8 +34,9 @@
                             @foreach ($recentorders as $order)
                                 <x-bladewind::list-item>
                                     <div class="text-sm font-medium text-blue-800" style="color:blue;">
-                                        {{ $order->id }}| {{ $order->regname }} {{ $order->engclass }}
-                                        {{ $order->engdegree }}
+                                        <a href="{{ route('regrequest.view', ['orderid' => $order->id]) }}">
+                                            {{ $order->id }}| {{ $order->regname }} {{ $order->engclass }}
+                                            {{ $order->engdegree }}</a>
                                     </div>
                                 </x-bladewind::list-item>
                             @endforeach

@@ -9,12 +9,10 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use App\Models\Tblengclass;
-use App\Models\Tblengdegree;
-use App\Models\Tblregistrant;
+
 /**
  * Class Tblregisterrequest
- * 
+ *
  * @property int $id
  * @property string|null $item
  * @property int|null $ownerid
@@ -48,76 +46,87 @@ use App\Models\Tblregistrant;
  * @property string|null $onmachine
  * @property Carbon|null $modifydate
  * @property bool|null $noticed
- *
- * @package App\Models
  */
 class Tblregisterrequest extends Model
 {
-	protected $table = 'tblregisterrequest';
-	public $timestamps = false;
+    protected $table = 'tblregisterrequest';
 
-	protected $casts = [
-		'ownerid' => 'int',
-		'ondate' => 'datetime',
-		'regcat' => 'int',
-		'regclass' => 'int',
-		'job' => 'int',
-		'ecshared' => 'bool',
-		'esocdate' => 'datetime',
-		'approvalDate' => 'datetime',
-		'meetingdate' => 'datetime',
-		'payed' => 'bool',
-		'modifydate' => 'datetime',
-		'noticed' => 'bool'
-	];
+    public $timestamps = false;
 
-	protected $hidden = [
-		'unionsecretary',
-		'socitysecretary'
-	];
+    protected $casts = [
+        'ownerid' => 'int',
+        'ondate' => 'datetime',
+        'regcat' => 'int',
+        'regclass' => 'int',
+        'job' => 'int',
+        'ecshared' => 'bool',
+        'esocdate' => 'datetime',
+        'approvalDate' => 'datetime',
+        'meetingdate' => 'datetime',
+        'payed' => 'bool',
+        'modifydate' => 'datetime',
+        'noticed' => 'bool',
+    ];
 
-	protected $fillable = [
-		'item',
-		'ownerid',
-		'ondate',
-		'rpin',
-		'regcat',
-		'regclass',
-		'status',
-		'workplace',
-		'job',
-		'ecshared',
-		'esocnotes',
-		'esocstatus',
-		'esocdoc',
-		'esocuser',
-		'esocdate',
-		'ecunion',
-		'unionsecretary',
-		'sciencesocity',
-		'socitysecretary',
-		'rejectreason',
-		'decision',
-		'secgencomments',
-		'approvalDate',
-		'engcouncilNumber',
-		'meetingno',
-		'meetingdate',
-		'committeecomment',
-		'payed',
-		'byuser',
-		'onmachine',
-		'modifydate',
-		'noticed'
-	];
-	public function regclass_name():HasOne{
-		return $this->hasOne(Tblengclass::class, 'id','regclass');
-	}
-	public function regcat_name():HasOne{
-        return $this->hasOne(Tblengdegree::class, 'id','regcat');
+    protected $hidden = [
+        'unionsecretary',
+        'socitysecretary',
+    ];
+
+    protected $fillable = [
+        'item',
+        'ownerid',
+        'ondate',
+        'rpin',
+        'regcat',
+        'regclass',
+        'status',
+        'workplace',
+        'job',
+        'ecshared',
+        'esocnotes',
+        'esocstatus',
+        'esocdoc',
+        'esocuser',
+        'esocdate',
+        'ecunion',
+        'unionsecretary',
+        'sciencesocity',
+        'socitysecretary',
+        'rejectreason',
+        'decision',
+        'secgencomments',
+        'approvalDate',
+        'engcouncilNumber',
+        'meetingno',
+        'meetingdate',
+        'committeecomment',
+        'payed',
+        'byuser',
+        'onmachine',
+        'modifydate',
+        'noticed',
+    ];
+
+    public function regclass_name(): HasOne
+    {
+        return $this->hasOne(Tblengclass::class, 'id', 'regclass');
     }
-	public function registrant():HasOne{
-        return $this->hasOne(Tblregistrant::class, 'id','ownerid');
+
+    public function regcat_name(): HasOne
+    {
+        return $this->hasOne(Tblengdegree::class, 'id', 'regcat');
     }
-	
+
+    public function registrant(): HasOne
+    {
+        return $this->hasOne(Tblregistrant::class, 'id', 'ownerid');
+    }
+
+    public function job_name(): HasOne
+    {
+        return $this->hasOne(Tbljob::class, 'id', 'job');
+    }
+
+    
 }

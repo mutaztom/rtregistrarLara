@@ -11,7 +11,10 @@
         </h2>
     </x-slot>
     <div class="main h-dvh ">
-
+<x-bladewind::card title="Order Fees and PIN number">
+    <p><h>Order Fees: {{App\Http\Controllers\RegRequestController::fees($order->id)}}</h</p>
+        <p><h>PIN number: {{$order->rpin}}</h</p>
+</x-bladwind::card>
         <div
             class="container mx-auto overflow-auto text-gray-500 py-8 bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg">
             <x-form metod="posst" action="{{ route('saveorder') }}" id="regform">
