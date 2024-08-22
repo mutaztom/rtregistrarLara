@@ -75,16 +75,6 @@ class RegRequestController extends Controller
         return view('regorder', $param);
     }
 
-    public static function fees(int $orderid): float
-    {
-        $reg = DB::table('tblregisterrequest')->select('regclass', 'regcat')
-            ->where('id', $orderid)->get();
-        $fees = DB::table('tblfees')->select('amount')->where(['regclass' => $reg->regclass,
-            'regdegree' => $reg->regcat])->first();
-
-        return $fees ?: 0.0;
-    }
-
     public function saveorder(Request $request)
     {
         $command = $request->get('command');
@@ -194,7 +184,7 @@ class RegRequestController extends Controller
 
     public function modifyOrder(Request $request, $orderid)
     {
-        $order = DB::table('tblregisterrequest')->where('id', $orderid)->first();
+        $order = Tblregisterrequest::find($orderid);
         $param = RegRequestController::lockups();
         $param['order'] = $order;
 

@@ -128,5 +128,9 @@ class Tblregisterrequest extends Model
         return $this->hasOne(Tbljob::class, 'id', 'job');
     }
 
-    
+    //add one to one from table tblfees where regclass and regcat are equal
+    public function fees(): HasOne
+    {
+        return $this->hasOne(Tblfee::class, 'regclass', 'regclass', 'regcat', 'regdegree');
+    }
 }
