@@ -36,7 +36,8 @@
                                 @include('profile.partials.update-profile-information-form')
                             </div>
                         </div>
-                        <div id="panqualdiv" style="display:none" class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                        <div id="panqualdiv" style="display:none"
+                            class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                             <div class="max-w-xl">
                                 @include('qualification')
                             </div>
@@ -44,20 +45,20 @@
                         <form action="{{ route('avatar.edit') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             @method('patch')
-                            
-                                <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                                    <div class="max-w-xl">
-                                        <x-bladewind::card title="Profile Photo" class="flex-grow">
-                                            <x-bladewind::filepicker url="photos/{{ Auth::user()->avatar }}"
-                                                placeholder="Profile Picture" name="regphoto"
-                                                accepted_file_types="image/*, .png, .bmp" />
-                                            <x-bladewind::button name="cmdavatar" can_submit="true" type="primary">
-                                                <x-bladewind::icon name="arrow-long-up" />
-                                                {{ __('Upload') }}</x-bladewind::button>
-                                        </x-bladewind::card>
-                                    </div>
+
+                            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                                <div class="max-w-xl">
+                                    <x-bladewind::card title="Profile Photo" class="flex-grow">
+                                        <x-bladewind::filepicker url="photos/{{ Auth::user()->photofile }}"
+                                            placeholder="Profile Picture" name="regphoto"
+                                            accepted_file_types="image/*, .png, .bmp" />
+                                        <x-bladewind::button name="cmdavatar" can_submit="true" type="primary">
+                                            <x-bladewind::icon name="arrow-long-up" />
+                                            {{ __('Upload') }}</x-bladewind::button>
+                                    </x-bladewind::card>
                                 </div>
-                            
+                            </div>
+
                         </form>
                         <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                             <div class="columns-2">

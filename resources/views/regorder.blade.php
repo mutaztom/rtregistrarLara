@@ -5,6 +5,9 @@
             document.getElementById('cmdupload').style.display = 'block';
         }
     </script>
+    @php
+        $profcomp = App\Http\Controllers\ProfileController::calculateProfile(Auth::user());
+    @endphp
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Registration Request') }}
@@ -21,10 +24,12 @@
                         <x-bladewind::card title="Personal Information" class="overflow-auto" has_shadow="true">
                             <div class="flex flex-cols md:flex-row lg:flex-row xl:flex-row gap-2">
                                 <div class="basis-full md:basis-1/4 lg:basis-1/4 xl:basis-1/4 gap-2">
-                                    <x-bladewind::avatar image="/photos/{{ Auth::user()->avatar }}" size="omg" />
-                                    <x-bladewind::progress-bar class="pl-3 pr-4 mt-4" percentage="{{App\Http\Controllers\ProfileController::calculateProfile(Auth::user()->registrant)}}"
+                                    <x-bladewind::avatar image="/photos/{{ Auth::user()->photofile }}" size="omg" />
+                                    <x-bladewind::progress-bar class="pl-3 pr-4 mt-4" percentage="{{ $profcomp }}"
                                         show_percentage_label_inline="false" percentage_suffix="Profile completion"
-                                        show_percentage_label="true" />
+                                        show_percentage_label="true"
+                                        color="{{ $profcomp > 50 ? ($profcomp > 70 ? 'green' : 'blue') : 'red' }}"
+                                        shade="dark" />
                                 </div>
                                 <div class="basis-full md:basis-3/4 lg:basis-3/4 xl:basis-3/4">
                                     <p>Registrant Name</p>
@@ -32,19 +37,23 @@
                                     <p>Email</p>
                                     <span class="text-xl">{{ Auth::user()->email }}</span>
                                     <p>Phone Number</p>
-                                    <span class="text-xl">{{ Auth::user()->registrant->phone ?: 'None' }}</span>
+                                    <span class="text-xl">{{ Auth::user()->phone ?: 'None' }}</span>
                                     <p>High Education Id</p>
-                                    <span class="text-xl">{{ Auth::user()->registrant->higheducid ?: 'None' }}</span>
+                                    <span class="text-xl">{{ Auth::user()->higheducid ?: 'None' }}</span>
                                     <x-label for="engineering_council_id" />
                                     <p class="text-xl">
-                                        {{ Auth::user()->registrant->engcouncilid ?: 'None' }}</p>
+                                        {{ Auth::user()->engcouncilid ?: 'None' }}</p>
                                 </div>
-                                <div id="panfees" class="flex flex-col pl-3 pr-3 pt-3 border-solid border-1 border-blue-800 drop-shadow">
-                                    <span class="text-xl text-green-500 font-bold">Order Fees: {{ $order->fees?$order->fees->amount:0.0 }} SDG</span>
-                                    <span class="text-xl text-green-500 font-bold">PIN number: {{ $order->rpin }}</span>
+                                <div id="panfees"
+                                    class="flex flex-col pl-3 pr-3 pt-3 border-solid border-1 border-blue-800 drop-shadow">
+                                    <span class="text-xl text-green-500 font-bold">Order Fees:
+                                        {{ $order->fees ? $order->fees->amount : 0.0 }} SDG</span>
+                                    <span class="text-xl text-green-500 font-bold">PIN number:
+                                        {{ $order->rpin }}</span>
                                 </div>
-                                <div id="panfees" class="flex flex-col pl-3 pr-3 pt-3 border-solid border-1 border-blue-800 drop-shadow">
-                                
+                                <div id="panfees"
+                                    class="flex flex-col pl-3 pr-3 pt-3 border-solid border-1 border-blue-800 drop-shadow">
+
                                 </div>
                             </div>
                         </x-bladewind::card>
@@ -71,7 +80,7 @@
                                     @endforeach
                                 </select>
                                 <x-label for="specialization" />
-                                <span class="text-xl">{{ Auth::user()->registrant->specialization }}</span>
+                                <span class="text-xl">{{ Auth::user()->specialization }}</span>
                             </div>
                         </x-bladewind::card>
                         <x-bladewind::card title="Ocupation">

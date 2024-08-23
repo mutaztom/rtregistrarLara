@@ -56,7 +56,7 @@ class RegRequestController extends Controller
             'societies' => $societies,
             'specialization' => $specialization,
             'membertype' => DB::table('tblmemberships')->select('id', 'item')->get(),
-            'memberships' => Tblregmembership::where('regid', Auth()->user()->regid)->get(),
+            'memberships' => Tblregmembership::where('regid', Auth()->user()->id)->get(),
             'entity' => 'University',
         ];
 
@@ -69,7 +69,7 @@ class RegRequestController extends Controller
         //process form data
         $param = RegRequestController::lockups();
         $order = new TblregisterRequest;
-        $order->ownerid = Auth()->user()->regid;
+        $order->ownerid = Auth()->user()->id;
         $param['order'] = $order;
 
         return view('regorder', $param);
@@ -84,13 +84,13 @@ class RegRequestController extends Controller
             if ($orderid > 0) {
                 DB::table('tblregisterrequest')->where('id', $orderid)->update($request->except(['_crsrf', '_method', '_token', 'command', 'orderid']));
             } else {
-                $request->merge(['ownerid' => Auth()->user()->regid]);
+                $request->merge(['ownerid' => Auth()->user()->id]);
                 $request->merge(['ondate' => Carbon::now()]);
                 //generate rpin
                 $request->merge(['status' => 'Requested'])
                     ->merge(['item' => 'New order request']);
                 DB::table('tblregisterrequest')->insert($request->except(['_crsrf', '_method', '_token', 'command', 'orderid']));
-                $regid = DB::table('tblregisterrequest')->where('ownerid', Auth()->user()->regid)->get()->last()->id;
+                $regid = DB::table('tblregisterrequest')->where('ownerid', Auth()->user()->id)->get()->last()->id;
                 //update rpin for the new id
                 DB::table('tblregisterrequest')->where('id', $regid)->update(['rpin' => rand(1000000000, 1000000000000000).'-'.$regid]);
             }
@@ -170,12 +170,12 @@ class RegRequestController extends Controller
 
     public function orderList(Request $request): View
     {
-        $regid = Auth()->user()->regid;
+        $regid = Auth()->user()->id;
         $icons = [
             "icon:pencil | tip:edit order | color:green | click:window.open('/modifyorder/'+{id},'_self')",
             'icon:trash | tip:delete order | color:red | click:confirmDelete({id})',
         ];
-        $engcouncilid = Auth()->user()->registrant->engcouncilid ?: 'None!';
+        $engcouncilid = Auth()->user()->engcouncilid ?: 'None!';
         $orders = DB::table('vwregisterrequest')->where('ownerid', $regid)
             ->select('id', 'item', 'engclass', 'engdegree', 'ondate', 'status', 'payed')->get();
 

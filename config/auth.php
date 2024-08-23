@@ -66,11 +66,11 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => env('AUTH_MODEL', App\Models\Tblregistrant::class),
         ],
-        'staffuser'=>[
-        'driver' => 'eloquent',
-        'model' => env('AUT_MODEL',App\Models\Staffuser::class),
+        'staffuser' => [
+            'driver' => 'eloquent',
+            'model' => env('AUT_MODEL', App\Models\Staffuser::class),
         ],
         // 'otherusers' => []
 

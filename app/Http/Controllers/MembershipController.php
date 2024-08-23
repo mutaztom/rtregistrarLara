@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-
 class MembershipController extends Controller
 {
     /**
@@ -22,12 +21,12 @@ class MembershipController extends Controller
     public function create(Request $request)
     {
         //write form data to database Tblregmembership
-        DB::table('tblregmemberships')->insert(['socityid'=>$request->get('society'),
-        'memtype'=>$request->get('membertype'),'regid'=>Auth()->user()->regid,
-        'ondate'=>$request->get('membersince'),]);
-        
+        DB::table('tblregmemberships')->insert(['socityid' => $request->get('society'),
+            'memtype' => $request->get('membertype'), 'regid' => Auth()->user()->id,
+            'ondate' => $request->get('membersince'), ]);
+
         return redirect()->route('regorder')
-        ->with('success', 'Membership saved successfully!');
+            ->with('success', 'Membership saved successfully!');
     }
 
     /**
@@ -37,10 +36,11 @@ class MembershipController extends Controller
     {
         //update database Tblregmembership
         DB::table('tblregmemberships')->where('id', $id)
-        ->insert(['socityid'=>$request->get('society'),
-        'memtype'=>$request->get('membertype'),'ondate'=>$request->get('membersince')])->execute();
+            ->insert(['socityid' => $request->get('society'),
+                'memtype' => $request->get('membertype'), 'ondate' => $request->get('membersince')])->execute();
+
         return redirect()->route('regorder')
-        ->with(['success', 'Membership updated successfully!','showmempan'=>false]);
+            ->with(['success', 'Membership updated successfully!', 'showmempan' => false]);
     }
 
     /**
@@ -65,10 +65,11 @@ class MembershipController extends Controller
     public function update(Request $request, string $id)
     {
         DB::table('tblregmemberships')->where('id', $id)
-        ->update(['socityid'=>$request->get('society'),
-        'memtype'=>$request->get('membertype'),'ondate'=>$request->get('membersince')]);
+            ->update(['socityid' => $request->get('society'),
+                'memtype' => $request->get('membertype'), 'ondate' => $request->get('membersince')]);
+
         return redirect()->route('regorder')
-        ->with('success', 'Membership updated successfully!');
+            ->with('success', 'Membership updated successfully!');
     }
 
     /**
@@ -79,7 +80,8 @@ class MembershipController extends Controller
 
         //destroy data from database Tblregmembership
         DB::table('tblregmemberships')->where('id', $id)->delete();
+
         return redirect()->route('regorder')
-        ->with('success', 'Membership deleted successfully!');
+            ->with('success', 'Membership deleted successfully!');
     }
 }
