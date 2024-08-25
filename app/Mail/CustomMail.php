@@ -2,25 +2,28 @@
 
 namespace App\Mail;
 
-use App\Models\Tblregistrant;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class WelcomeMailer extends Mailable
+class CustomMail extends Mailable
 {
     use Queueable, SerializesModels;
-
-    protected Tblregistrant $registrant;
-
+    protected $body;
+    protected $registrantname;
+    
     /**
      * Create a new message instance.
      */
-    public function __construct(Tblregistrant $reg)
+    public function __construct(String $data,String $regname,String $subj)
     {
-        $this->registrant = $reg;
+        //
+        $this->body = $data;
+        $this->registrantname = $regname;
+        $this->subject = $subj;
     }
 
     /**
@@ -29,8 +32,7 @@ class WelcomeMailer extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            to: $this->registrant->email,
-            subject: 'Welcome To Engineering Council',
+            subject: $this->subject,
         );
     }
 
@@ -40,11 +42,9 @@ class WelcomeMailer extends Mailable
     public function content(): Content
     {
         return new Content(
-            //view: 'emails.signup',
-            text: 'emails.signup-txt',
-            with: [
-                'registrant' => $this->registrant,
-            ],
+            view: 'emails.custom-text',
+            with:['body' => $this->body,
+            'registrantname' => $this->registrantname],
         );
     }
 

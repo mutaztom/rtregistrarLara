@@ -6,6 +6,7 @@
     </x-slot>
     <script>
         function reject() {
+            document.getElementById('orderid').value = {{ $order->id }};
             @if ($order->status == 'Rejected')
                 showNotification('Rejected', 'This order is already rejected', 'error');
             @else
@@ -93,9 +94,10 @@
                             <div class="basis-full md:basis-1/4 lg:basis-1/4 xl:basis-1/4 gap-2">
                                 <x-bladewind::avatar image="/photos/{{ $order->registrant->photo ?: 'nophoto.png' }}"
                                     size="omg" />
-                                <x-bladewind::progress-bar class="pl-3 pr-4 mt-4 w-46" shade="dark" percentage="{{$comp}}"
-                                    show_percentage_label_inline="false" percentage_suffix="Profile completion"
-                                    show_percentage_label="true" color="{{$comp>50?($comp>70?'green':'blue'):'red'}}" />
+                                <x-bladewind::progress-bar class="pl-3 pr-4 mt-4 w-46" shade="dark"
+                                    percentage="{{ $comp }}" show_percentage_label_inline="false"
+                                    percentage_suffix="Profile completion" show_percentage_label="true"
+                                    color="{{ $comp > 50 ? ($comp > 70 ? 'green' : 'blue') : 'red' }}" />
                             </div>
                             <div class="basis-full md:basis-3/4 lg:basis-3/4 xl:basis-3/4">
                                 @include('ProfileView', ['registrant' => $order->registrant])
@@ -159,15 +161,15 @@
             <form method="post" action="{{ route('order.reject') }}">
                 @csrf
                 @method('patch')
-                <input type="hidden" name="orderid" id="orderid" />
+                <input type="hidden" name="orderid" id="orderid" value="{{$order->id}}" />
                 <p>Are you sure you want to reject this registration request?</p>
                 <x-label for="reject_reason" />
-                <x-bladewind::textarea id="reject_reason" name="reject_reason" required
-                    rows="4"></x-bladewind::textarea>
+                <x-bladewind::textarea id="reject_reason" name="reject_reason" rows="4"></x-bladewind::textarea>
                 <x-bladewind::button id="cmdreject" color='red' can_submit="true"
                     icon="cross">{{ __('Reject') }}</x-bladewind::button>
                 <x-bladewind::button type="primary" name="cmdcancel" color='green' icon="undo"
                     onclick="hideModal('confirmReject')">{{ __('Cancel') }}</x-bladewind::button>
+            </form>
         </x-bladewind::modal>
         <x-bladewind::modal name="frmEmailSend" title="Send Email" show_action_buttons="false" size="omg">
             <form method="post" action="{{ route('registrant.mail') }}" id="frmmail">
@@ -178,12 +180,12 @@
                     <x-bladewind::input type="text" prefix="@" transparent_prefix="false" name="to"
                         id="to" value="{{ $order->registrant->email }}" readonly />
                     <x-bladewind::input type="text" prefix="Subject" transparent_prefix="false" name="subject"
-                        id="subject" value="New Order Request - Order ID: #{{ $order->id }}" />
-                    <x-label for="message" />
-                    <x-bladewind::textarea add_clearing="true" placeholder="Please write your email here."
-                        id="message" name="message" rows="10" toolbar="true"></x-bladewind::textarea>
+                        id="subject" value="New Order Request - Order ID: #{{ $order->rpin }}" />
+                    <x-textarea add_clearing="true" placeholder="Please write your email here." error_heading="Error"
+                        error_message="Email Body is required" name="email_message" rows="5"
+                        toolbar="true"></x-textarea>
                 </div>
-                <x-bladewind::button type="primary" name="cmdSend" color='blue'
+                <x-bladewind::button type="primary" name="cmdSend" color='blue' can_submit="true"
                     icon="paper-plane">{{ __('Send') }}</x-bladewind::button>
                 <x-bladewind::button type="primary" name="cmdCancel" color='green' icon="undo"
                     onclick="hideModal('frmEmailSend')">{{ __('Cancel ') }}</x-bladewind::button>

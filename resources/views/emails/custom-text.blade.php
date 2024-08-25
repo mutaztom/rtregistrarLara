@@ -1,0 +1,2 @@
+Dear {{$registrantname}}
+{{$body}}

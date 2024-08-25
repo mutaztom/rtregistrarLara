@@ -4,14 +4,18 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProfileController;
+use App\Mail\CustomMail;
+use App\Mail\RejctOrderMail;
 use App\Models\Tblfee;
 use App\Models\Tblpayment;
 use App\Models\Tblregisterrequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\Mime\Email;
 
 class OrderController extends Controller
 {
@@ -55,8 +59,12 @@ class OrderController extends Controller
         Tblregisterrequest::where('id', $request->get('orderid'))
             ->update(['status' => 'Rejected',
                 'rejectreason' => $request->get('reject_reason'), ]);
+        //send order rejected email
+        $order = Tblregisterrequest::find($request->get('orderid'));
+        //send rejected order email to registrant
+        Mail::to($order->registrant->email)->send(new RejctOrderMail($order));
 
-        return redirect()->back()->with('success', 'Order has been rejected');
+        return redirect()->back()->with('success', 'Order has been rejected, Registrant was notified.');
     }
 
     public function approveOrder(Request $request, int $orderid)
@@ -65,6 +73,8 @@ class OrderController extends Controller
         // ->update(['status'=>'Processing']);
         // return redirect()->back()->with('success', 'Order has been approved');
         $order = Tblregisterrequest::find($orderid);
+        //send email notification to registrant for approval
+        Mail::to($order->registrant->email)->send(new ApprovalMail($order));
 
         return view('approval', ['order' => $order]);
     }
@@ -109,8 +119,13 @@ class OrderController extends Controller
         return redirect()->route('regrequest.view', ['orderid' => $orderid])->with('success', 'Payment has been made');
     }
 
-    public function mailRegistrant($request)
+    public function mailRegistrant(Request $request)
     {
+        $id = $request->input('orderid');
+        $order = Tblregisterrequest::findOrfail($id);
+        $text = $request->input('email_message');
+        Mail::to($order->registrant->email)->send(new CustomMail($text, $order->registrant->name, $request->input('subject')));
+
         return redirect()->back()->with('success', 'Email has been sent to registrant');
     }
 

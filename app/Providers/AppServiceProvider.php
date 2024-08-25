@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Auth;
+use Symfony\Component\Mailer\Transport;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -19,8 +21,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Auth::viaRequest('admin', function (Request $request) {
-        //     return User::where('token', (string) $request->token)->first();
-        // });
+    
     }
 }
