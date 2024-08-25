@@ -73,9 +73,6 @@ class OrderController extends Controller
         // ->update(['status'=>'Processing']);
         // return redirect()->back()->with('success', 'Order has been approved');
         $order = Tblregisterrequest::find($orderid);
-        //send email notification to registrant for approval
-        Mail::to($order->registrant->email)->send(new ApprovalMail($order));
-
         return view('approval', ['order' => $order]);
     }
 
@@ -115,8 +112,11 @@ class OrderController extends Controller
         //if payment saved successfully update order payment status
         Tblregisterrequest::where('id', $orderid)->update(['status' => 'Paid']);
         $order->where('id', '=', $orderid)->update(['payed' => true]);
-
-        return redirect()->route('regrequest.view', ['orderid' => $orderid])->with('success', 'Payment has been made');
+        //send email notification to registrant informing about order payment
+        Mail::to($order->registrant->email)->
+        send(new CustomMail('Your order has been paid, you will soon recieve commitee decission. \n regards', $order->registrant->name, 'Payment Confirmation'));
+        return redirect()->route('regrequest.view', ['orderid' => $orderid])->with('success',
+         'Payment has been made. registrant has been notified');
     }
 
     public function mailRegistrant(Request $request)

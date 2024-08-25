@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Tblregisterrequest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ApprovalMail;
 class ApprovalController extends Controller
 {
     /**
@@ -52,8 +53,10 @@ class ApprovalController extends Controller
         ]);
         $order->where('id', $orderid)
             ->update($request->except(['_token', '_csrf', '_method', 'approval']));
-
-        return redirect()->route('regrequest.view', ['orderid' => $orderid])->with('success', 'Order has been approved');
+        //send email notification to registrant for approval
+        Mail::to($order->registrant->email)->send(new ApprovalMail($order));
+        return redirect()->route('regrequest.view', ['orderid' => $orderid])
+        ->with('success', 'Order has been approved, Registrant has been notified.');
 
     }
 
