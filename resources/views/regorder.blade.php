@@ -108,6 +108,10 @@
                                 name="server" />{{ __('Submit') }}</x-primary-button>
                         <x-danger-button type="submit" name="command" value="close"><x-bladewind::icon
                                 name="x-mark" />{{ __('Close') }}</x-danger-button>
+                        <x-bladewind::button type="secondary" icon="printer" name="cmdprint" tag="a"
+                            href="{{ route('order.print', ['orderid' => $order->id]) }}">
+                            {{ __('Print') }}
+                        </x-bladewind::button>
                     </x-bladewind::centered-content>
                 </div>
             </x-form>

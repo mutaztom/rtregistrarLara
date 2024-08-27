@@ -88,7 +88,7 @@
                                     onclick="showModal('confirmDelete')">
                                     </x-bladewind::button>
                                     <x-bladewind::button.circle icon="eye" tag="a" size="tiny"
-                                        outline="true" :href="route('regrequest.view', ['orderid' => $norder->id])">
+                                        outline="true" :href="route('regrequest.view', ['orderid' => $order->id])">
                                     </x-bladewind::button.circle>
                             </td>
                         </tr>

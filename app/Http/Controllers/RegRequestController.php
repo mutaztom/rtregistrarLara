@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\RpinMail;
 use App\Models\Tblcity;
 use App\Models\Tblengclass;
 use App\Models\Tblengdegree;
@@ -21,7 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
-
+use App\Reports\RegisterRequest\OrderPrintReport;
 class RegRequestController extends Controller
 {
     public static function lockups(): array
@@ -94,7 +95,23 @@ class RegRequestController extends Controller
                 //update rpin for the new id
                 DB::table('tblregisterrequest')->where('id', $regid)->update(['rpin' => rand(1000000000, 1000000000000000).'-'.$regid]);
             }
+            //notify registrant that registration order has been updated
+            Mail::to(Auth()->user()->email)->send(new RpinMail($order));
 
+            return redirect()->route('regrequest.view', ['orderid' => $orderid])->with('success', 'Request order saved successfully!');
+        } elseif ($command == 'cancel') {
+            //cancel order
+            $orderid = $request->get('orderid');
+            DB::table('tblregisterrequest')->where('id', $orderid)->update(['status' => 'Cancelled']);
+
+            return redirect()->route('regrequest.view', ['orderid' => $orderid])->with('success', 'Request order cancelled successfully!');
+        } elseif ($command == 'close') {
+            return redirect()->route('order.list');
+        } elseif (str_starts_with($command, 'deletequal')) {
+            $qualid = explode('_', $command)[1];
+            $this->deletequalification($request->get('qualid'));
+
+            //return redirect
             return redirect()->route('order.modify', ['orderid' => $orderid])->with('success', 'Request order saved successfully!');
         } elseif ($command == 'close') {
             return redirect()->route('order.list');
@@ -196,5 +213,12 @@ class RegRequestController extends Controller
         DB::table('tblregisterrequest')->where('id', $orderid)->delete();
 
         return redirect()->route('order.list')->with('success', 'Order deleted successfully!');
+    }
+
+    public function printOrder(int $orderid)
+    {
+        $report = new OrderPrintReport;
+
+        return $report->render();
     }
 }
