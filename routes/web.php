@@ -15,7 +15,7 @@ use App\Http\Controllers\UserManagerController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome'); 
+    return view('welcome');
 });
 
 Route::get('/regorder', [RegRequestController::class, 'registerrequest']
@@ -80,5 +80,5 @@ Route::patch('/modifyqual', [QualcertController::class, 'editQualification'])->n
 Route::get('/deletequal/{qualid}', [QualcertController::class, 'delete'])->name('remove.qual');
 Route::post('/removequalpdf/{qualid}', [QualcertController::class, 'deletepdf'])->name('remove.qualpdf');
 Route::post('/removemembership/{mid}', [MembershipController::class, 'destroy'])->name('remove.membership');
-Route::get('/printorder/{orderid}',[RegRequestController::class,'printorder'])->name('order.print');
+Route::get('/printorder/{orderid}', 'App\Http\Controllers\PrintController@printOrder')->middleware('auth')->name('order.print');
 require __DIR__.'/auth.php';

@@ -22,7 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
-use App\Reports\RegisterRequest\OrderPrintReport;
+
 class RegRequestController extends Controller
 {
     public static function lockups(): array
@@ -211,14 +211,6 @@ class RegRequestController extends Controller
     public function destroy(Request $request, int $orderid)
     {
         DB::table('tblregisterrequest')->where('id', $orderid)->delete();
-
         return redirect()->route('order.list')->with('success', 'Order deleted successfully!');
-    }
-
-    public function printOrder(int $orderid)
-    {
-        $report = new OrderPrintReport;
-
-        return $report->render();
     }
 }
