@@ -5,14 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Reports\FeesReport;
 use App\Reports\RegisterRequestReport;
-use Barryvdh\DomPDF\Facade\Pdf;
 use App\Reports\RegistrantsReport;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SysReportsController extends Controller
 {
     public function index()
     {
-        $reportlist = ['fees', 'registrants', 'orders','paiedorders'];
+        $reportlist = ['fees', 'registrants', 'orders', 'paiedorders'];
 
         return view('admin.reports', compact('reportlist'));
     }
@@ -29,7 +29,6 @@ class SysReportsController extends Controller
     public function exportReport(string $repname)
     {
         //export report to pdf
-        $report = new FeesReport;
         $report = $this->getReport($repname);
         $report->run();
         $pdf = Pdf::loadView('report', ['report' => $report])
@@ -47,7 +46,7 @@ class SysReportsController extends Controller
         $pdf = Pdf::loadView('report', ['report' => $report])
             ->setPaper('a4', 'portrait');
 
-        return $pdf->download($repname.'pdf');
+        return $pdf->download($repname.'.pdf');
     }
 
     public function filterReport(Request $request)

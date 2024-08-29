@@ -13,7 +13,7 @@ class RegistrantsReport extends \koolreport\KoolReport
     public function setup()
     {
         $this->src('mysql')->query(
-            'SELECT id, regname, email, phone, ondate,higheducid, regdegree FROM vwregistrant;'
-        )->pipe($this->dataStore('registrants'));
+            'SELECT id,regname,email,phone,address FROM vwregistrant'
+        )->pipe($this->dataStore('registrants_report'));
     }
 }
