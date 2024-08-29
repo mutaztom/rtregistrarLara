@@ -14,7 +14,7 @@ use koolreport\widgets\koolphp\Table;
     <h4>View of request </h4>
 <?php
 Table::create([
-    'dataStore' => $this->dataStore('order_print_report'),
+    'dataStore' => $this->dataStore('registrants'),
     'cssClass' => [
         'table' => 'table table-hover table-bordered',
     ],

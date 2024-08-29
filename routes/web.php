@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdmindashboardController;
 use App\Http\Controllers\Admin\ApprovalController;
 use App\Http\Controllers\Admin\InboxController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\SysReportsController;
 use App\Http\Controllers\Auth\AdminSessionAuthenticator;
 use App\Http\Controllers\MembershipController;
 use App\Http\Controllers\ProfileController;
@@ -57,6 +58,12 @@ Route::group(['namespace' => 'Admin', 'middleware' => 'admin'], function () {
     Route::post('/updatepassword', [UserManagerController::class, 'updatePassword'])->name('user.updatepassword');
     Route::patch('/deleteuser', [UserManagerController::class, 'destroy'])->name('user.destroy');
     Route::patch('/userphoto', [UserManagerController::class, 'updatePhoto'])->name('user.photo');
+    //reporting routes
+    Route::get('/reports', [SysReportsController::class, 'index'])->name('reports');
+    Route::get('/printreport/{repname}', [SysReportsController::class, 'printReport'])->name('printreport');
+    Route::get('/exportreport/{repname}', [SysReportsController::class, 'exportReport'])->name('exportreport');
+    Route::get('/downloadreport/{repname}', [SysReportsController::class, 'downloadReport'])->name('downloadreport');
+    Route::post('/filterreport}', [SysReportsController::class, 'filterReport'])->name('report.filter');
 });
 
 Route::middleware('auth')->group(function () {
@@ -68,7 +75,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/uploadphoto', 'App\Http\Controllers\UserAvatarController@uploadphoto')->name('avatar.edit');
     Route::get('/myorders', 'App\Http\Controllers\RegRequestController@orderList')->name('order.list');
     Route::get('/modifyorder/{orderid}', 'App\Http\Controllers\RegRequestController@modifyOrder')->name('order.modify');
-    Route::patch('/deleteorder/{orderid}', 'App\Http\Controllers\RegRequestController@destroy')->name('order.delete');
+    Route::patch('/deleteorder/{orderid}', '\RegRequestController@destroy')->name('order.delete');
 });
 // Add a route that can load an image from storage based on a parameter
 Route::get('/photos/{imageName}', [UserAvatarController::class, 'show'])->name('show.avatar');

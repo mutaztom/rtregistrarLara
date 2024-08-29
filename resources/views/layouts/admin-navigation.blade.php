@@ -27,7 +27,7 @@
                     <x-nav-link :href="route('usermanager')" :active="request()->routeIs('usermanager')">
                         {{ __('User Manager') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('usermanager')" :active="request()->routeIs('usermanager')">
+                    <x-nav-link :href="route('reports')" :active="request()->routeIs('reports')">
                         {{ __('System Reports') }}
                     </x-nav-link>
                 </div>
@@ -108,6 +108,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('usermanager')" :active="request()->routeIs('usermanager')">
                 {{ __('System Manager') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('reports')" :active="request()->routeIs('reports')">
+                {{ __('System Reports') }}
             </x-responsive-nav-link>
         </div>
 

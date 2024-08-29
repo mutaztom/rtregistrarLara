@@ -12,11 +12,8 @@ class RegistrantsReport extends \koolreport\KoolReport
 
     public function setup()
     {
-        $orderid = $this->params['orderid'];
-        $this->src('mysql')
-            ->query(
-                'select id,item,ondate,status,engclass,engdegree  from vwregisterrequest
-                    where id='.$orderid
-            )->pipe($this->dataStore('order_print_report'));
+        $this->src('mysql')->query(
+            'SELECT id, regname, email, phone, ondate,higheducid, regdegree FROM vwregistrant;'
+        )->pipe($this->dataStore('registrants'));
     }
 }

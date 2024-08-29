@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "barryvdh/laravel-dompdf": "^3.0",
         "blade-ui-kit/blade-ui-kit": "^0.6.2",
         "koolreport/bootstrap4": "^1.5",
         "koolreport/core": "^6.5",

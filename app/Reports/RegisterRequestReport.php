@@ -4,7 +4,7 @@ namespace App\Reports;
 
 require_once base_path().'/vendor/koolreport/core/autoload.php';
 
-class RegistrantsReport extends \koolreport\KoolReport
+class OrderPrintReport extends \koolreport\KoolReport
 {
     use \koolreport\bootstrap4\Theme;
     use \koolreport\clients\Bootstrap;
@@ -15,8 +15,7 @@ class RegistrantsReport extends \koolreport\KoolReport
         $orderid = $this->params['orderid'];
         $this->src('mysql')
             ->query(
-                'select id,item,ondate,status,engclass,engdegree  from vwregisterrequest
-                    where id='.$orderid
+                'select id,item,ondate,status,engclass,engdegree  from vwregisterrequest'
             )->pipe($this->dataStore('order_print_report'));
     }
 }
