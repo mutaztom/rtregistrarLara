@@ -1,6 +1,5 @@
 <?php
 use koolreport\widgets\koolphp\Table;
-
 ?>
 <html>
 <head>    
@@ -16,7 +15,7 @@ Table::create([
     'dataStore' => $this->dataStore('registrants_report'),
     'cssClass' => [
         'table' => 'table table-hover table-bordered',
-    ],'width' =>'80%',
+    ], 'width' => '80%',
 ]);
 ?>
 </body>

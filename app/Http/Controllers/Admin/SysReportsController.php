@@ -6,15 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Reports\FeesReport;
 use App\Reports\RegisterRequestReport;
 use App\Reports\RegistrantsReport;
+use ArPHP\I18N\Arabic;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class SysReportsController extends Controller
 {
+    protected $reportlist = ['fees', 'registrants', 'orders', 'paiedorders', 'testview'];
+
     public function index()
     {
-        $reportlist = ['fees', 'registrants', 'orders', 'paiedorders'];
 
-        return view('admin.reports', compact('reportlist'));
+        return view('admin.reports', ['reportlist' => $this->reportlist]);
     }
 
     public function printReport(string $repname)
@@ -30,9 +32,15 @@ class SysReportsController extends Controller
     {
         //export report to pdf
         $report = $this->getReport($repname);
-        $report->run();
-        $pdf = Pdf::loadView('report', ['report' => $report])
-            ->setPaper('a4', 'portrait');
+        if ($repname == 'testview') {
+            $pdf = Pdf::loadView('registrants')
+                ->setPaper('a4', 'landscape');
+        } else {
+
+            $report->run();
+            $pdf = Pdf::loadView('report', ['report' => $report])
+                ->setPaper('a4', 'portrait');
+        }
 
         return $pdf->stream();
     }
@@ -40,11 +48,27 @@ class SysReportsController extends Controller
     public function downloadReport(string $repname)
     {
         //export report to pdf
-        $report = new FeesReport;
+        $arabic = new Arabic;
+
         $report = $this->getReport($repname);
         $report->run();
-        $pdf = Pdf::loadView('report', ['report' => $report])
-            ->setPaper('a4', 'portrait');
+        // $reportHtml = Pdf::loadView($report->render())
+        // ->setPaper('a4', 'portrait');
+        $title = ('أسماء المتقدمين');
+        //    $reportHtml=view('report', ['report' => $report,'title'=>$text])->render();
+        $reportHtml = view('registrants', ['title' => $title])->render();
+        //Arabic encode
+        $p = $arabic->arIdentify($reportHtml);
+
+        for ($i = count($p) - 1; $i >= 0; $i -= 2) {
+            $utf8ar = $arabic->utf8Glyphs(substr($reportHtml, $p[$i - 1], $p[$i] - $p[$i - 1]));
+            $reportHtml = substr_replace($reportHtml, $utf8ar, $p[$i - 1], $p[$i] - $p[$i - 1]);
+        }
+        Pdf::setOption(['dpi' => 150, 'defaultFont' => 'tahoma']);
+        $pdf = PDF::loadHTML($reportHtml)->setPaper('a4', 'portrait');
+
+        // $pdf = Pdf::loadView('report', ['report' => $report])
+        //     ->setPaper('a4', 'portrait');
 
         return $pdf->download($repname.'.pdf');
     }
@@ -73,6 +97,8 @@ class SysReportsController extends Controller
             $report = new RegistrantsReport;
         } elseif ($repname == 'orders') {
             $report = new RegisterRequestReport;
+        } elseif ($repname == 'testview') {
+            $report = view('registrants')->render();
         }
 
         return $report;

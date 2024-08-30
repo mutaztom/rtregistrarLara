@@ -1,1 +1,1 @@
- {{ $report->render() }}
+{{ $report->render() }}

@@ -4,7 +4,7 @@ namespace App\Reports;
 
 require_once base_path().'/vendor/koolreport/core/autoload.php';
 
-class RegistrantsReport extends \koolreport\KoolReport
+class OrderPrintReport extends \koolreport\KoolReport
 {
     use \koolreport\bootstrap4\Theme;
     use \koolreport\clients\Bootstrap;
