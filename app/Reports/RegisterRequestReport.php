@@ -15,7 +15,8 @@ class RegisterRequestReport extends \koolreport\KoolReport
         // $orderid = $this->params['orderid'];
         $this->src('mysql')
             ->query(
-                'SELECT id,item,ondate,status,engclass,engdegree from vwregisterrequest'
+                'SELECT id,item,ondate,status,engclass,engdegree from vwregisterrequest
+                limit 25'
             )->pipe($this->dataStore('registerrequest'));
     }
 }

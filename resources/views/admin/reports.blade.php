@@ -37,6 +37,9 @@
                                 <option value="{{ $i }}">{{ $i }}</option>
                             @endfor
                         </select>
+                        <x-bladewind::button type="secondary" can_submit="true" icon="cursor-rrow-ripple">
+                            {{ __('Filter') }}
+                        </x-bladewind::button>
                     </form>
                 </div>
                 <x-bladewind::list-view>
