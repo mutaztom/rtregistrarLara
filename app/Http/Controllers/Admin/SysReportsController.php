@@ -50,16 +50,16 @@ class SysReportsController extends Controller
     {
         //export report to pdf
         ini_set('memory_limit', '256M');
+        Pdf::setOptions(array('defaultFont'=>'dejavu-sans'));
         $report = $this->getReport($repname);
-        Pdf::setOption(['defautFont' => 'amiri']);
 
         if ($repname == 'testview') {
             $pdf = Pdf::loadHtml($this->fixArabic($report))
                 ->setPaper('a4', 'landscape');
         } else {
             $report->run();
-            $pdf = Pdf::loadView('report', ['report' => $report])
-                ->setPaper('a4', 'portrait');
+            $repHtml = view('report', ['report' => $report])->render();
+            $pdf = Pdf::loadHtml($this->fixArabic($repHtml))->setPaper('a4', 'landscape');
         }
 
         return $pdf->stream();
@@ -94,24 +94,41 @@ class SysReportsController extends Controller
                 //apply filter to query string
                 $this->filter = ['ondate' => $startdate];
                 break;
-            case 'lastyear':
-                $startdate = Carbon::now()->subYear()->startOfYear()->format('Y-m-d');
-                $enddate = Carbon::now()->subYear()->endOfYear()->format('Y-m-d');
+            case 'weekly':
+                $startdate = Carbon::now()->format('Y-m-d');
+                $enddate = Carbon::now()->subDays(7)->format('Y-m-d');
                 break;
-            case 'month':
+            case 'monthly':
                 $startdate = Carbon::now()->startOfMonth()->format('Y-m-d');
                 $enddate = Carbon::now()->endOfMonth()->format('Y-m-d');
                 break;
-            case 'lastmonth':
-                $startdate = Carbon::now()->subMonth()->startOfMonth()->format('Y-m-d');
-                $enddate = Carbon::now()->subMonth()->endOfMonth()->format('Y-m-d');
+            case 'firstquarter':
+                $startdate = Carbon::now() - subQuarter(1)->format('Y-m-d');
+                $enddate = Carbon::now()->subQuarter(1)->format('Y-m-d');
+                break;
+            case 'secondquarter':
+                $startdate = Carbon::now()->subMonths(3)->startOfMonth()->format('Y-m-d');
+                $enddate = Carbon::now()->subMonths(3)->endOfMonth()->format('Y-m-d');
+                break;
+            case 'thirdquarter':
+                $startdate = Carbon::now()->subMonths(6)->startOfMonth()->format('Y-m-d');
+                $enddate = Carbon::now()->subMonths(6)->endOfMonth()->format('Y-m-d');
+                break;
+            case 'fourthquarter':
+                $startdate = Carbon::now()->subMonths(9)->startOfMonth()->format('Y-m-d');
+                $enddate = Carbon::now()->subMonths(9)->endOfMonth()->format('Y-m-d');
+                break;
+            case 'yearly':
+                $startdate = Carbon::now()->startOfYear()->format('Y-m-d');
+                $enddate = Carbon::now()->endOfYear()->format('Y-m-d');
                 break;
             default:
                 $startdate = Carbon::now()->format('Y-m-d');
                 $enddate = Carbon::now()->format('Y-m-d');
                 break;
         }
-       return route()->back()->with('Success','Fillter applied successfully.');
+
+        return view('admin.reports', ['reportlist' => $this->reportlist]);
     }
 
     protected function getReport(string $repname)
@@ -140,7 +157,6 @@ class SysReportsController extends Controller
         $arabic = new Arabic;
         $fixedHtml = '';
         $p = $arabic->arIdentify($reportHtml);
-
         for ($i = count($p) - 1; $i >= 0; $i -= 2) {
             $utf8ar = $arabic->utf8Glyphs(substr($reportHtml, $p[$i - 1], $p[$i] - $p[$i - 1]));
             $fixedHtml = substr_replace($reportHtml, $utf8ar, $p[$i - 1], $p[$i] - $p[$i - 1]);

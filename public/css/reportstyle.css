@@ -20,5 +20,19 @@
 }
 
 body {
-    font-family: 'Amiri';
+    font-family: 'DejaVu Sans';
+}
+
+.header {
+    font-size: x-large;
+    font-weight: bold;
+    font-family: "DejaVu Sans";
+    background-image: url('../../../../logo.png');
+}
+
+.reportTitle {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    color: blue;
 }
