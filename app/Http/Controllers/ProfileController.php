@@ -18,7 +18,7 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-        $dat = Tblregistrant::where('id', Auth()->user()->id)->get()->first();
+        $dat = Auth::user();
         $param = RegRequestController::lockups();
         $profilecompletion = $this->calculateProfile($dat);
 
@@ -28,7 +28,7 @@ class ProfileController extends Controller
 
     public function viewProfile(Request $request, int $regid): View
     {
-        $registrant = Tblregistrant::find($regid);
+        $registrant = Auth::user();
 
         return view('ProfileView', compact('registrant'));
     }
@@ -94,9 +94,11 @@ class ProfileController extends Controller
     public function updatereginfo(ProfileUpdateRequest $request): RedirectResponse
     {
         //write data to tblregistrant
-        $profile = new Tblregistrant;
+        $profile = Auth::user();
         $request->merge(['regname' => $request->get('name')]);
-        $profile->where('id', Auth()->user()->id)->update($request->except(['_token', '_method', 'name']));
+        $profile->where('id', Auth()->user()->id)
+            ->update($request->except(['_token', '_method', 'name']));
+        dd($request->except(['_token', '_method']));
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }

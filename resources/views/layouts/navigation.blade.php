@@ -33,10 +33,11 @@
                     <x-slot:trigger>
                         <div class="flex space-x-2 items-center shadow px-4 rounded-md">
                             <div class="grow">
-                                <x-bladewind::avatar size="small" image="/photos/{{ Auth::user()?Auth::user()->photofile:'nophoto.png' }}" />
+                                <x-bladewind::avatar size="small"
+                                    image="/photos/{{ Auth::user() ? Auth::user()->photofile : 'nophoto.png' }}" />
                             </div>
                             <div class="grow">
-                                <div><strong>{{ Auth::user()->name }}</strong></div>
+                                <div><strong>{{ Auth::user()->regname }}</strong></div>
                             </div>
                             <div>
                                 <x-bladewind::icon name="chevron-down" class="!h-4 !w-4" />

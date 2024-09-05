@@ -45,11 +45,11 @@ class UserAvatarController extends Controller
             $ext = $path->extension();
             $fname = 'photo_'.$regid.'.'.$ext;
             if (Storage::exists('public/photos/'.$fname)) {
-                Storage::delete('public/photos/'.auth()->user()->avatar);
+                Storage::delete('public/photos/'.auth()->user()->photofile);
             }
             Storage::putFileAs('public/photos/', $request->file('regphoto'), $fname);
             //$path->storeAs('public/photos/',$fname);
-            Auth()->user()->avatar = $fname;
+            Auth()->user()->photofile = $fname;
             Auth()->user()->save();
             Tblregistrant::where('id', Auth()->user()->id)
                 ->update(['photofile' => $fname]);

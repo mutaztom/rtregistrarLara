@@ -9,7 +9,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use App\Models\Tblregistrant;
+
 /**
  * Class Tblregisterrequest
  *
@@ -46,6 +46,7 @@ use App\Models\Tblregistrant;
  * @property string|null $onmachine
  * @property Carbon|null $modifydate
  * @property bool|null $noticed
+ * @property string|null $remember_token
  */
 class Tblregisterrequest extends Model
 {
@@ -69,8 +70,8 @@ class Tblregisterrequest extends Model
     ];
 
     protected $hidden = [
-        'unionsecretary',
-        'socitysecretary',
+        'pwd',
+        'remember_token',
     ];
 
     protected $fillable = [
@@ -106,6 +107,7 @@ class Tblregisterrequest extends Model
         'onmachine',
         'modifydate',
         'noticed',
+        'remember_token',
     ];
 
     public function regclass_name(): HasOne

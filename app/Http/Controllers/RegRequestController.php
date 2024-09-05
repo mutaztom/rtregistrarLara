@@ -20,6 +20,7 @@ use App\Models\Tblspecialization;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
@@ -72,6 +73,8 @@ class RegRequestController extends Controller
         $order = new TblregisterRequest;
         $order->ownerid = Auth()->user()->id;
         $param['order'] = $order;
+        $comp = ProfileController::calculateProfile(Auth()->user());
+        $param['comp'] = $comp;
 
         return view('regorder', $param);
     }
@@ -80,25 +83,47 @@ class RegRequestController extends Controller
     {
         $command = $request->get('command');
         if ($command == 'saveorder') {
+            //validate form data
+            $comp = ProfileController::calculateProfile(Auth()->user());
+            $validatedData = $request->validate([
+                'regclass' => ['required'],
+                'regcat' => ['required'],
+                'workplace' => ['required'],
+                'job' => ['required'],
+            ]);
+            if ($request->get('job') == 'other') {
+                if ($request->get('custom_job') == null) {
+                    return redirect()->back()->with('error', 'Please enter job title in custom job field.');
+                }
+            }
+            //check if comp less than 40 return error
+            if ($comp < 40) {
+                return redirect()->back()->with('error', 'Your profile is not complete, it should be at least 40%');
+            }
             //save data to databas
             $orderid = $request->get('orderid');
+            $entries = $request->except(['_crsrf', '_method', '_token', 'command', 'orderid', 'custom_job']);
+            $entries['job'] = $request->get('job') == 'other' ? $request->get('custom_job') : $request->get('job');
             if ($orderid > 0) {
-                DB::table('tblregisterrequest')->where('id', $orderid)->update($request->except(['_crsrf', '_method', '_token', 'command', 'orderid']));
+                DB::table('tblregisterrequest')->where('id', $orderid)
+                    ->update($entries);
             } else {
                 $request->merge(['ownerid' => Auth()->user()->id]);
                 $request->merge(['ondate' => Carbon::now()]);
                 //generate rpin
-                $request->merge(['status' => 'Requested'])
-                    ->merge(['item' => 'New order request']);
-                DB::table('tblregisterrequest')->insert($request->except(['_crsrf', '_method', '_token', 'command', 'orderid']));
+                $entries->insert(['status' => 'Requested'])
+                    ->insert(['item' => 'New order request']);
+                DB::table('tblregisterrequest')
+                    ->insert($entries);
                 $regid = DB::table('tblregisterrequest')->where('ownerid', Auth()->user()->id)->get()->last()->id;
                 //update rpin for the new id
                 DB::table('tblregisterrequest')->where('id', $regid)->update(['rpin' => rand(1000000000, 1000000000000000).'-'.$regid]);
             }
             //notify registrant that registration order has been updated
+            $order = Tblregisterrequest::find($orderid);
             Mail::to(Auth()->user()->email)->send(new RpinMail($order));
 
-            return redirect()->route('regrequest.view', ['orderid' => $orderid])->with('success', 'Request order saved successfully!');
+            return redirect()->route('regorder', ['orderid' => $orderid])->with('success', 'Request order saved successfully!');
         } elseif ($command == 'cancel') {
             //cancel order
             $orderid = $request->get('orderid');
@@ -203,7 +228,9 @@ class RegRequestController extends Controller
     {
         $order = Tblregisterrequest::find($orderid);
         $param = RegRequestController::lockups();
+        $comp = ProfileController::calculateProfile(Auth()->user());
         $param['order'] = $order;
+        $param['comp'] = $comp;
 
         return view('regorder', $param);
     }
@@ -211,6 +238,7 @@ class RegRequestController extends Controller
     public function destroy(Request $request, int $orderid)
     {
         DB::table('tblregisterrequest')->where('id', $orderid)->delete();
+
         return redirect()->route('order.list')->with('success', 'Order deleted successfully!');
     }
 }

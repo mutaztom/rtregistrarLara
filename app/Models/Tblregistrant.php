@@ -51,6 +51,13 @@ class Tblregistrant extends Authenticatable
 
     public $timestamps = false;
 
+    protected $maps = [
+        'regname' => 'name',
+        'pwd' => 'password',
+    ];
+
+    protected $append = ['regname', 'password'];
+
     protected $casts = [
         'regid' => 'int',
         'nationality' => 'int',
@@ -89,6 +96,19 @@ class Tblregistrant extends Authenticatable
         'idtype',
     ];
 
+    public function getName()
+    {
+        return $this->attributes['regname'];
+    }
+
+    public function getPassword()
+    {
+        return $this->attributes['pwd'];
+    }
+    public function getAuthPassword()
+    {
+        return $this->attributes['pwd'];
+    }
     public function specialization_name(): HasOne
     {
         return $this->hasOne(Tblspecialization::class, 'id', 'specialization');

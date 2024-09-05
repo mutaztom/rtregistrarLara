@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
@@ -30,24 +31,28 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
-            'regname' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.Tblregistrant::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+        try {
+            $request->validate([
+                'regname' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.Tblregistrant::class],
+                'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            ]);
 
-        $user = Tblregistrant::create([
-            'regname' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'pwd' => Hash::make($request->password),
-            'idtype' => -1,
-            'idnumber' => '-1',
-        ]);
-        event(new Registered($user));
-        //notify user of registration
-        Mail::to($user->email)->send(new WelcomeMailer($user->email));
-        Auth::login($user);
+            $user = Tblregistrant::create([
+                'regname' => $request->regname,
+                'email' => $request->email,
+                'pwd' => Hash::make($request->password),
+                'remember_token' => 'false',
+                'idtype' => -1,
+                'idnumber' => '-1',
+            ]);
+            event(new Registered($user));
+            //notify user of registration
+            Mail::to($user->email)->send(new WelcomeMailer($user));
+            Auth::login($user);
+        } catch (Exception $exp) {
+            return redirect()->back()->with('error', $exp->getMessage());
+        }
 
         return redirect(route('dashboard', absolute: false));
     }
