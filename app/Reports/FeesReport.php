@@ -13,7 +13,8 @@ class FeesReport extends \koolreport\KoolReport
     public function setup()
     {
         $this->src('mysql')->query(
-            'select tblfees.id,tblfees.ondate,tblfees.byuser,tblengclass.item as classname,tblengdegree.item as degree from tblfees 
+            'select tblfees.id,tblfees.ondate,tblfees.byuser,tblengclass.item
+             as classname,tblengdegree.item as degree,Amount from tblfees 
             join tblengclass on tblfees.regclass=tblengclass.id join tblengdegree
              on tblfees.regdegree=tblengdegree.id;'
         )->pipe($this->dataStore('fees'));

@@ -1,7 +1,7 @@
 <x-admin-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Inbox') }}
+            {{ __('Reports') }}
         </h2>
     </x-slot>
 
@@ -41,6 +41,9 @@
                             {{ __('Filter') }}
                         </x-bladewind::button>
                     </form>
+                    <x-bladewind::centered-content>
+                        <h3>Applied filter: {{$filter}}</h3>
+                    </x-bladewind::centered-content>
                 </div>
                 <x-bladewind::list-view>
                     @foreach ($reportlist as $repname)

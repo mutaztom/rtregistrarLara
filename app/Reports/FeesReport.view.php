@@ -1,5 +1,6 @@
 <?php
 use koolreport\widgets\koolphp\Table;
+
 ?>
 
 <html>
@@ -9,15 +10,18 @@ use koolreport\widgets\koolphp\Table;
     <link rel="stylesheet" href="../../../assets/bs3/bootstrap-theme.min.css" />
 </head>
 <body>
-    <h4>Fees List</h4>
-
+    <div class="container">
+        <h1>المجلس الهندسي السوداني</h1>
+    <h1>Fees List</h1>
+    <p>Date: <?php echo date('Y-m-d') ?></p>
 <?php
 Table::create([
     'dataStore' => $this->dataStore('fees'),
     'cssClass' => [
         'table' => 'table table-hover table-bordered',
     ],
-    'width' =>'80%',
+    'width' => '80%',
 ]);
 ?>
+</div>
 </html>

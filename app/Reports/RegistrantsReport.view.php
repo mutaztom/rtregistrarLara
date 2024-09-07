@@ -1,5 +1,6 @@
 <?php
 use koolreport\widgets\koolphp\Table;
+use koolreport\widgets\google\ColumnChart;
 
 ?>
 <html>
@@ -10,11 +11,13 @@ use koolreport\widgets\koolphp\Table;
     <title>Registrants</title>
 </head>
 
-<body style="margin-top:2cm;margin-right:2cm;margin-bottom:2cm;margin-left:3cm;width:100%; margin-top :2cm">
-    <div style="margin:auto;"><span class="reportTitle">Registrants</span></div>
+<body>
+<div class="container">
     <div style="reportHeader">
-        <h2>المجلس الهندسي السوداني</h2>
-        <p>تاريخ الطبا��ة: {{ date('Y-m-d') }}</p>
+        <h1>المجلس الهندسي السوداني</h1>
+    <h1>ٌRegistrants</h1>
+    
+    <p>Print Date: <?php echo date('Y-m-d') ?></p>
 </div>
 <?php
 Table::create([
@@ -24,5 +27,6 @@ Table::create([
     ], 'width' => '80%',
 ]);
 ?>
+
 </body>
 </html>
