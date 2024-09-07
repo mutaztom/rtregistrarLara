@@ -60,6 +60,8 @@
                                     {{ Auth::user()->engcouncilid ?: 'None' }}</p>
                             </div>
                             <div class="basis-full md:basis-3/4 lg:basis-3/4 xl:basis-3/4">
+                            </x-bladewind::card>
+                            <x-bladewind::card has_shadow="true">
                             <div id="panfees"
                                 class="flex flex-col pl-3 pr-3 pt-3 border-solid border-1 border-blue-800 drop-shadow">
                                 <span class="text-xl text-green-500 font-bold">Order Fees:

@@ -23,7 +23,8 @@ class ProfileController extends Controller
         $profilecompletion = $this->calculateProfile($dat);
 
         //dd($dat);
-        return view('profile.edit', $param, ['user' => Auth()->user(), 'registrant' => $dat, 'profcomp' => $profilecompletion]);
+        return view('profile.edit', $param, ['user' => Auth()->user(),
+         'registrant' => $dat, 'profcomp' => $profilecompletion]);
     }
 
     public function viewProfile(Request $request, int $regid): View

@@ -12,9 +12,9 @@ class QualcertController extends Controller
 {
     public function index()
     {
-        $qual = new Tblqualification;
+        $qual = Tblqualification::select()->where('empid', '=', Auth()->user()->id)->get();
 
-        return view('qualification', ['qual' => $qual, 'qualtype' => Tblqualification::all(),
+        return view('qualification', ['qual' => $qual, 'qualtype' => Tblqualtype::all(),
             'qualdegree' => Tblqualdegree::all()]);
     }
 

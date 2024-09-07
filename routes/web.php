@@ -31,6 +31,10 @@ Route::post('/saveorder', [RegRequestController::class, 'saveorder']
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('locale/{locale}', function ($locale) {
+    App::setLocale($locale);
+    return redirect()->back()->with('locale','Locale set to ' . $locale);
+})->middleware(['auth', 'verified'])->name('locale');
 
 Route::get('/stafflogin', [AdminSessionAuthenticator::class, 'getLogin'])->name('staff.login');
 Route::post('/stafflogin', [AdminSessionAuthenticator::class, 'postLogin'])->name('staff.login.post');
