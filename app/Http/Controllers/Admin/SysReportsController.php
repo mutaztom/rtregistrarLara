@@ -16,15 +16,17 @@ class SysReportsController extends Controller
 {
     protected $reportlist = ['fees', 'registrants', 'orders', 'paiedorders', 'testview'];
 
+    protected $periodtype = ['Daily', 'Weekly', 'Monthly', 'FirstQuarter', 'SecondQuarter', 'ThirdQuarter', 'FourthQuarter', 'Annual'];
+
     protected $registrants;
 
-    protected $period;
+    protected  $period;
 
     protected $startdate;
 
-    protected $enddate;
+    protected  $enddate;
 
-    protected $filter;
+    protected  $filter;
 
     public function __construct()
     {
@@ -36,7 +38,8 @@ class SysReportsController extends Controller
     public function index()
     {
 
-        return view('admin.reports', ['reportlist' => $this->reportlist, 'filter' => $this->filter]);
+        return view('admin.reports', ['reportlist' => $this->reportlist,
+            'filter' => $this->filter, 'periodtype' => $this->periodtype]);
     }
 
     public function printReport(string $repname)
@@ -90,41 +93,39 @@ class SysReportsController extends Controller
     public function filterReport(Request $request)
     {
         //filter report based on date range
-        $this->month = $request->get('month');
-        $this->year = $request->get('year');
+        $this->month = $request->get('month') ?: Carbon::now()->month();
+        $this->year = $request->get('year') ?: Carbon::now()->year();
         $this->period = $request->get('period');
         switch ($this->period) {
-            case 'daily':
-                $this->startdate = Carbon::now()->format('Y-m-d');
-                $this->enddate = Carbon::now()->format('Y-m-d');
-                //apply filter to query string
-                $this->filter = ['ondate' => $this->startdate];
+            case 'Daily':
+                $this->startdate = Carbon::today();
+                $this->enddate = $this->startdate->addDay(1);
                 break;
-            case 'weekly':
-                $this->startdate = Carbon::now()->format('Y-m-d');
-                $this->enddate = Carbon::now()->subDays(7)->format('Y-m-d');
+            case 'Weekly':
+                $this->enddate = Carbon::today();
+                $this->startdate = $this->enddate->subDays(7);
                 break;
-            case 'monthly':
-                $this->startdate = Carbon::now()->startOfMonth()->format('Y-m-d');
-                $this->enddate = Carbon::now()->endOfMonth()->format('Y-m-d');
+            case 'Monthly':
+                $this->enddate = Carbon::create($this->year, $this->month, 1, 0)->endOfMonth();
+                $this->startdate = $this->enddate->startOfMonth();
                 break;
-            case 'firstquarter':
-                $this->startdate = Carbon::now() - subQuarter(1)->format('Y-m-d');
+            case 'FirstQuarter':
+                $this->startdate = Carbon::now() -> subQuarter(1)->format('Y-m-d');
                 $this->enddate = Carbon::now()->subQuarter(1)->format('Y-m-d');
                 break;
-            case 'secondquarter':
+            case 'SecondQuarter':
                 $this->startdate = Carbon::now()->subMonths(3)->startOfMonth()->format('Y-m-d');
                 $this->enddate = Carbon::now()->subMonths(3)->endOfMonth()->format('Y-m-d');
                 break;
-            case 'thirdquarter':
+            case 'ThirdQuarter':
                 $this->startdate = Carbon::now()->subMonths(6)->startOfMonth()->format('Y-m-d');
                 $this->enddate = Carbon::now()->subMonths(6)->endOfMonth()->format('Y-m-d');
                 break;
-            case 'fourthquarter':
+            case 'FourthQuarter':
                 $this->startdate = Carbon::now()->subMonths(9)->startOfMonth()->format('Y-m-d');
                 $this->enddate = Carbon::now()->subMonths(9)->endOfMonth()->format('Y-m-d');
                 break;
-            case 'yearly':
+            case 'Annual':
                 $this->startdate = new Carbon('first day of January 2017');
                 $this->enddate = $this->startdate->endOfYear()->format('Y-m-d');
                 break;
@@ -133,9 +134,10 @@ class SysReportsController extends Controller
                 $this->enddate = Carbon::now()->format('Y-m-d');
                 break;
         }
-        $filter = "ondate between $this->startdate and $this->enddate";
+        $this->filter = "perid: $this->period, ondate between $this->startdate->format('d-m-Y') 
+        and $this->enddate->format('d-m-Y')";
 
-        return view('admin.reports', ['reportlist' => $this->reportlist, 'filter' => $filter]);
+        return redirect()->back();
     }
 
     protected function getReport(string $repname)
@@ -144,7 +146,8 @@ class SysReportsController extends Controller
         if ($repname === 'fees') {
             $report = new FeesReport;
         } elseif ($repname == 'registrants') {
-            $report = new RegistrantsReport(['startdate' => $this->startdate, 'enddate' => $this->enddate]);
+            $report = new RegistrantsReport(['startdate' => $this->startdate,
+                'enddate' => $this->enddate, 'filter' => $this->filter]);
             if ($this->filter != null) {
                 $report->params = $this->filter;
             }

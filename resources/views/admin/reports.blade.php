@@ -8,33 +8,32 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-4">
         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6 text-gray-500">
-                <div class="text-xl font-bold text-purple-400 border shadow-md border-solid pt-2 pb-2 pl-2 pr-2">
+                <div class="text-xl text-purple-400 border shadow-md border-solid pt-2 pb-2 pl-2 pr-2">
                     <form method="post" action="{{ route('report.filter') }}">
                         @csrf
-                        @method('post')
+                        @method('patch')
                         <x-label for="report_period" />
                         <select name="period">
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="firstquarter">First Quarter</option>
-                            <option value="secondquarter">Second Quarter</option>
-                            <option value="thirdquarter">Third Quarter</option>
-                            <option value="fourthquarter">Fourth Quarter</option>
-                            <option value="yearly">Yearly</option>
+                            @foreach ($periodtype as $period)
+                                <option value="{{ $period }}" @selected(old('period') == $period)>{{ $period }}
+                                </option>
+                            @endforeach
                         </select>
                         <x-label for="month" />
                         <select name="month">
                             <option value="">Select Month</option>
                             @for ($i = 1; $i <= 12; $i++)
-                                <option value="{{ $i }}">{{ $i }}</option>
+                                <option value="{{ $i }}" @selected(old('month') == $i)>{{ $i }}
+                                </option>
                             @endfor
                         </select>
                         <x-label for="year" />
                         <select name="year">
                             <option value="">Select Year</option>
                             @for ($i = date('Y'); $i >= 1900; $i--)
-                                <option value="{{ $i }}">{{ $i }}</option>
+                                <option value="{{ $i }}" @if (old('year') == 2023) selected @endif>
+                                    {{ $i }}
+                                </option>
                             @endfor
                         </select>
                         <x-bladewind::button type="secondary" can_submit="true" icon="cursor-rrow-ripple">
@@ -42,7 +41,7 @@
                         </x-bladewind::button>
                     </form>
                     <x-bladewind::centered-content>
-                        <h3>Applied filter: {{$filter}}</h3>
+                        <p>Applied filter: {{ $filter }}</p>
                     </x-bladewind::centered-content>
                 </div>
                 <x-bladewind::list-view>

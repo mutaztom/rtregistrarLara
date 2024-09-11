@@ -67,7 +67,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => 'admin'], function () {
     Route::get('/printreport/{repname}', [SysReportsController::class, 'printReport'])->name('printreport');
     Route::get('/exportreport/{repname}', [SysReportsController::class, 'exportReport'])->name('exportreport');
     Route::get('/downloadreport/{repname}', [SysReportsController::class, 'downloadReport'])->name('downloadreport');
-    Route::post('/filterreport', [SysReportsController::class, 'filterReport'])->name('report.filter');
+    Route::patch('/filterreport', [SysReportsController::class, 'filterReport'])->name('report.filter');
 });
 
 Route::middleware('auth')->group(function () {
