@@ -19,17 +19,26 @@ use koolreport\widgets\koolphp\Table;
 <div class="container">
     <div style="reportHeader">
         <h1>المجلس الهندسي السوداني</h1>
-    <h1>Registration Request Orders</h1>
+    <h1>Paid Registration Order</h1>
     <p>Applied Filter: <?php echo $this->params['filter'] ?></p>
     <p>Print Date: <?php echo date('d/m/Y') ?></p>
 </div>
 </div>
 <?php
 Table::create([
-    'dataStore' => $this->dataStore('registerrequest'),
+    'dataStore' => $this->dataStore('orderspaid'),
     'cssClass' => [
-        'table' => 'table table-hover table-bordered',  
+        'table' => 'table table-hover table-bordered',
     ],
+    "grouping"=>array(
+        "status"=>array(
+            "calculate"=>array(
+                "{sumAmount}"=>array("sum","Amount"),
+            ),
+             "bottom"=>function($calculated_results){
+                return "Total Payment for the period given :".$calculated_results["{sumAmount}"];
+            },
+        ))
 ]);
 ?>
 </body>

@@ -33,7 +33,8 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('locale/{locale}', function ($locale) {
     App::setLocale($locale);
-    return redirect()->back()->with('locale','Locale set to ' . $locale);
+
+    return redirect()->back()->with('locale', 'Locale set to '.$locale);
 })->middleware(['auth', 'verified'])->name('locale');
 
 Route::get('/stafflogin', [AdminSessionAuthenticator::class, 'getLogin'])->name('staff.login');
@@ -64,10 +65,10 @@ Route::group(['namespace' => 'Admin', 'middleware' => 'admin'], function () {
     Route::patch('/userphoto', [UserManagerController::class, 'updatePhoto'])->name('user.photo');
     //reporting routes
     Route::get('/reports', [SysReportsController::class, 'index'])->name('reports');
+    Route::patch('/reports', [SysReportsController::class, 'filterReport'])->name('report.filter');
     Route::get('/printreport/{repname}', [SysReportsController::class, 'printReport'])->name('printreport');
     Route::get('/exportreport/{repname}', [SysReportsController::class, 'exportReport'])->name('exportreport');
     Route::get('/downloadreport/{repname}', [SysReportsController::class, 'downloadReport'])->name('downloadreport');
-    Route::patch('/filterreport', [SysReportsController::class, 'filterReport'])->name('report.filter');
 });
 
 Route::middleware('auth')->group(function () {

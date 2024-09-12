@@ -15,7 +15,7 @@ use koolreport\widgets\koolphp\Table;
     <div style="reportHeader">
         <h1>المجلس الهندسي السوداني</h1>
     <h1>ٌRegistrants</h1>
-    <p>Applie Filter: <?php echo $filter ?></p>
+    <p>Applie Filter: <?php echo $this->params['filter'] ?></p>
     <p>Print Date: <?php echo date('Y-m-d') ?></p>
 </div>
 <?php
