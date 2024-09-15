@@ -9,8 +9,22 @@ use koolreport\widgets\koolphp\Table;
     <link rel="stylesheet" href="../../../css/reportstyle.css"/>
     <title>Registrants</title>
 </head>
+<style>
+   
+@font-face {
+    font-family: "DejaVu Sans";
+    src: url("/vendors/dompdf/lib/fonts/DejaVuSans.ttf") format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+* { font-family: DejaVu Sans, sans-serif; }
+    body {
+        font-family: 'DejaVu Sans';
+    }
+</style>
 
 <body>
+
 <div class="container">
     <div style="reportHeader">
         <h1>المجلس الهندسي السوداني</h1>
@@ -23,7 +37,7 @@ Table::create([
     'dataStore' => $this->dataStore('registrants_report'),
     'cssClass' => [
         'table' => 'table table-hover table-bordered',
-    ], 'width' => '80%',
+    ], 'width' => '80%', 'fontfamily' => 'DejaVu Sans',
 ]);
 ?>
 

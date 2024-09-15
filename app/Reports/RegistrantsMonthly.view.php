@@ -1,4 +1,5 @@
 <?php
+use koolreport\widgets\google\PieChart;
 use koolreport\widgets\koolphp\Table;
 
 ?>
@@ -19,27 +20,43 @@ use koolreport\widgets\koolphp\Table;
 <div class="container">
     <div style="reportHeader">
         <h1>المجلس الهندسي السوداني</h1>
-    <h1>Paid Registration Order</h1>
+    <h1>Monthly Registrants</h1>
     <p>Applied Filter: <?php echo $this->params['filter'] ?></p>
     <p>Print Date: <?php echo date('d/m/Y') ?></p>
 </div>
 </div>
 <?php
+PieChart::create(
+    ['title' => 'Monthly Registrants',
+        'dataSource' => $this->datastore('regmonthlychart')->sort(['month' => 'desc', 'year' => 'desc']),
+        'columns' => ['month',
+            'registrants' => ['label' => 'Number of Orders', 'type' => 'number', 'prefix' => ''],
+
+        ],
+        'options' => [
+            'is3D' => true,
+        ],
+    ])
+?>
+<?php
 Table::create([
-    'dataStore' => $this->dataStore('orderspaid'),
+    'dataStore' => $this->dataStore('regmonthly'),
+    'columns' => ['month' => ['type' => 'string', 'label' => 'Month'],
+        'registrants' => ['type' => 'number', 'label' => 'Number of registrants'],
+    ],
     'cssClass' => [
         'table' => 'table table-hover table-bordered',
     ],
     'grouping' => [
-        'status' => [
+        'year' => [
             'calculate' => [
-                '{sumAmount}' => ['sum', 'Amount'],
+                '{countSum}' => ['sum', 'registrants'],
             ],
             'bottom' => function ($calculated_results) {
-                return 'Total Payment for the period given :'.$calculated_results['{sumAmount}'];
+                return 'Total Number of registrants :'.$calculated_results['{countSum}'];
             },
-        ]],
-]);
+        ],
+    ]]);
 ?>
 </body>
 </html>

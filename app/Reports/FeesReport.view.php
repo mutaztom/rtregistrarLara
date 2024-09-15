@@ -8,6 +8,7 @@ use koolreport\widgets\koolphp\Table;
     <title>Fees List</title>
     <link rel="stylesheet" href="../../../assets/bs3/bootstrap.min.css" />
     <link rel="stylesheet" href="../../../assets/bs3/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="css/reportstyle.css" />
 </head>
 <body>
     <div class="container">

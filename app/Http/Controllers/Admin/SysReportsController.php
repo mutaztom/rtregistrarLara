@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Tblregistrant;
 use App\Reports\FeesReport;
+use App\Reports\OrdersMonthly;
 use App\Reports\OrdersPaid;
 use App\Reports\RegisterRequestReport;
+use App\Reports\RegistrantsMonthly;
 use App\Reports\RegistrantsReport;
 use ArPHP\I18N\Arabic;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -15,7 +17,8 @@ use Illuminate\Http\Request;
 
 class SysReportsController extends Controller
 {
-    protected $reportlist = ['fees', 'registrants', 'orders', 'paidorders', 'testview'];
+    protected $reportlist = ['Registration Fees', 'Registrants', 'Registration Requests',
+        'Paid Orders', 'Monthly Orders', 'testview', 'Monthly Registrants'];
 
     protected $periodtype = ['Daily', 'Weekly', 'Monthly', 'FirstQuarter', 'SecondQuarter', 'ThirdQuarter', 'FourthQuarter', 'Annual'];
 
@@ -103,11 +106,11 @@ class SysReportsController extends Controller
         } elseif (str_starts_with($request->get('command'), 'export')) {
             $rname = explode('_', $request->get('command'))[1];
 
-            return $this->exportReport($rname,false);
+            return $this->exportReport($rname, false);
         } elseif (str_starts_with($request->get('command'), 'download')) {
             $rname = explode('_', $request->get('command'))[1];
 
-            return $this->exportReport($rname,true);
+            return $this->exportReport($rname, true);
         }
 
         return redirect()->back()->withInput()->with('filter', $filter);
@@ -160,19 +163,24 @@ class SysReportsController extends Controller
     protected function getReport(string $repname)
     {
         $report = new FeesReport;
-        if ($repname === 'fees') {
+        if ($repname === 'Registration Fees') {
             $report = new FeesReport;
-        } elseif ($repname == 'registrants') {
+        } elseif ($repname == 'Registrants') {
             $report = new RegistrantsReport(['startdate' => $this->startdate,
                 'enddate' => $this->enddate, 'filter' => $this->filter]);
-        } elseif ($repname == 'orders') {
+        } elseif ($repname == 'Registration Requests') {
             $report = new RegisterRequestReport(['startdate' => $this->startdate,
                 'filter' => $this->filter, 'enddate' => $this->enddate]);
-        }elseif($repname=='paidorders') {
+        } elseif ($repname == 'Paid Orders') {
             $report = new OrdersPaid(['startdate' => $this->startdate,
                 'filter' => $this->filter, 'enddate' => $this->enddate, 'paid' => true]);
-        }
-        elseif ($repname == 'testview') {
+        } elseif ($repname == 'Monthly Orders') {
+            $report = new OrdersMonthly(['year' => $this->year,
+                'filter' => "Annual, for year $this->year"]);
+        } elseif ($repname == 'Monthly Registrants') {
+            $report = new RegistrantsMonthly(['year' => $this->year,
+                'filter' => "Annual, for year $this->year"]);
+        } elseif ($repname == 'testview') {
             $report = view('registrants', ['registrants' => $this->registrants, 'title' => 'Registrants'])->render();
         }
 
@@ -184,13 +192,14 @@ class SysReportsController extends Controller
         // Arabic encode
         $arabic = new Arabic;
         $fixedHtml = '';
-        $p = $arabic->arIdentify($reportHtml);
-        for ($i = count($p) - 1; $i >= 0; $i -= 2) {
-            $utf8ar = $arabic->utf8Glyphs(substr($reportHtml, $p[$i - 1], $p[$i] - $p[$i - 1]));
-            $fixedHtml = substr_replace($reportHtml, $utf8ar, $p[$i - 1], $p[$i] - $p[$i - 1]);
-        }
+        $p = $arabic->arIdentify($reportHtml,true);
+        $fixedHtml=$arabic->utf8Glyphs($reportHtml,true,$indi=false);
+        // for ($i = count($p) - 1; $i >= 0; $i -= 2) {
+        //     $utf8ar = $arabic->utf8Glyphs(substr($reportHtml, $p[$i - 1], $p[$i] - $p[$i - 1]),$max_chars = 150);
+        //     $fixedHtml = substr_replace($reportHtml, $utf8ar, $p[$i - 1], $p[$i] - $p[$i - 1]);
+        // }
 
-        //dd($reportHtml);
+        // dd($fixedHtml);
         return $fixedHtml;
     }
 }

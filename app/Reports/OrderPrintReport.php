@@ -16,7 +16,10 @@ class OrderPrintReport extends \koolreport\KoolReport
         $this->src('mysql')
             ->query(
                 'select id,item,ondate,status,engclass,engdegree  from vwregisterrequest
-                    where id='.$orderid
+                    where id=:orderid'
+                    ,[
+                        ':orderid' => $orderid,
+                    ]
             )->pipe($this->dataStore('order_print_report'));
     }
 }

@@ -4,12 +4,12 @@ namespace App\Reports;
 
 require_once base_path().'/vendor/koolreport/core/autoload.php';
 use koolreport\processes\Filter;
+
 class RegisterRequestReport extends \koolreport\KoolReport
 {
     use \koolreport\bootstrap4\Theme;
     use \koolreport\clients\Bootstrap;
     use \koolreport\laravel\Friendship;
-    
 
     public function setup()
     {
