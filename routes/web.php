@@ -80,7 +80,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/uploadphoto', 'App\Http\Controllers\UserAvatarController@uploadphoto')->name('avatar.edit');
     Route::get('/myorders', 'App\Http\Controllers\RegRequestController@orderList')->name('order.list');
     Route::get('/modifyorder/{orderid}', 'App\Http\Controllers\RegRequestController@modifyOrder')->name('order.modify');
-    Route::patch('/deleteorder/{orderid}', '\RegRequestController@destroy')->name('order.delete');
+    Route::patch('/deleteorder/{orderid}', 'App\Http\Controllers\RegRequestController@destroy')->name('order.delete');
 });
 // Add a route that can load an image from storage based on a parameter
 Route::get('/photos/{imageName}', [UserAvatarController::class, 'show'])->name('show.avatar');

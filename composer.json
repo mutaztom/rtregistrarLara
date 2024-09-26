@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.2",
         "blade-ui-kit/blade-ui-kit": "^0.6.2",
+        "dompdf/php-svg-lib": "^1.0",
         "khaled.alshamaa/ar-php": "^6.3",
         "koolreport/bootstrap4": "^1.5",
         "koolreport/core": "^6.5",
