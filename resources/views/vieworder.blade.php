@@ -119,6 +119,8 @@
                                 class="font-bold text-lg">{{ $order->registrant->specialization_name ? $order->registrant->specialization_name->item : 'None' }}</span>
                             <p>Order PIN Code</p>
                             <span class="font-bold text-lg">{{ $order->rpin ?: '---Not Set!---' }}</span>
+                            <p>Order ID</p>
+                            <span class="font-bold text-lg">{{ $order->id }}</span>
                             <p>Order Status</p>
                             <span class="font-bold text-lg">{{ $order->status }}</span>
                             <p>Payment Status</p>

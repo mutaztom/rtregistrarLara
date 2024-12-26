@@ -1,7 +1,13 @@
 <script>
     function deleteOrder(orderid) {
+        console.log("order id to delete: "+orderid);
+        document.getElementById('rem_id').value = orderid;
         showModal('confirmDelete');
-        document.getElementById('re_mid').value = orderid;
+    }
+    function navigateToOrder(orderid) {
+        const baseUrl = "viewregrequest/"+orderid;
+        const url = `${baseUrl}`; 
+        window.location.href = url; 
     }
 </script>
 <x-admin-layout>
@@ -33,7 +39,7 @@
                         @foreach ($neworders as $norder)
                             <tr>
                                 <td>{{ $norder->id }}</td>
-                                <td>{{ $norder->item }}</td>
+                                <td><a href={{route('regrequest.view', ['orderid' => $norder->id])}}"><span class="text-blue-600">{{ $norder->item }}</span></a></td>
                                 <td>{{ $norder->regname }}</td>
                                 <td>{{ $norder->engclass }}</td>
                                 <td>{{ $norder->engdegree }}</td>
@@ -41,9 +47,9 @@
                                 <td>{{ $norder->status }}</td>
                                 <td>
                                     <x-bladewind::button.circle color='red' icon="trash" outline="true"
-                                        size="tiny" onclick="showModal('confirmDelete')">
+                                        size="tiny" onclick="deleteOrder({{$norder->id}})">
                                         </x-bladewind::button>
-                                        <x-bladewind::button.circle icon="eye" tag="a" size="tiny"
+                                        <x-bladewind::button.circle icon="eye"  size="tiny" onclick="navigateToOrder({{$norder->id}})"
                                             class="p-l-4" outline="true" :href="route('regrequest.view', ['orderid' => $norder->id])">
                                         </x-bladewind::button.circle>
                             </tr>
@@ -77,7 +83,7 @@
                     @foreach ($processing as $order)
                         <tr>
                             <td>{{ $order->id }}</td>
-                            <td>{{ $order->item }}</td>
+                            <td><a href={{route('regrequest.view', ['orderid' => $order->id])}}"><span class="text-blue-600">{{ $order->item }}</span></a></td>
                             <td>{{ $order->regname }}</td>
                             <td>{{ $order->engclass }}</td>
                             <td>{{ $order->engdegree }}</td>
@@ -85,9 +91,9 @@
                             <td>{{ $order->status }}</td>
                             <td>
                                 <x-bladewind::button.circle color='red' icon="trash" outline="true" size="tiny"
-                                    onclick="showModal('confirmDelete')">
+                                    onclick="deleteOrder({{$order->id}})">
                                     </x-bladewind::button>
-                                    <x-bladewind::button.circle icon="eye" tag="a" size="tiny"
+                                    <x-bladewind::button.circle icon="eye" onclick="navigateToOrder({{$order->id}})" size="tiny"
                                         outline="true" :href="route('regrequest.view', ['orderid' => $order->id])">
                                     </x-bladewind::button.circle>
                             </td>
@@ -104,7 +110,7 @@
         <form method="POST" action="{{ route('regrequest.delete') }}">
             @csrf
             @method('patch')
-            <x-input type="hidden" name="orderid" id="remid" />
+            <x-input type="hidden" id="rem_id" name="orderid" />
             <p>Are you sure you want to delete this order?</p>
             <x-bladewind::button type="primary" color="red" icon="trash"
                 can_submit="true">Delete</x-bladewind::button>

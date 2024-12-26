@@ -94,7 +94,7 @@
 
             <x-bladewind::card title="Registration Details">
                 <div class="flex flex-col columns-1 md:columns-2 lg:columns-4">
-                    <input hidden name="orderid" value={{ $order->id }} id="orderid" />
+                    <input hidden name="orderid" value={{ $order->id?$order->id:-1 }} id="orderid" />
                     <x-label for="registration_class" />
                     <select id="regclass" name="regclass" class="w-auto" onchange="#panchange.reload()">
                         <option value="">... Select ...</option>

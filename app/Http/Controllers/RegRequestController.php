@@ -104,20 +104,22 @@ class RegRequestController extends Controller
             $orderid = $request->get('orderid');
             $entries = $request->except(['_crsrf', '_method', '_token', 'command', 'orderid', 'custom_job']);
             $entries['job'] = $request->get('job') == 'other' ? $request->get('custom_job') : $request->get('job');
-            if ($orderid > 0) {
+            
+            if ($orderid!=null && $orderid > 0) {
                 DB::table('tblregisterrequest')->where('id', $orderid)
                     ->update($entries);
             } else {
                 $request->merge(['ownerid' => Auth()->user()->id]);
                 $request->merge(['ondate' => Carbon::now()]);
                 //generate rpin
-                $entries->insert(['status' => 'Requested'])
-                    ->insert(['item' => 'New order request']);
+                $entries['status']='Requested';
+                $entries['item']='New order request';
                 DB::table('tblregisterrequest')
                     ->insert($entries);
                 $regid = DB::table('tblregisterrequest')->where('ownerid', Auth()->user()->id)->get()->last()->id;
                 //update rpin for the new id
                 DB::table('tblregisterrequest')->where('id', $regid)->update(['rpin' => rand(1000000000, 1000000000000000).'-'.$regid]);
+                $orderid=$regid;
             }
             //notify registrant that registration order has been updated
             $order = Tblregisterrequest::find($orderid);

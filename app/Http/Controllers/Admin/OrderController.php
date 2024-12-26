@@ -24,7 +24,7 @@ class OrderController extends Controller
     ];
 
     //view order by its id
-    public function index(int $orderid)
+    public function index(String $orderid)
     {
         $order = Tblregisterrequest::where('id', $orderid)->first();
         $fees = Tblfee::where(['regclass' => $order->engclass, 'regdegree' => $order->engdegree])

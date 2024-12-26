@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Vwregisterrequest;
 use Illuminate\Http\Request;
-
+use App\Models\Tblregisterrequest;
 class InboxController extends Controller
 {
     /**
@@ -74,10 +74,10 @@ class InboxController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
-        Tblregisterrequest::where('id', $request())->get('orderid')->delete();
+        //show request id
+        Tblregisterrequest::where('id', $request->get('orderid'))->delete();
 
         return redirect()->back()->with('success', 'Order has been deleted successfully');
     }

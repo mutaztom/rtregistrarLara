@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="bg-green-400 p-4">
                     <div class="text-gray-600 mt4 m-b-4 ml-2 pl-8">
@@ -19,7 +19,7 @@
                 </div>
                 <!-- Table -->
 
-                <x-bladewind::table name="tblusers" stripped="true" searchable="true" search_placeholder="find user ..">
+                <x-bladewind::table compact="true" name="tblusers" stripped="true" searchable="true" search_placeholder="find user ..">
                     <x-slot:header>
                         <th>avatar</th>
                         <th>id</th>
